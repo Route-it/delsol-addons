@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+		<record model="ir.actions.act_window" id="turns.action_window">
+	      <field name="name">Clientes</field>
+	      <field name="res_model">client</field>
+	      <field name="view_type">form</field>
+	      <field name="view_mode">tree,form,graph,pivot</field>
+	    </record>
+	    
+	    <record model="ir.actions.act_window" id="turns.client_action_window">
+	    	<field name="name">Socios</field>
+	    	<field name="res_model">turns.client</field>
+	    	<field name="view_mode">tree,form</field>
+	    	<field name="search_view_id" ref="turns.client_list"/>
+	    </record>
+		
+		
+	  	<!-- Top menu item -->
+	    <menuitem name="Turnos" id="base.menu_main_cert"
+	            icon="fa-calendar"
+	            web_icon="project,static/description/icon.png"
+	            sequence="250"
+	            action="turns.action_window"/>
+	            
+	    <menuitem name="Turnos" id="turns.turn_left_menu_category" parent="base.menu_main_cert"/>
+	    
+	    <menuitem name="Lista" id="turns.turn_left_menu_list" parent="turns.turn_left_menu_category"
+	    		 action="turns.action_window" />
+		
+		
+		<menuitem name="Socios" id="turns.client_left_menu_list" parent="turns.turn_left_menu_category"
+	    		 action="turns.client_action_window" />
+	</data>
+</openerp>
