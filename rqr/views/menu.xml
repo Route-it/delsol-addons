@@ -3,35 +3,25 @@
 <openerp>
 	<data>
 	
-		<record model="ir.actions.act_window" id="turns.action_window">
-	      <field name="name">Clientes</field>
-	      <field name="res_model">client</field>
-	      <field name="view_type">form</field>
-	      <field name="view_mode">tree,form,graph,pivot</field>
-	    </record>
-	    
-	    <record model="ir.actions.act_window" id="turns.client_action_window">
-	    	<field name="name">Socios</field>
-	    	<field name="res_model">turns.client</field>
-	    	<field name="view_mode">tree,form</field>
-	    	<field name="search_view_id" ref="turns.client_list"/>
-	    </record>
-		
-		
-	  	<!-- Top menu item -->
-	    <menuitem name="Turnos" id="base.menu_main_cert"
-	            icon="fa-calendar"
-	            web_icon="project,static/description/icon.png"
-	            sequence="250"
-	            action="turns.action_window"/>
-	            
-	    <menuitem name="Turnos" id="turns.turn_left_menu_category" parent="base.menu_main_cert"/>
-	    
-	    <menuitem name="Lista" id="turns.turn_left_menu_list" parent="turns.turn_left_menu_category"
-	    		 action="turns.action_window" />
-		
-		
-		<menuitem name="Socios" id="turns.client_left_menu_list" parent="turns.turn_left_menu_category"
-	    		 action="turns.client_action_window" />
+		<!-- Top menu item -->
+		<!-- -->
+		<menuitem name="Gestion de Entregas" id="base.menu_main_rqr" />
+		<menuitem name="Clientes" id="menu_cliente" parent="base.menu_main_rqr" 
+					action="open_view_client_all" />
+		<menuitem name="Entregas" id="menu_entregas" parent="base.menu_main_rqr" />
+		<menuitem name="Lista" id="menu_entregas_list" parent="menu_entregas"
+			action="open_view_delivery_all" />
+			
+		<menuitem name="RQRs" id="menu_entregas_rqr" parent="menu_entregas"
+			action="open_view_rqr_all" />
+
+		<menuitem name="Llamados" id="menu_entregas_call" parent="menu_entregas"
+			action="open_view_call_all" />
+
+		<menuitem name="Quick Touch" id="menu_entregas_qtouch" parent="menu_entregas"
+			action="open_view_qtouch_all" />
+
+
+
 	</data>
 </openerp>

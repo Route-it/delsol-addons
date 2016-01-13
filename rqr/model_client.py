@@ -16,11 +16,55 @@ _logger = logging.getLogger(__name__)
 
 class client(models.Model):
     
-    inherit = 'res.client'
+    _inherit = 'res.partner'
     
-    cuit = fields.Char("CUIT/CUIL", help = "identificador  único", required=True)
-    
+    vat = fields.Char("CUIT/CUIL", help = "identificador  único", required=True)
+
     _sql_constraints = [
-            ('unique_cuit', 'unique(cuit)', 'El cuit/cuil registrado ya existe')
+            ('unique_vat', 'unique(vat)', 'El cuit/cuil registrado ya existe')
     ]
+    
+    
+    @api.constrains('vat')
+    def check_vat_ar(self):
+        """
+        Check VAT (CUIT) for Argentina
+        """
+        for record in self:
+            vat = record.vat
+            cstr = str(vat)
+            salt = str(5432765432)
+            n = 0
+            sum = 0
+    
+            if not vat.isdigit:
+                raise ValidationError("El campo CUIT/CUIL deben ser solo numeros.")
+                return
+    
+            if (len(vat) != 11):
+                raise ValidationError("El campo CUIT/CUIL debe ser de 11 digitos.")
+                return
+    
+            while (n < 10):
+                sum = sum + int(salt[n]) * int(cstr[n])
+                n = n + 1
+    
+            op1 = sum % 11
+            op2 = 11 - op1
+    
+            code_verifier = op2
+    
+            if (op2 == 11 or op2 == 10):
+                if (op2 == 11):
+                    code_verifier = 0
+                else:
+                    code_verifier = 9
+    
+            if (code_verifier == int(cstr[10])):
+                return True
+            else:
+                raise ValidationError("El campo CUIT/CUIL "+ vat +" es invalido.")
+                return
+
+    
     

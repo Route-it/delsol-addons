@@ -1,3 +1,11 @@
 # -*- coding: utf-8 -*-
-import controllers
-import models
+import model_vehicle
+import model_quick_touch
+import model_rqr
+import model_client
+import model_delsol_res_partner
+import model_delivery
+import model_call
+import model_rqr_type
+import model_vehicle_model
+import model_correct_action
