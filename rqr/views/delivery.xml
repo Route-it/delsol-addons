@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record id="delsol_delivery_filter" model="ir.ui.view">
+			<field name="name">delsol.delivery.select</field>
+			<field name="model">delsol.delivery</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name" string="Entrega" />
+					<field name="client_id" string="Cliente" />
+					<field name="vehicle_id" string="Vehiculo Entregado" />
+					<field name="vendor_id" string="Vendedor" />
+					
+					<separator />
+					<filter string="Contactado" domain="[('contacted','=',True)]"/>
+					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]"/>
+					<separator />
+					<group expand="0" string="Agrupar por">
+						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
+						<filter string="Contesto encuesta" name="answered_pool" context="{'group_by':'answered_pool'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+		<record model='ir.ui.view' id='delsol_delivery_list'>
+			<field name="name">delsol.delivery.tree</field>
+			<field name="model">delsol.delivery</field>
+			<field name="arch" type="xml">
+				<tree string="Entregas">
+					<field name="client_id" string="Cliente" />
+					<field name="vehicle_id" string="Vehiculo" />
+					<field name="delivery_date" string="Fecha Entrega" />
+					<field name="quick_touch" string="Quick Touch" />
+				</tree>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_form'>
+			<field name="name">delsol.delivery.form</field>
+			<field name="model">delsol.delivery</field>
+			<field name="arch" type="xml">
+				<form string="Entregas">
+					<sheet>
+						<group string="Datos de la entrega">
+							<group>
+								<field name="client_id" string="Cliente" />
+								<field name="vehicle_id" string="Vehiculo" />
+								<field name="delivery_date" string="Fecha Entrega" />
+								<field name="answered_poll" string="Contesto encuesta Ford?" />
+								<field name="vendor_id" string="Vendedor" />
+								<field name="quick_touch" string="Quick Touch" />
+							</group>
+						</group>
+						<div>Contactos al cliente</div>
+						<field name="call_ids" string="Contactos" />
+						<div>RQRs</div>
+						<field name="rqr_ids" string="RQRs" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_calendar'>
+			<field name="name">delsol.delivery.calendar</field>
+			<field name="model">delsol.delivery</field>
+			<field name="arch" type="xml">
+				<calendar string="Planificacion de Entregas"
+					event_open_popup="True" color="client_id" date_start="delivery_date"
+					date_delay="delay" quick_add="False" display="[client_id] ; [vehicle_id]">
+					<field name="client_id" string="Cliente" />
+					<field name="vehicle_id" string="Vehiculo" />
+					<field name="delivery_date" string="Fecha Entrega" />
+				</calendar>
+
+			</field>
+		</record>
+
+
+		<record model='ir.ui.view' id='delsol_delivery_rqr_form'>
+			<field name="name">delsol.rqr.form</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<form string="RQR">
+					<sheet>
+						<group string="Datos RQR">
+							<group>
+								<field name="delivery_id" string="Entrega" />
+								<field name="tipo_rqr" string="Tipo" />
+								<field name="state" string="Estado" />
+								<field name="depto" string="Departamento" />
+								<field name="sector" string="Sector" />
+								<field name="create_date" invisible="1" />
+								<field name="delay_resolution" readonly="1" />
+
+								<field name="corrective_action_ids" mode="kanban">
+									<kanban>
+										<field name="name" string="Accion" />
+										<field name="date_start" string="Fecha Inicio" />
+										<field name="date_end" string="Fecha Fin" />
+										<templates>
+											<t t-name="kanban-box">
+
+												<div
+													t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click"
+													style="height:150px">
+
+													<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+														<a class="dropdown-toggle btn" data-toggle="dropdown"
+															href="#">
+															<span class="fa fa-bars fa-lg" />
+														</a>
+														<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+															<t t-if="widget.editable">
+																<li>
+																	<a type="edit">Edit</a>
+																</li>
+															</t>
+															<t t-if="widget.deletable">
+																<li>
+																	<a type="delete">Delete</a>
+																</li>
+															</t>
+														</ul>
+													</div>
+													<div class="oe_kanban_top_left">
+														<field name="name" />
+													</div>
+													<div class="oe_kanban_bottom_left">
+														<field name="date_start" />
+													</div>
+													<div class="oe_kanban_bottom_right">
+														<field name="date_end" />
+													</div>
+												</div>
+											</t>
+										</templates>
+									</kanban>
+								</field>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_delsol_rqr_filter" model="ir.ui.view">
+			<field name="name">delsol.rqr.select</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name" string="Definicion de RQR" />
+					<field name="delivery_id" string="Entrega" />
+					<separator />
+					<!-- <filter string="" domain="[(uid,'in','user_ids')]"/> -->
+					<separator />
+					<group expand="0" string="Agrupar por">
+						<filter string="Estado" name="State" context="{'group_by':'state'}" />
+						<filter string="Tipo" name="Type" context="{'group_by':'tipo_rqr'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_rqr'>
+			<field name="name">delsol.rqr.tree</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<tree string="RQR">
+					<field name="delivery_id" string="Entrega" />
+					<field name="tipo_rqr" string="Tipo" />
+					<field name="state" string="Estado" />
+					<field name="create_date" string="Fecha Inicio" />
+					<field name="delay_resolution" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="delsol_delivery_rqr_kanban">
+			<field name="name">delsol.rqr.kanban</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" quick_create="false" delete="false"
+					edit="true" class="o_kanban_small_column">
+
+					<field name="delivery_id" string="Entrega" />
+					<field name="tipo_rqr" string="Tipo" />
+					<field name="state" string="Estado" />
+					<field name="create_date" string="Fecha Inicio" />
+					<templates>
+						<t t-name="kanban-box">
+							<div
+								t-attf-class="oe_kanban_color_#{kanban_getcolor(record.id.raw_value)} oe_kanban_card oe_kanban_global_click">
+
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle btn" data-toggle="dropdown" href="#">
+										<span class="fa fa-bars fa-lg" />
+									</a>
+									<!-- <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"> -->
+									<!-- <t t-if="widget.editable"><li><a type="edit">Editar</a></li></t> -->
+									<!-- <t t-if="widget.deletable"><li><a type="delete">Borrar</a></li></t> -->
+									<!-- <li><ul class="oe_kanban_colorpicker" data-field="color"/></li> -->
+									<!-- </ul> -->
+								</div>
+								<div style="position: relative">
+									<div class="oe_module_vignette">
+										<div class="oe_module_desc">
+											<field name="delivery_id" string="Entrega" />
+											<field name="tipo_rqr" string="Tipo" />
+											<field name="state" string="Estado" />
+											<field name="create_date" string="Fecha Inicio" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
+					</templates>
+				</kanban>
+			</field>
+		</record>
+		
+		
+		<record id="delsol_delivery_rqr_pivot" model="ir.ui.view">
+			<field name="name">delsol.rqr.pivot</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<pivot string="RQR Pivot">
+				</pivot>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_call'>
+			<field name="name">delsol.call.tree</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<tree string="Llamados">
+					<field name="delivery_id" string="Entrega" />
+					<field name="contact_date" string="Fecha y hora" />
+					<field name="contacted" string="Contactado" />
+					<field name="why_no_contacted" string="Porque?" />
+					<field name="comment" string="Comentario" />
+				</tree>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_call_form'>
+			<field name="name">delsol.call.form</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<form string="Contacto">
+					<sheet>
+						<group string="Responsable del contacto">
+								<field name="create_uid" string="Usuario" readonly="1"/>
+						</group>
+						<group string="Datos del contacto al cliente">
+							<group>
+								<field name="delivery_id" string="Entrega" />
+								<field name="phone" string="Telefono" readonly="1"/>
+								<field name="mobile" string="Movil" readonly="1"/>
+								<field name="email" string="Mail" readonly="1"/>
+							</group>
+						</group>
+						<group>
+							<group>
+								<field name="contact_date" string="Fecha y hora" />
+								<field name="contacted" string="Contactado" />
+								<field name="why_no_contacted" string="Porque?"
+									attrs="{'required' : [('contacted', '=', False)], 'invisible': [('contacted','=', True)]}" />
+								<field name="comment" string="Comentario" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_qt'>
+			<field name="name">delsol.quick_touch.tree</field>
+			<field name="model">delsol.quick_touch</field>
+			<field name="arch" type="xml">
+				<tree string="Quick Touch">
+					<field name="delivery" string="Entrega" />
+					<field name="grado_satisfaccion" string="Satisfaccion" />
+					<field name="recomienda" string="Recomienda" />
+					<field name="comentario_sugerencia" string="Comentario" />
+				</tree>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_qt_form'>
+			<field name="name">delsol.quick_touch.form</field>
+			<field name="model">delsol.quick_touch</field>
+			<field name="arch" type="xml">
+				<form string="Quick Touch">
+					<sheet>
+						<group string="Datos de la encuesta">
+							<group>
+								<field name="delivery" string="Entrega" />
+								<field name="grado_satisfaccion" string="Satisfaccion" />
+								<field name="recomienda" string="Recomienda" />
+								<field name="comentario_sugerencia" string="Comentario" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+
+
+		<record id="open_view_delivery_all" model="ir.actions.act_window">
+			<field name="name">delsol.delivery.action.all</field>
+			<field name="res_model">delsol.delivery</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form,calendar</field>
+		</record>
+
+		<record id="open_view_rqr_all" model="ir.actions.act_window">
+			<field name="name">delsol.rqr.action.all</field>
+			<field name="res_model">delsol.rqr</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form,kanban,pivot</field>
+		</record>
+
+		<record id="open_view_call_all" model="ir.actions.act_window">
+			<field name="name">delsol.call.action.all</field>
+			<field name="res_model">delsol.call</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<record id="open_view_qtouch_all" model="ir.actions.act_window">
+			<field name="name">delsol.quick_touch.action.all</field>
+			<field name="res_model">delsol.quick_touch</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+	</data>
+</openerp>

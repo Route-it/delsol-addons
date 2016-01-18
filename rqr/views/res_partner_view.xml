@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="delsol_client_tree">
+			<field name="name">delsol.res.partner.tree</field>
+			<field name="model">res.partner</field>
+			<field name="arch" type="xml">
+					<tree>
+						<field name="name" string="nombre" />
+						<field name="vat" string="Cuit/Cuil" />
+						<field name="phone" string="Telefono" />
+						<field name="email" string="email" />
+					</tree>	
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="delsol_client_form">
+			<field name="name">delsol.res.partner.form</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+
+			<field name="arch" type="xml">
+				<button class="oe_stat_button" position="replace">asdasd</button>
+
+				<field name="name" position="after">
+					<field name="vat" placeholder="Cuit/Cuil"></field>
+				</field>
+
+				<notebook position="inside">
+					<page string="Entregas" autofocus="autofocus">
+						<field name="delivery_ids" mode="kanban">
+							<kanban>
+								<field name="client_id" string="Cliente" />
+								<field name="vehicle_id" string="Vehiculo" />
+								<field name="delivery_date" string="Fecha Entrega" />
+								<templates>
+									<t t-name="kanban-box">
+
+										<div t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click" style="height:150px">
+
+											<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+												<a class="dropdown-toggle btn" data-toggle="dropdown"
+													href="#">
+													<span class="fa fa-bars fa-lg" />
+												</a>
+												<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+													<t t-if="widget.editable">
+														<li>
+															<a type="edit">Edit</a>
+														</li>
+													</t>
+													<t t-if="widget.deletable">
+														<li>
+															<a type="delete">Delete</a>
+														</li>
+													</t>
+												</ul>
+											</div>
+											<div class="oe_kanban_top_left">
+												<field name="client_id" />
+											</div>
+											<div class="oe_kanban_bottom_left">
+												<field name="vehicle_id" />
+											</div>
+											<div class="oe_kanban_bottom_right">
+												<field name="delivery_date" />
+											</div>
+										</div>
+									</t>
+								</templates>
+							</kanban>
+						</field>
+					</page>
+				</notebook>
+
+
+			</field>
+		</record>
+
+		<record id="open_view_client_all" model="ir.actions.act_window">
+			<field name="name">delsol.res.partner.all</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="base.view_partner_tree"></field>
+			<field name="domain">[('customer','=','True')]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+	</data>
+</openerp>
