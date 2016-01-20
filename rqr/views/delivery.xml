@@ -12,14 +12,15 @@
 					<field name="client_id" string="Cliente" />
 					<field name="vehicle_id" string="Vehiculo Entregado" />
 					<field name="vendor_id" string="Vendedor" />
-					
+
 					<separator />
-					<filter string="Contactado" domain="[('contacted','=',True)]"/>
-					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]"/>
+					<filter string="Contactado" domain="[('contacted','=',True)]" />
+					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]" />
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
-						<filter string="Contesto encuesta" name="answered_pool" context="{'group_by':'answered_pool'}" />
+						<filter string="Contesto encuesta" name="answered_pool"
+							context="{'group_by':'answered_pool'}" />
 					</group>
 				</search>
 			</field>
@@ -95,15 +96,13 @@
 								<field name="sector" string="Sector" />
 								<field name="create_date" invisible="1" />
 								<field name="delay_resolution" readonly="1" />
-
-								<field name="corrective_action_ids" mode="kanban">
+								<field name="corrective_action_ids" mode="kanban" >
 									<kanban>
 										<field name="name" string="Accion" />
 										<field name="date_start" string="Fecha Inicio" />
 										<field name="date_end" string="Fecha Fin" />
 										<templates>
 											<t t-name="kanban-box">
-
 												<div
 													t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click"
 													style="height:150px">
@@ -222,8 +221,8 @@
 				</kanban>
 			</field>
 		</record>
-		
-		
+
+
 		<record id="delsol_delivery_rqr_pivot" model="ir.ui.view">
 			<field name="name">delsol.rqr.pivot</field>
 			<field name="model">delsol.rqr</field>
@@ -253,26 +252,29 @@
 			<field name="arch" type="xml">
 				<form string="Contacto">
 					<sheet>
-						<group string="Responsable del contacto">
-								<field name="create_uid" string="Usuario" readonly="1"/>
+						<group string="Responsable del contacto" class="oe_read_only">
+							<field name="create_uid" string="Usuario" readonly="1" />
 						</group>
 						<group string="Datos del contacto al cliente">
-							<group>
-								<field name="delivery_id" string="Entrega" />
-								<field name="phone" string="Telefono" readonly="1"/>
-								<field name="mobile" string="Movil" readonly="1"/>
-								<field name="email" string="Mail" readonly="1"/>
-							</group>
+							<field name="delivery_id" string="Entrega" />
 						</group>
 						<group>
-							<group>
+							<group col="2">
+								<field name="phone" string="Telefono" readonly="1" />
+								<field name="mobile" string="Movil" readonly="1" />
+								<field name="email" string="Mail" readonly="1" />
+							</group>
+							<group col="2">
 								<field name="contact_date" string="Fecha y hora" />
 								<field name="contacted" string="Contactado" />
 								<field name="why_no_contacted" string="Porque?"
 									attrs="{'required' : [('contacted', '=', False)], 'invisible': [('contacted','=', True)]}" />
-								<field name="comment" string="Comentario" />
 							</group>
 						</group>
+	                    <div class="oe_title">
+	                    	<label for="comment" class="oe_inline"/>
+							<field name="comment" string="Comentarios" />
+						</div>
 					</sheet>
 				</form>
 			</field>

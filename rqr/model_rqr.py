@@ -37,12 +37,14 @@ class delsol_rqr(models.Model):
                     raise ValidationError("Para cerrarlo, debe tener al menos una accion correctiva.")
                     return
         
+    @api.depends('state')
     def compute_delay(self):
         result = 0
         if self.state:
             if self.state.fold:
                 #print (datetime.now() - self.create_date)
-                result = (datetime.utcnow() - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S')).days
+                difference = (datetime.utcnow() - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+                result = difference.days
             else:
                 result = 0
         self.delay_resolution = result
@@ -63,10 +65,18 @@ class delsol_rqr(models.Model):
     
     def name_get_str(self, record):
             delivery = ''
+            tipo_rqr = ''
+            state = ''
             if record.delivery_id:
                 delivery =  str(record.delivery_id.name_get_str(record.delivery_id))
             
-            return delivery +', '+str(record.tipo_rqr) + ' ('+str(record.state)+')'
+            if record.tipo_rqr:
+                tipo_rqr =  str(record.tipo_rqr.name_get_str(record.tipo_rqr))
+            if record.state:
+                state =  str(record.state.name_get_str(record.state))
+                
+            
+            return delivery +', '+tipo_rqr + ' ('+state+')'
     
     
 

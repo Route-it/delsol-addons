@@ -17,11 +17,10 @@ class delsol_correct_action(models.Model):
     
     _name = "delsol.correct_action"
      
-    name = fields.Text("Accion",required=True)
-
     rqr_id = fields.Many2one("delsol.rqr",required=True)
 
-    date_start = fields.Date("Fecha inicio",readonly=True)
-    date_end = fields.Date("Fecha fin",readonly=True)
+    name = fields.Text("Accion",required=True)
     comentario_resolucion = fields.Text("Comentarios")
 
+    date_start = fields.Date("Fecha inicio",readonly=True,invisible=True)
+    date_end = fields.Date("Fecha fin",readonly=True,invisible=True)

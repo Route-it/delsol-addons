@@ -29,3 +29,5 @@ class delsol_rqr_type(models.Model):
             res.append((record.id, record.name))
         return res
 
+    def name_get_str(self, record):
+        return record.name

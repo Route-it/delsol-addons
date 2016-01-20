@@ -19,6 +19,16 @@ class res_partner(models.Model):
 
     delivery_ids = fields.One2many('delsol.delivery','client_id',string="Vehiculos entregados", help = "Vehiculos entregados")
 
+    email = fields.Char('Email')
+    phone = fields.Char('Phone')
+    mobile = fields.Char('Mobile')
+
+    @api.constrains('phone','email','mobile')
+    def validate_if_can_contact(self):
+        if not(self.phone | self.email | self.mobile):
+            raise ValidationError("Uno de los campos telefono, email o movil es requerido.")
+            return
+
     @api.onchange('name')
     def onchange_name(self):
         if self.name:

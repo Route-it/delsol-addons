@@ -34,11 +34,8 @@ class delsol_call(models.Model):
     
     contact_type = fields.Selection([('tel', 'Telefono'),('mail','Correo electronico')],"Tipo de contacto")
     
-    _defaults = {
-               create_uid: self.env.user 
-    }
-    
-    
+
+	
     def name_get(self,cr, uid, ids, context=None):
         if context is None:
             context = {}

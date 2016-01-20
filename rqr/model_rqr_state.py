@@ -25,3 +25,17 @@ class delsol_rqr_state(models.Model):
                                'registros que mostrar.')
 
 
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        res = []
+        for record in self.browse(cr, uid, ids, context=context):
+            res.append((record.id, record.name))
+        return res
+
+
+    def name_get_str(self, record):
+        return record.name
+        

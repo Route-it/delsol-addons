@@ -29,7 +29,7 @@ class delsol_delivery(models.Model):
     
     color = fields.Integer(default=100)
 
-    vendor_id = fields.Many2one("res.partner",String="Vendedor",domain=[("customer",'=',False)])
+    vendor_id = fields.Many2one("res.partner",String="Vendedor",domain=[("customer",'=',False),("vendor",'=','True')])
 
     call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente")
     rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega")
@@ -39,6 +39,7 @@ class delsol_delivery(models.Model):
     contacted = fields.Boolean("Contactado",compute="is_contacted",store=True)
 
     answered_poll = fields.Boolean("Contesto encuesta?")
+
 
     @api.depends('call_ids')
     def is_contacted(self,cr, uid, ids, context=None):
