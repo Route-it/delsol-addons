@@ -8,6 +8,8 @@
 		<menuitem name="Gestion de Entregas" id="base.menu_main_rqr" />
 		<menuitem name="Clientes" id="menu_cliente" parent="base.menu_main_rqr" 
 					action="open_view_client_all" />
+		<menuitem name="Vendedores" id="menu_vendedor" parent="base.menu_main_rqr" 
+					action="open_view_vendor_all" />
 		<menuitem name="Entregas" id="menu_entregas" parent="base.menu_main_rqr" />
 		<menuitem name="Lista" id="menu_entregas_list" parent="menu_entregas"
 			action="open_view_delivery_all" />
@@ -18,8 +20,9 @@
 		<menuitem name="Llamados" id="menu_entregas_call" parent="menu_entregas"
 			action="open_view_call_all" />
 
-		<menuitem name="Quick Touch" id="menu_entregas_qtouch" parent="menu_entregas"
-			action="open_view_qtouch_all" />
+
+<!-- 		<menuitem name="Vendedores" id="menu_vendor" parent="base.menu_main_rqr"  -->
+<!-- 					action="open_view_vendor_all" /> -->
 
 
 

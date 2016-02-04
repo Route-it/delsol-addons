@@ -13,9 +13,9 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class delsol_correct_action(models.Model):
+class delsol_rqr_resolution(models.Model):
     
-    _name = "delsol.correct_action"
+    _name = "delsol.rqr_resolution"
      
     rqr_id = fields.Many2one("delsol.rqr",required=True)
 
@@ -24,3 +24,16 @@ class delsol_correct_action(models.Model):
 
     date_start = fields.Date("Fecha inicio",readonly=True,invisible=True)
     date_end = fields.Date("Fecha fin",readonly=True,invisible=True)
+
+
+    #Sirve para modificar los valores por defecto de la vista
+    @api.model
+    def default_get(self, fields):
+        context = self._context or {}
+        res = super(delsol_rqr_resolution, self).default_get(fields)
+
+        if ('rqr_id' in fields) & bool(context.get('rqr_id')):
+            res.update({'rqr_id': context.get('rqr_id')})
+        
+        return res
+

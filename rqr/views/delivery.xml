@@ -35,7 +35,6 @@
 					<field name="client_id" string="Cliente" />
 					<field name="vehicle_id" string="Vehiculo" />
 					<field name="delivery_date" string="Fecha Entrega" />
-					<field name="quick_touch" string="Quick Touch" />
 				</tree>
 			</field>
 		</record>
@@ -45,21 +44,38 @@
 			<field name="model">delsol.delivery</field>
 			<field name="arch" type="xml">
 				<form string="Entregas">
+	                <header>
+	                    <button name="set_delivered" string="Entregar" states="new" type="object" class="oe_highlight"/>
+	                    <button name="set_close" string="Cerrar" states="delivered" type="object" class="oe_highlight"/>
+	                    <field name="state" widget="statusbar" statusbar_visible="new,delivered,closed" statusbar_colors='{"new":"blue"}' readonly="1"/>
+					</header>
 					<sheet>
 						<group string="Datos de la entrega">
 							<group>
+								<field name="id" invisible="1" />
 								<field name="client_id" string="Cliente" />
 								<field name="vehicle_id" string="Vehiculo" />
 								<field name="delivery_date" string="Fecha Entrega" />
-								<field name="answered_poll" string="Contesto encuesta Ford?" />
-								<field name="vendor_id" string="Vendedor" />
-								<field name="quick_touch" string="Quick Touch" />
+								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}"/>
 							</group>
 						</group>
-						<div>Contactos al cliente</div>
-						<field name="call_ids" string="Contactos" />
-						<div>RQRs</div>
-						<field name="rqr_ids" string="RQRs" />
+					<notebook>
+						<page string="Contactos al cliente">
+							<label for="call_ids" class="oe_inline" string="Contactos al cliente"/>
+							<field name="call_ids" string="Contactos" context="{'delivery_id':id}" />
+						</page>
+						<page string="RQRs" attrs="{'invisible':[('state','=','new')]}">
+							<label for="rqr_ids" class="oe_inline" string="RQRs"/>
+							<field name="rqr_ids" string="RQRs" context="{'delivery_id':id}" attrs="{'readonly':[('state','=','new')]}"/>
+						</page>
+					</notebook>
+						<group string="Encuesta Ford">
+							<group>
+
+								<field name="answered_poll" string="Contesto encuesta Ford?" attrs="{'invisible':[('state','=', 'new')]}"/>
+							</group>
+						</group>
+
 					</sheet>
 				</form>
 			</field>
@@ -89,23 +105,26 @@
 					<sheet>
 						<group string="Datos RQR">
 							<group>
-								<field name="delivery_id" string="Entrega" />
+								<field name="id" invisible="1" />
+								<field name="delivery_id" string="Entrega"/>
 								<field name="tipo_rqr" string="Tipo" />
 								<field name="state" string="Estado" />
 								<field name="depto" string="Departamento" />
 								<field name="sector" string="Sector" />
-								<field name="create_date" invisible="1" />
+								<field name="create_date" string="Fecha Inicio" readonly="1" />
 								<field name="delay_resolution" readonly="1" />
-								<field name="corrective_action_ids" mode="kanban" >
+								<field name="resolution_id" context="{'rqr_id':id}" />
+								<field name="task_ids" mode="kanban" >
 									<kanban>
-										<field name="name" string="Accion" />
+										<field name="name" string="Resolucion" />
+										<field name="stage_id" string="Estado" />
 										<field name="date_start" string="Fecha Inicio" />
 										<field name="date_end" string="Fecha Fin" />
 										<templates>
 											<t t-name="kanban-box">
 												<div
 													t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click"
-													style="height:150px">
+													style="height:150px;border:blue;">
 
 													<div class="o_dropdown_kanban dropdown" groups="base.group_user">
 														<a class="dropdown-toggle btn" data-toggle="dropdown"
@@ -128,6 +147,9 @@
 													<div class="oe_kanban_top_left">
 														<field name="name" />
 													</div>
+													<div class="oe_kanban_top_right">
+														<field name="stage_id" />
+													</div>
 													<div class="oe_kanban_bottom_left">
 														<field name="date_start" />
 													</div>
@@ -143,6 +165,12 @@
 						</group>
 					</sheet>
 				</form>
+			<div class="oe_chatter oe_view_only">
+				<field name="message_follower_ids" widget="mail_followers" />
+				<field name="message_ids" widget="mail_thread" />
+			</div>
+				
+				
 			</field>
 		</record>
 
@@ -186,7 +214,7 @@
 				<kanban default_group_by="state" quick_create="false" delete="false"
 					edit="true" class="o_kanban_small_column">
 
-					<field name="delivery_id" string="Entrega" />
+					<field name="delivery_id" string="Entrega"/>
 					<field name="tipo_rqr" string="Tipo" />
 					<field name="state" string="Estado" />
 					<field name="create_date" string="Fecha Inicio" />
@@ -251,7 +279,7 @@
 			<field name="model">delsol.call</field>
 			<field name="arch" type="xml">
 				<form string="Contacto">
-					<sheet>
+					<sheet string="Datos para contacto">
 						<group string="Responsable del contacto" class="oe_read_only">
 							<field name="create_uid" string="Usuario" readonly="1" />
 						</group>
@@ -264,55 +292,38 @@
 								<field name="mobile" string="Movil" readonly="1" />
 								<field name="email" string="Mail" readonly="1" />
 							</group>
+						</group>
+						<group string="Resultado del contacto">
 							<group col="2">
 								<field name="contact_date" string="Fecha y hora" />
 								<field name="contacted" string="Contactado" />
 								<field name="why_no_contacted" string="Porque?"
 									attrs="{'required' : [('contacted', '=', False)], 'invisible': [('contacted','=', True)]}" />
+								<field name="conformity" attrs="{'invisible': [('contacted','=', False)],'readonly':[('rqr_root_id','!=',False)]}" />
+								<field name="asesor_ventas" attrs="{'invisible': [('contacted','=', False)]}" />
+								<field name="experiencia_pago" attrs="{'invisible': [('contacted','=', False)]}" />
+								<field name="cumplimiento" attrs="{'invisible': [('contacted','=', False)]}" />
+								<field name="proceso_entrega" attrs="{'invisible': [('contacted','=', False)]}" />
 							</group>
+
 						</group>
 	                    <div class="oe_title">
 	                    	<label for="comment" class="oe_inline"/>
 							<field name="comment" string="Comentarios" />
 						</div>
-					</sheet>
-				</form>
-			</field>
-		</record>
-
-		<record model='ir.ui.view' id='delsol_delivery_qt'>
-			<field name="name">delsol.quick_touch.tree</field>
-			<field name="model">delsol.quick_touch</field>
-			<field name="arch" type="xml">
-				<tree string="Quick Touch">
-					<field name="delivery" string="Entrega" />
-					<field name="grado_satisfaccion" string="Satisfaccion" />
-					<field name="recomienda" string="Recomienda" />
-					<field name="comentario_sugerencia" string="Comentario" />
-				</tree>
-			</field>
-		</record>
-
-		<record model='ir.ui.view' id='delsol_delivery_qt_form'>
-			<field name="name">delsol.quick_touch.form</field>
-			<field name="model">delsol.quick_touch</field>
-			<field name="arch" type="xml">
-				<form string="Quick Touch">
-					<sheet>
-						<group string="Datos de la encuesta">
+						<button name="make_rqr" string="Generar RQR" type="object" class="oe_highlight" groups="base.group_user"
+							attrs="{'invisible':[('rqr_root_id','!=',False)]}"/>
+						<group>
 							<group>
-								<field name="delivery" string="Entrega" />
-								<field name="grado_satisfaccion" string="Satisfaccion" />
-								<field name="recomienda" string="Recomienda" />
-								<field name="comentario_sugerencia" string="Comentario" />
-							</group>
+								<field name="rqr_root_id"/>
+								<field name="resolution_id"/>
+							</group>						
 						</group>
+
 					</sheet>
 				</form>
 			</field>
 		</record>
-
-
 
 
 		<record id="open_view_delivery_all" model="ir.actions.act_window">
@@ -338,15 +349,6 @@
 			<field name="domain">[]</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-
-		<record id="open_view_qtouch_all" model="ir.actions.act_window">
-			<field name="name">delsol.quick_touch.action.all</field>
-			<field name="res_model">delsol.quick_touch</field>
-			<field name="view_type">form</field>
-			<field name="domain">[]</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-
 
 	</data>
 </openerp>

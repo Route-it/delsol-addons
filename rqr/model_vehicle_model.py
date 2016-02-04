@@ -21,8 +21,9 @@ class delsol_vehicle_model(models.Model):
     
     @api.onchange('name')
     def onchange_name(self, cr, uid, ids, name, context=None):
-        if self.name:
-            self.name =  str(name).title()
+        for record in self.browse(cr, uid, ids, context=context):
+            if record.name:
+                record.name =  str(name).title()
 
 
     def name_get(self, cr, uid, ids, context=None):

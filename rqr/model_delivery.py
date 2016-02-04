@@ -6,7 +6,7 @@ Created on 4 de ene. de 2016
 '''
 
 from openerp import models, fields, api
-from openerp.exceptions import ValidationError
+from openerp.exceptions import ValidationError, Warning
 from datetime import date
 
 import logging
@@ -19,26 +19,62 @@ class delsol_delivery(models.Model):
 
     name = fields.Char(compute="name_get", store=True, readonly=True)
      
-    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo")
+    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade')
 
-    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo entregado")
+    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True)
 
-    delivery_date = fields.Datetime(string="Fecha de entrega")
+    delivery_date = fields.Datetime(string="Fecha de entrega",required=True)
     
     delay = fields.Integer(default=1)
     
     color = fields.Integer(default=100)
 
-    vendor_id = fields.Many2one("res.partner",String="Vendedor",domain=[("customer",'=',False),("vendor",'=','True')])
+    vendor_id = fields.Many2one("res.partner",String="Vendedor",domain=[("customer",'=',False),("supplier",'=',True)])
 
     call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente")
     rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega")
 
-    quick_touch = fields.Many2one("delsol.quick_touch",String="Quick Touch")
-
-    contacted = fields.Boolean("Contactado",compute="is_contacted",store=True)
+    contacted = fields.Boolean(string="Contactado",compute="is_contacted",store=True)
 
     answered_poll = fields.Boolean("Contesto encuesta?")
+ 
+    state = fields.Selection([('new','Nueva'),
+                              ('delivered','Entregado'),
+                              ('contacted','Contactado'),
+                              ('closed','Cerrado')],string="Estado",default="new")
+
+
+    def set_new(self, cr, uid, ids, context=None):
+        for record in self.browse(cr, uid, ids, context=context):
+            record.state = 'new'
+        
+    def set_delivered(self, cr, uid, ids, context=None):
+        for record in self.browse(cr, uid, ids, context=context):
+            record.state = 'delivered'
+
+    def set_close(self, cr, uid, ids, context=None):
+        for record in self.browse(cr, uid, ids, context=context):
+            record.state = 'closed'
+
+    @api.onchange('contacted')
+    def verify_state(self):
+        if self.contacted & (self.state == 'new' | self.state == 'delivered' ):
+            self.state = 'contacted'
+
+
+    def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):
+        result_search = self.pool.get('delsol.delivery').search(cr, uid, [('vehicle_id','=',self.vehicle_id)], context=context)
+        if len(result_search)>0:
+            result_search
+    
+    @api.constrains('vehicle_id')
+    def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):
+        for record in self.browse(cr, uid, ids, context=context):
+            if bool(record.vehicle_id):
+                result_search = self.pool.get('delsol.delivery').search(cr, uid, [('vehicle_id','=',record.vehicle_id.id)], context=context)
+                if len(result_search)>1:
+                    raise ValidationError("El vehiculo ya fue entregado")
+                    return
 
 
     @api.depends('call_ids')
