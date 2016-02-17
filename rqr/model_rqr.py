@@ -15,7 +15,10 @@ class delsol_rqr(models.Model):
     
     delivery_id = fields.Many2one("delsol.delivery", String="Entrega relacionada")
     
+    responsible_id = fields.Many2one("hr.employee",String="Responsable")
+
     tipo_rqr = fields.Many2one("delsol.rqr_type","Tipo de RQR")
+    
     sector = fields.Char("Sector")    
     depto = fields.Char("Departamento")   
     
@@ -31,10 +34,12 @@ class delsol_rqr(models.Model):
     delay_resolution = fields.Integer("Demora Resolucion (Dias)",compute="compute_delay",readonly=True,store=True)
     
     resolution_id = fields.Many2one("delsol.rqr_resolution",string="Resolucion implementada",ondelete='cascade')
-    
+
     task_ids = fields.Many2many(comodel_name="project.task", relation="project_task_rqr", column1="task_id", column2="rqr_id", string="Acciones Correctivas") 
 
     call_root_id = fields.Many2one("delsol.call",string="Llamado que la genero",readonly=True)    
+
+    call_ids = fields.One2many(related='delivery_id.call_ids')
 
     severity = fields.Selection([('0','Baja'),
                                  ('1','Media baja'),

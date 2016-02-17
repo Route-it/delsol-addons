@@ -79,23 +79,24 @@
 		</record>
 
 		<record id="open_view_client_all" model="ir.actions.act_window">
-			<field name="name">delsol.res.partner.all</field>
+			<field name="name">delsol.res.partner.client.all</field>
 			<field name="res_model">res.partner</field>
 			<field name="view_type">form</field>
 			<field name="view_id" ref="base.view_partner_tree"></field>
+			<field name="context">{'customer':True}</field>
 			<field name="domain">[('customer','=',True)]</field>
 			<field name="view_mode">tree,form</field>
 		</record>
 		
 		<record id="open_view_vendor_all" model="ir.actions.act_window">
-			<field name="name">delsol.res.partner.all</field>
+			<field name="name">delsol.res.partner.supplier.all</field>
 			<field name="res_model">res.partner</field>
 			<field name="view_type">form</field>
 			<field name="view_id" ref="base.view_partner_tree"></field>
+			<field name="context">{'supplier':True}</field>
 			<field name="domain">[('supplier','=',True)]</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-
 
 	</data>
 </openerp>

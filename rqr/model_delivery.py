@@ -37,6 +37,12 @@ class delsol_delivery(models.Model):
     contacted = fields.Boolean(string="Contactado",compute="is_contacted",store=True)
 
     answered_poll = fields.Boolean("Contesto encuesta?")
+    sales_asistance = fields.Integer("Asesor de ventas",default=3,help="Califique del 1 al 5")
+    payment_experience = fields.Integer("Experiencia de pago",default=3,help="Califique del 1 al 5")
+    compliance = fields.Integer("Nivel de Cumplimiento",default=3,help="Califique del 1 al 5")
+    delivery_process = fields.Integer("Proceso de entrega",default=3,help="Califique del 1 al 5")
+    comment_poll = fields.Text("Comentaro")
+ 
  
     state = fields.Selection([('new','Nueva'),
                               ('delivered','Entregado'),
