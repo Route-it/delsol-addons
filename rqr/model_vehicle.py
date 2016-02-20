@@ -11,6 +11,8 @@ class delsol_vehicle(models.Model):
     marca = fields.Char(string ="Marca")
     modelo = fields.Many2one("delsol.vehicle_model",string ="Modelo")
     patente = fields.Char(string ="Patente")
+    nro_chasis = fields.Char(string="Nro de Chasis")
+
     
     anio = fields.Selection([('2015', '2015'),
                                    ('2016','2016'),

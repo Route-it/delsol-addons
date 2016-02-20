@@ -6,6 +6,7 @@
 		<!-- Top menu item -->
 		<!-- -->
 		<menuitem name="Gestion de Entregas" id="base.menu_main_rqr" />
+					
 		<menuitem name="Clientes" id="menu_cliente" parent="base.menu_main_rqr" 
 					action="open_view_client_all" />
 		<menuitem name="Vendedores" id="menu_vendedor" parent="base.menu_main_rqr" 

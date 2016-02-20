@@ -2,6 +2,7 @@
 import model_vehicle
 import model_rqr
 import model_client
+import model_res_partner
 import model_delsol_res_partner
 import model_delivery
 import model_call

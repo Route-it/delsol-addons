@@ -110,13 +110,24 @@ class delsol_call(models.Model):
                 call.rqr_root_id = target_rqr
                 call.conformity = 'rqr'
                 message = 'Se genero correctamente la RQR.'
-            
+
+
+            """
             warning = {
                         'title': 'Mensaje !',
                         'message': message
                      }
-
-        return {'warning': warning}
+            """
+            
+            res = {'value': {}}
+            warning = {'warning': {
+                    'title': 'Mensaje',
+                    'message': message,
+                    }}        
+            res.update(warning)
+    
+            #return {'warning': warning}
+            return res
     
 	
     def name_get(self,cr, uid, ids, context=None):
