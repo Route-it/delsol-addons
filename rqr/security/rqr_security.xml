@@ -7,8 +7,15 @@
             <field name="sequence">16</field>
         </record>
         
-		<record id="group_name_rqr_user" model="res.groups">
-        	<field name="name">Usuario</field>
+		<record id="group_name_rqr_delivery_resp" model="res.groups">
+        	<field name="name">Responsable de entrega</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="module_rqr_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	
+    	<record id="group_name_rqr_contact_resp" model="res.groups">
+        	<field name="name">Responsable de contacto</field>
         	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         	<field name="category_id" ref="module_rqr_category"/>
         	<field name="users" eval="[(4, ref('base.user_root'))]"/>
@@ -17,7 +24,7 @@
     	<record id="group_name_rqr_administrator" model="res.groups">
         	<field name="name">Administrador</field>
         	<field name="category_id" ref="module_rqr_category"/>
-        	<field name="implied_ids" eval="[(4, ref('group_name_rqr_user'))]"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         	<field name="users" eval="[(4, ref('base.user_root'))]"/>
     	</record>
 	</data>
