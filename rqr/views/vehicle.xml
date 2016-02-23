@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		 <record id="delsol_rqr_vehicle_form" model="ir.ui.view">
+            <field name="name">delsol.rqr.vehicle.form</field>
+            <field name="model">delsol.vehicle</field>
+            <field name="arch" type="xml">
+                <form string="Vehículo">
+                <sheet string="Vehículo">
+                    <group>
+                    	<field name="name" string="Nombre"/>
+                    	<field name="modelo" widget = "selection"/>
+                        <field name="marca"/>
+                        <field name="patente"/>
+                        <field name="nro_chasis"/>
+                        <field name="anio"/>
+                    </group>
+                </sheet>
+               </form>
+            </field>
+	</record>
+	</data>
+</openerp>

@@ -28,6 +28,7 @@
         'views/delivery.xml',
         'views/res_partner_view.xml',
         'views/menu.xml',
+        'views/vehicle.xml',
         'security/rqr_security.xml',
         'security/ir.model.access.csv',
         'data.xml',
