@@ -356,7 +356,7 @@
 
 
 		<record id="open_view_delivery_all" model="ir.actions.act_window">
-			<field name="name">delsol.delivery.action.all</field>
+			<field name="name">Entregas</field>
 			<field name="res_model">delsol.delivery</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
@@ -364,7 +364,7 @@
 		</record>
 
 		<record id="open_view_rqr_all" model="ir.actions.act_window">
-			<field name="name">delsol.rqr.action.all</field>
+			<field name="name">RQR</field>
 			<field name="res_model">delsol.rqr</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
@@ -372,7 +372,7 @@
 		</record>
 
 		<record id="open_view_call_all" model="ir.actions.act_window">
-			<field name="name">delsol.call.action.all</field>
+			<field name="name">Llamadas</field>
 			<field name="res_model">delsol.call</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
