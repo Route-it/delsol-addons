@@ -21,7 +21,9 @@
 		<menuitem name="Llamados" id="menu_entregas_call" parent="menu_entregas"
 			action="open_view_call_all" />
 
-
+		<menuitem name="Configuración" id="menu_configuracion" parent="base.menu_main_rqr" groups="group_name_rqr_administrator"/>
+		<menuitem name="Modelos" id="menu_vehicle_model_list" parent="menu_configuracion"
+			action="open_view_vehicle_model_all" />
 <!-- 		<menuitem name="Vendedores" id="menu_vendor" parent="base.menu_main_rqr"  -->
 <!-- 					action="open_view_vendor_all" /> -->
 

@@ -19,5 +19,12 @@
                </form>
             </field>
 	</record>
+	<record id="open_view_vehicle_model_all" model="ir.actions.act_window">
+		<field name="name">delsol.vehicle_model.action</field>
+		<field name="res_model">delsol.vehicle_model</field>
+		<field name="view_type">form</field>
+		<field name="domain">[]</field>
+		<field name="view_mode">tree,form</field>
+	</record>
 	</data>
 </openerp>
