@@ -47,9 +47,7 @@
 					<header>
 						<button name="set_delivered" string="Entregar" states="new"
 							type="object" class="oe_highlight" />
-						<button name="set_close" string="Cerrar" states="delivered"
-							type="object" class="oe_highlight" />
-						<field name="state" widget="statusbar" statusbar_visible="new,delivered,closed"
+						<field name="state" widget="statusbar" statusbar_visible="new,delivered"
 							statusbar_colors='{"new":"blue"}' readonly="1" />
 					</header>
 					<sheet>

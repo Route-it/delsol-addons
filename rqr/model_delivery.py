@@ -31,8 +31,8 @@ class delsol_delivery(models.Model):
 
     vendor_id = fields.Many2one("hr.employee",String="Vendedor")
 
-    call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente")
-    rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega")
+    call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente",groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
+    rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega",groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
 
     contacted = fields.Boolean(string="Contactado",compute="is_contacted",store=True)
 
@@ -45,9 +45,7 @@ class delsol_delivery(models.Model):
  
  
     state = fields.Selection([('new','Nueva'),
-                              ('delivered','Entregado'),
-                              ('contacted','Contactado'),
-                              ('closed','Cerrado')],string="Estado",default="new")
+                              ('delivered','Entregado')],string="Estado",default="new")
 
 
     def set_new(self, cr, uid, ids, context=None):
@@ -68,11 +66,11 @@ class delsol_delivery(models.Model):
             self.state = 'contacted'
 
 
-    def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):
-        result_search = self.pool.get('delsol.delivery').search(cr, uid, [('vehicle_id','=',self.vehicle_id)], context=context)
-        if len(result_search)>0:
-            result_search
-    
+#    def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):
+#        result_search = self.pool.get('delsol.delivery').search(cr, uid, [('vehicle_id','=',self.vehicle_id)], context=context)
+#        if len(result_search)>0:
+#            result_search
+
     @api.constrains('vehicle_id')
     def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
@@ -83,16 +81,16 @@ class delsol_delivery(models.Model):
                     return
 
 
-    @api.depends('call_ids')
-    def is_contacted(self,cr, uid, ids, context=None):
-        is_contacted = False
-        for record in self.browse(cr, uid, ids, context=context):
-            for call in record.call_ids:
-                is_contacted = is_contacted | call.contacted
-                if is_contacted: break
+#    @api.depends('call_ids')
+#    def is_contacted(self,cr, uid, ids, context=None):
+#        is_contacted = False
+#        for record in self.browse(cr, uid, ids, context=context):
+#            for call in record.call_ids:
+#                is_contacted = is_contacted | call.contacted
+#                if is_contacted: break
             
-            record.contacted = is_contacted
-        return is_contacted
+#            record.contacted = is_contacted
+#        return is_contacted
 
     @api.depends('client_id','delivery_date','vehicle_id')
     def name_get(self,cr, uid, ids, context=None):
