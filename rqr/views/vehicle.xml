@@ -9,7 +9,7 @@
                 <sheet string="Vehículo">
                     <group>
                     	<field name="name" string="Nombre"/>
-                    	<field name="modelo" widget = "selection"/>
+                    	<field name="modelo" options="{'no_create_edit': True}"/>
                         <field name="marca"/>
                         <field name="patente"/>
                         <field name="nro_chasis"/>

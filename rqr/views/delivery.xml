@@ -62,7 +62,7 @@
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
 							</group>
 						</group>
-						<notebook>
+						<notebook groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
 							<page string="Contactos al cliente">
 								<label for="call_ids" class="oe_inline" string="Contactos al cliente" />
 								<field name="call_ids" string="Contactos" context="{'delivery_id':id}" />
@@ -73,7 +73,7 @@
 									attrs="{'readonly':[('state','=','new')]}" />
 							</page>
 						</notebook>
-						<group string="Encuesta Ford">
+						<group string="Encuesta Ford" groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
 							<group>
 
 								<field name="answered_poll" string="Contesto encuesta Ford?"
