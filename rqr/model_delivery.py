@@ -19,17 +19,17 @@ class delsol_delivery(models.Model):
 
     name = fields.Char(compute="name_get", store=True, readonly=True)
      
-    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade')
+    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade',write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
-    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True)
+    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
-    delivery_date = fields.Datetime(string="Fecha de entrega",required=True)
+    delivery_date = fields.Datetime(string="Fecha de entrega",required=True,write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
     delay = fields.Integer(default=1)
     
     color = fields.Integer(default=100)
 
-    vendor_id = fields.Many2one("hr.employee",String="Vendedor")
+    vendor_id = fields.Many2one("hr.employee",String="Vendedor",write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
     call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente",groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
     rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega",groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")

@@ -32,7 +32,7 @@
 			<field name="model">delsol.delivery</field>
 			<field name="arch" type="xml">
 				<tree string="Entregas">
-					<field name="client_id" string="Cliente" />
+					<field name="client_id" string="Cliente"/>
 					<field name="vehicle_id" string="Vehiculo" />
 					<field name="delivery_date" string="Fecha Entrega" />
 				</tree>
@@ -87,6 +87,27 @@
 
 					</sheet>
 				</form>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="delsol_delivery_form_for_contact_resp">
+			<field name="name">delsol.delivery.form.for.contect.resp</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="delsol_delivery_form" />
+			<field name="groups_id" eval="[(6,0,[ref('rqr.group_name_rqr_contact_resp')])]" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='client_id']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='vehicle_id']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='delivery_date']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='vendor_id']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
 			</field>
 		</record>
 
@@ -215,7 +236,7 @@
 			<field name="name">delsol.rqr.tree</field>
 			<field name="model">delsol.rqr</field>
 			<field name="arch" type="xml">
-				<tree string="RQR">
+				<tree string="RQR" create="false">
 					<field name="delivery_id" string="Entrega" />
 					<field name="responsible_id" string="Responsable" />
 					<field name="tipo_rqr" string="Tipo" />

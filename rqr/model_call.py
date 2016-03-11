@@ -127,9 +127,12 @@ class delsol_call(models.Model):
             res.update(warning)
     
             #return {'warning': warning}
-            return res
-    
-	
+            #return res
+            return {
+                    'type': 'ir.actions.client',
+                    'tag': 'reload',
+                    }
+            
     def name_get(self,cr, uid, ids, context=None):
         if context is None:
             context = {}
