@@ -46,6 +46,8 @@ class delsol_delivery(models.Model):
  
     state = fields.Selection([('new','Nueva'),
                               ('delivered','Entregado')],string="Estado",default="new")
+    
+    tae_stamp = fields.Datetime("Fecha y hora de carga de TAE",help="Fecha y hora de carga de TAE para saber cuándo aproximadamente llega la encuesta")
 
 
     def set_new(self, cr, uid, ids, context=None):
@@ -65,6 +67,10 @@ class delsol_delivery(models.Model):
         if self.contacted & (self.state == 'new' | self.state == 'delivered' ):
             self.state = 'contacted'
 
+    @api.one
+    def stamp_tae(self):
+        self.tae_stamp = fields.Datetime.now()
+        
 
 #    def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):
 #        result_search = self.pool.get('delsol.delivery').search(cr, uid, [('vehicle_id','=',self.vehicle_id)], context=context)
