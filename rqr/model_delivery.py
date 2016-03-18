@@ -69,7 +69,8 @@ class delsol_delivery(models.Model):
 
     @api.one
     def stamp_tae(self):
-        self.tae_stamp = fields.Datetime.now()
+        if not self.tae_stamp:
+            self.tae_stamp = fields.Datetime.now()
         
 
 #    def chek_vehicle_not_delivered(self, cr, uid, ids, context=None):

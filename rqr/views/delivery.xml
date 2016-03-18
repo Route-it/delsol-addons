@@ -47,7 +47,7 @@
 					<header>
 						<button name="set_delivered" string="Entregar" states="new"
 							type="object" class="oe_highlight" />
-						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','!=',False)]}"/>
+						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/>
 						<field name="state" widget="statusbar" statusbar_visible="new,delivered"
 							statusbar_colors='{"new":"blue"}' readonly="1" />
 					</header>
