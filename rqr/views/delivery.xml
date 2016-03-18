@@ -48,7 +48,7 @@
 					<header>
 						<button name="set_delivered" string="Entregar" states="new"
 							type="object" class="oe_highlight" />
-						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/>
+<!-- 						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/> -->
 						<field name="state" widget="statusbar" statusbar_visible="new,delivered"
 							statusbar_colors='{"new":"blue"}' readonly="1" />
 					</header>
@@ -60,7 +60,7 @@
 								<field name="vehicle_id" string="Vehiculo" />
 								<field name="delivery_date" string="Fecha Entrega" />
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
-								<field name="tae_stamp" readonly="True"/>
+								<field name="tae_stamp"/>
 							</group>
 						</group>
 						<notebook groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
