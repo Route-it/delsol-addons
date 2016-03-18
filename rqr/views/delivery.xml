@@ -15,6 +15,7 @@
 
 					<separator />
 					<filter string="Contactado" domain="[('contacted','=',True)]" />
+					<filter string="No contactado" domain="[('contacted','!=',True)]"/>
 					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]" />
 					<separator />
 					<group expand="0" string="Agrupar por">

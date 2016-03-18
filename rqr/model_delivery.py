@@ -88,16 +88,16 @@ class delsol_delivery(models.Model):
                     return
 
 
-#    @api.depends('call_ids')
-#    def is_contacted(self,cr, uid, ids, context=None):
-#        is_contacted = False
-#        for record in self.browse(cr, uid, ids, context=context):
-#            for call in record.call_ids:
-#                is_contacted = is_contacted | call.contacted
-#                if is_contacted: break
+    @api.depends('call_ids')
+    def is_contacted(self,cr, uid, ids, context=None):
+        is_contacted = False
+        for record in self.browse(cr, uid, ids, context=context):
+            for call in record.call_ids:
+                is_contacted = is_contacted | call.contacted
+                if is_contacted: break
             
-#            record.contacted = is_contacted
-#        return is_contacted
+            record.contacted = is_contacted
+        return is_contacted
 
     @api.depends('client_id','delivery_date','vehicle_id')
     def name_get(self,cr, uid, ids, context=None):
