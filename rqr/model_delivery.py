@@ -41,7 +41,10 @@ class delsol_delivery(models.Model):
     payment_experience = fields.Integer("Experiencia de pago",default=3,help="Califique del 1 al 5")
     compliance = fields.Integer("Nivel de Cumplimiento",default=3,help="Califique del 1 al 5")
     delivery_process = fields.Integer("Proceso de entrega",default=3,help="Califique del 1 al 5")
+    love_dealer = fields.Integer("Adorar al concesionario",default=3,help="Califique del 1 al 5")
+    defense_dealer = fields.Integer("Defensa",default=3,help="Califique del 1 al 5")
     comment_poll = fields.Text("Comentaro")
+    poll_rqr_id = fields.Many2one("delsol.rqr", string="RQR", readonly=True)
  
  
     state = fields.Selection([('new','Nueva'),
@@ -127,3 +130,46 @@ class delsol_delivery(models.Model):
 
             return str(cliente) + '(' + str(vehiculo) + '), ' + fecha  
         
+    def make_poll_rqr(self,cr, uid, ids, context=None):
+        rqr_obj = self.pool['delsol.rqr']
+        #rqr_state_obj = self.pool['delsol.rqr_state']
+        #rqr_state = rqr_state_obj.search(cr, uid, [('sequence','=', 0)])
+        
+        
+        for delivery in self.browse(cr, uid, ids, context=context):
+        #check if delivery is delivered.
+            if delivery.state != 'delivered':
+                raise Warning('La entrega debe estar en estado "Entregado".')
+                return
+            
+            message = 'Ya se posee una rqr generada.'
+            
+            if not bool(delivery.poll_rqr_id):
+                defaults = {'delivery_id': delivery.id,'state':'new'}
+                
+                target_rqr =  rqr_obj.create(cr, uid, defaults, None)
+                
+                delivery.poll_rqr_id = target_rqr
+                message = 'Se genero correctamente la RQR.'
+
+
+            """
+            warning = {
+                        'title': 'Mensaje !',
+                        'message': message
+                     }
+            """
+            
+            res = {'value': {}}
+            warning = {'warning': {
+                    'title': 'Mensaje',
+                    'message': message,
+                    }}        
+            res.update(warning)
+    
+            #return {'warning': warning}
+            #return res
+            return {
+                    'type': 'ir.actions.client',
+                    'tag': 'reload',
+                    }
