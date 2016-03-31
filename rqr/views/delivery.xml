@@ -84,7 +84,10 @@
 								<field name="compliance" attrs="{'invisible': [('answered_poll','=', False)]}" />
 								<field name="delivery_process" attrs="{'invisible': [('answered_poll','=', False)]}" />
 								<field name="comment_poll" attrs="{'invisible': [('answered_poll','=', False)]}" />
-									
+								<field name="poll_rqr_id" string="RQR de encuesta"/>
+								<button name="make_poll_rqr" string="Generar RQR" type="object"
+									class="oe_highlight" groups="base.group_user"
+									attrs="{'invisible':['|',('poll_rqr_id','!=',False),('answered_poll','=',False)]}" />	
 							</group>
 						</group>
 
