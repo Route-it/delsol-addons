@@ -36,6 +36,7 @@
 					<field name="client_id" string="Cliente"/>
 					<field name="vehicle_id" string="Vehiculo" />
 					<field name="delivery_date" string="Fecha Entrega" />
+					<field name="state" string="Estado"/>
 				</tree>
 			</field>
 		</record>
