@@ -48,8 +48,10 @@ class delsol_delivery(models.Model):
  
  
     state = fields.Selection([('new','Nueva'),
-                              ('delivered','Entregado')],string="Estado",default="new")
-    
+                              ('reprogrammed','Reprogramada'),
+                              ('dispatched','Despachado'),
+                              ('delivered','Entregado')],string="Estado",default="new",track_visibility='onchange')
+    olddate = fields.Datetime()
     tae_stamp = fields.Datetime("Fecha y hora de carga de TAE",help="Fecha y hora de carga de TAE para saber cuándo aproximadamente llega la encuesta")
 
 
@@ -60,6 +62,10 @@ class delsol_delivery(models.Model):
     def set_delivered(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
             record.state = 'delivered'
+    
+    @api.one
+    def set_dispatched(self):
+        self.state = "dispatched"
 
     def set_close(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
@@ -69,6 +75,12 @@ class delsol_delivery(models.Model):
     def verify_state(self):
         if self.contacted & (self.state == 'new' | self.state == 'delivered' ):
             self.state = 'contacted'
+   
+    @api.constrains('delivery_date')
+    def set_reprogrammed(self):
+        if (self.delivery_date != self.olddate) and (self.olddate is not False):
+            self.state = 'reprogrammed'
+        self.olddate = self.delivery_date
 
     @api.one
     def stamp_tae(self):
