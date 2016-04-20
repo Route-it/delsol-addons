@@ -39,7 +39,7 @@ class delsol_call(models.Model):
     cumplimiento = fields.Integer("Cumplimiento de Acuerdos",default=3)
     proceso_entrega = fields.Integer("Proceso de entrega",default=3)
 
-    comment = fields.Text(string="Comentario")
+    comment = fields.Text(string="Voz del cliente")
     
     rqr_root_id = fields.Many2one("delsol.rqr", string="RQR", readonly=True)
 

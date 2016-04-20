@@ -36,6 +36,7 @@
 					<field name="client_id" string="Cliente"/>
 					<field name="vehicle_id" string="Vehiculo" />
 					<field name="delivery_date" string="Fecha Entrega" />
+					<field name="state" string="Estado"/>
 				</tree>
 			</field>
 		</record>
@@ -46,11 +47,11 @@
 			<field name="arch" type="xml">
 				<form string="Entregas">
 					<header>
-						<button name="set_delivered" string="Entregar" states="new"
-							type="object" class="oe_highlight" />
+						<button name="set_delivered" string="Entregar" states="new,reprogrammed,dispatched" type="object" class="oe_highlight" />
+						<button name="set_dispatched" string="Despachar" states="new,reprogrammed" type="object" class="oe_highlight" />
 <!-- 						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/> -->
-						<field name="state" widget="statusbar" statusbar_visible="new,delivered"
-							statusbar_colors='{"new":"blue"}' readonly="1" />
+						<field name="state" widget="statusbar" statusbar_visible="new,reprogrammed,dispatched,delivered"
+							statusbar_colors='{"new":"blue"}' clickable="False" readonly="True"/>
 					</header>
 					<sheet>
 						<group string="Datos de la entrega">
@@ -203,7 +204,7 @@
 									<tree string="Llamados">
 										<field name="contact_date" string="Fecha y hora" />
 										<field name="contacted" string="Contactado" />
-										<field name="comment" string="Comentario" />
+										<field name="comment"/>
 									</tree>
 								</field>
 								
@@ -316,7 +317,7 @@
 					<field name="contact_date" string="Fecha y hora" />
 					<field name="contacted" string="Contactado" />
 					<field name="why_no_contacted" string="Porque?" />
-					<field name="comment" string="Comentario" />
+					<field name="comment" />
 					<field name="rqr_root_id"/>
 					<field name="resolution_id" />
 					<button name="make_rqr" string="Generar RQR" type="object"
@@ -362,7 +363,7 @@
 						</group>
 						<div class="oe_title">
 							<label for="comment" class="oe_inline" />
-							<field name="comment" string="Comentarios" />
+							<field name="comment" />
 						</div>
 						<button name="make_rqr" string="Generar RQR" type="object"
 							class="oe_highlight" groups="base.group_user"

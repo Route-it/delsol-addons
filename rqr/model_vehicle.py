@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
+from sre_parse import isdigit
 
 
 class delsol_vehicle(models.Model):
@@ -29,17 +30,27 @@ class delsol_vehicle(models.Model):
     def check_patente(self):
         for record in self:
             pat = record.patente
-            if not pat[3:6].isdigit:
-                raise ValidationError("El campo patente no posee los 3 numeros.")
+            if ((len(pat) != 6) and (len(pat) != 7)):
+                raise ValidationError("El campo patente debe tener 6 o 7 caracteres.")
                 return
-
-            if not pat[0:3].isalpha:
-                raise ValidationError("El campo patente no posee las 3 letras.")
-                return    
-            if (len(pat) != 6):
-                raise ValidationError("El campo patente debe tener 6 caracteres.")
-                return
-
+            elif (len(pat) == 6):
+                if not pat[3:6].isdigit():
+                    raise ValidationError("El campo patente no posee los 3 numeros.")
+                    return
+                if not pat[0:3].isalpha():
+                    raise ValidationError("El campo patente no posee las 3 letras.")
+                    return    
+            elif (len(pat) == 7):
+                if not pat[0:2].isalpha():
+                    raise ValidationError("Los primeros dos dígitos de la patente no son letras")
+                    return
+                if not pat[2:5].isdigit():
+                    raise ValidationError("Los dígitos 3 4 y 5 deben ser números")
+                    return
+                if not pat[5:7].isalpha():
+                    raise ValidationError("Los últimos dos dígitos deben ser números")
+                    return
+                
     @api.onchange('patente')
     def onchange_patente(self):
         if self.patente:
