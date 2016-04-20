@@ -38,5 +38,6 @@ class delsol_vehicle_model(models.Model):
         return res
     
     def name_get_str(self,record):
-        return record.name or ''    
+        res = record.name or ''
+        return res.encode('utf8')    
 

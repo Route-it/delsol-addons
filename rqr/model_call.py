@@ -21,6 +21,7 @@ class delsol_call(models.Model):
     name = fields.Char(compute="name_get", store=True, readonly=True)
     
     delivery_id = fields.Many2one("delsol.delivery")
+    delivery_state = fields.Selection(string="Estado de entrega",related="delivery_id.state",readonly=True)
     
     phone = fields.Char(string="Telefono",related="delivery_id.client_id.phone",readonly=True)
     mobile = fields.Char(string="Movil",related="delivery_id.client_id.mobile",readonly=True)

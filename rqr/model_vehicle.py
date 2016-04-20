@@ -84,4 +84,4 @@ class delsol_vehicle(models.Model):
             if record.patente:
                 patente = record.patente or ''
         
-            return str(marca) + '/' + str(modelo) + ' (' +str(year)+') ' + patente  
+            return str(marca.encode('utf8')) + '/' + str(modelo.encode('utf8')) + ' (' +str(year)+') ' + patente  

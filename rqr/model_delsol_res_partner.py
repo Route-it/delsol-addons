@@ -59,6 +59,8 @@ class res_partner(models.Model):
                 cuit = record.vat or ''
             #if record.delivery_ids:
             #    delivery = (str(record.delivery.vehicle_id) +'('+ str(record.delivery.delivery_date) +'), rqr:'+ str(record.delivery.rqr_ids.count)) or ''
-            return str(name) + '(' + str(cuit) + ')'# +str(delivery)  
+            if (len(cuit) > 0):
+                return str(name.encode('utf8')) + '(' + str(cuit) + ')'  
 
+            return str(name.encode('utf8'))  
 
