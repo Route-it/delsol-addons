@@ -17,13 +17,18 @@ class delsol_vehicle_model(models.Model):
     
     _name = "delsol.vehicle_model"
 
-    name = fields.Char(string="Nombre")
+    name = fields.Char(string="Codigo de catálogo")
+    
+    description = fields.Char(string="Descripción")
+    
+    _sql_constraints = [
+            ('vehicle_model_name_unique', 'unique(name)', 'El código debe ser único'),
+    ]
     
     @api.onchange('name')
-    def onchange_name(self, cr, uid, ids, name, context=None):
-        for record in self.browse(cr, uid, ids, context=context):
-            if record.name:
-                record.name =  str(name).title()
+    def onchange_name(self):      
+        if self.name:
+            self.name =  str(self.name).title()
 
 
     def name_get(self, cr, uid, ids, context=None):
