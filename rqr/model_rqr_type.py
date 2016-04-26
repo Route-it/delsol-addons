@@ -30,4 +30,5 @@ class delsol_rqr_type(models.Model):
         return res
 
     def name_get_str(self, record):
-        return record.name
+        res = record.name or ''
+        return res.encode('utf8')

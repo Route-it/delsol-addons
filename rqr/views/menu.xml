@@ -5,12 +5,9 @@
 	
 		<!-- Top menu item -->
 		<!-- -->
-		<menuitem name="Gestion de Entregas" id="base.menu_main_rqr" />
-					
-		<menuitem name="Clientes" id="menu_cliente" parent="base.menu_main_rqr" 
-					action="open_view_client_all" />
+		<menuitem name="Gestion de Entregas" id="base.menu_main_rqr"/>
 
-		<menuitem name="Entregas" id="menu_entregas" parent="base.menu_main_rqr" />
+		<menuitem name="Entregas" id="menu_entregas" parent="base.menu_main_rqr" sequence="1" />
 		<menuitem name="Lista" id="menu_entregas_list" parent="menu_entregas"
 			action="open_view_delivery_all" />
 			
@@ -19,6 +16,9 @@
 
 		<menuitem name="Llamados" id="menu_entregas_call" parent="menu_entregas"
 			action="open_view_call_all" />
+		
+		<menuitem name="Clientes" id="menu_cliente" parent="base.menu_main_rqr" 
+					action="open_view_client_all" sequence="2"/>
 
 		<menuitem name="Configuración" id="menu_configuracion" parent="base.menu_main_rqr" groups="group_name_rqr_administrator"/>
 		<menuitem name="Modelos" id="menu_vehicle_model_list" parent="menu_configuracion"

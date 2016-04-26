@@ -126,7 +126,8 @@ class delsol_rqr(models.Model):
                 tipo_rqr =  str(record.tipo_rqr.name_get_str(record.tipo_rqr))
             if record.state:
                 #state =  str(record.state.name_get_str(record.state))
-                state =  str(record.state)
+                tempstate = record.state or ''
+                state =  str(tempstate.encode('utf8'))
                 
             
             return delivery +', '+tipo_rqr + ' ('+state+')'
