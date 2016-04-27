@@ -30,8 +30,11 @@ class delsol_delivery(models.Model):
     color = fields.Integer(default=100)
 
     vendor_id = fields.Many2one("hr.employee",String="Vendedor",write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
-
+    
+    applay_rqr = fields.Boolean("Aplica RQR",write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    
     call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente",groups="rqr.group_name_rqr_delivery_resp,rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
+    
     rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega",groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
 
     contacted = fields.Boolean(string="Contactado",compute="is_contacted",store=True)

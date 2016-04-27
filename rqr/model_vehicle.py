@@ -16,10 +16,11 @@ class delsol_vehicle(models.Model):
     nro_chasis = fields.Char(string="Nro de Chasis")
 
     
-    anio = fields.Selection([('2015', '2015'),
-                                   ('2016','2016'),
-                                   ('2017','2017')],
-                                  'Modelo Año', required=True, copy=False)
+    anio = fields.Selection([('2014','2014'),
+                             ('2015', '2015'),
+                             ('2016','2016'),
+                             ('2017','2017')],
+                             'Modelo Año', required=True, copy=False)
     
     _defaults = {
         'marca': 'Ford'
