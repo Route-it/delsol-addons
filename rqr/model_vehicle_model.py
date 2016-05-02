@@ -17,7 +17,7 @@ class delsol_vehicle_model(models.Model):
     
     _name = "delsol.vehicle_model"
 
-    name = fields.Char(string="Codigo de catálogo")
+    name = fields.Char(string="Codigo de catálogo",required=True)
     
     description = fields.Char(string="Descripción")
     
@@ -28,7 +28,7 @@ class delsol_vehicle_model(models.Model):
     @api.onchange('name')
     def onchange_name(self):      
         if self.name:
-            self.name =  str(self.name).title()
+            self.name =  str(self.name).upper()
 
 
     def name_get(self, cr, uid, ids, context=None):

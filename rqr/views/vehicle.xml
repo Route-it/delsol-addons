@@ -10,6 +10,7 @@
                     <group>
                     	<field name="name" string="Nombre"/>
                     	<field name="modelo" options="{'no_create_edit': True}"/>
+                    	<field name="color" options="{'no_create_edit': True}"/>
                         <field name="marca"/>
                         <field name="patente"/>
                         <field name="nro_chasis"/>
@@ -20,8 +21,22 @@
             </field>
 	</record>
 	<record id="open_view_vehicle_model_all" model="ir.actions.act_window">
-		<field name="name">delsol.vehicle_model.action</field>
+		<field name="name">Modelos</field>
 		<field name="res_model">delsol.vehicle_model</field>
+		<field name="view_type">form</field>
+		<field name="domain">[]</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+	<record id="open_view_vehicle_all" model="ir.actions.act_window">
+		<field name="name">Vehículos</field>
+		<field name="res_model">delsol.vehicle</field>
+		<field name="view_type">form</field>
+		<field name="domain">[]</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+	<record id="open_view_vehicle_color_all" model="ir.actions.act_window">
+		<field name="name">Colores</field>
+		<field name="res_model">delsol.vehicle_color</field>
 		<field name="view_type">form</field>
 		<field name="domain">[]</field>
 		<field name="view_mode">tree,form</field>

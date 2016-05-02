@@ -16,13 +16,20 @@
 
 		<menuitem name="Llamados" id="menu_entregas_call" parent="menu_entregas"
 			action="open_view_call_all" />
+			
+		<menuitem name="Vehículos" id="menu_entregas_vehiculos" parent="menu_entregas"
+			action="open_view_vehicle_all" />
 		
 		<menuitem name="Clientes" id="menu_cliente" parent="base.menu_main_rqr" 
 					action="open_view_client_all" sequence="2"/>
 
 		<menuitem name="Configuración" id="menu_configuracion" parent="base.menu_main_rqr" groups="group_name_rqr_administrator"/>
+		
 		<menuitem name="Modelos" id="menu_vehicle_model_list" parent="menu_configuracion"
 			action="open_view_vehicle_model_all" />
+			
+		<menuitem name="Colores" id="menu_vehicle_color_list" parent="menu_configuracion"
+			action="open_view_vehicle_color_all" />
 		
 
 	</data>

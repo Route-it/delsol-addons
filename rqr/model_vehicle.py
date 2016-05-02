@@ -12,14 +12,20 @@ class delsol_vehicle(models.Model):
 
     marca = fields.Char(string ="Marca")
     modelo = fields.Many2one("delsol.vehicle_model",string ="Modelo")
+    color = fields.Many2one("delsol.vehicle_color",string ="Color de vehículo")
     patente = fields.Char(string ="Patente")
     nro_chasis = fields.Char(string="Nro de Chasis")
 
     
-    anio = fields.Selection([('2015', '2015'),
-                                   ('2016','2016'),
-                                   ('2017','2017')],
-                                  'Modelo Año', required=True, copy=False)
+    anio = fields.Selection([('2014','2014'),
+                             ('2015', '2015'),
+                             ('2016','2016'),
+                             ('2017','2017')],
+                             'Modelo Año', required=True, copy=False)
+    
+    _sql_constraints = [
+            ('vehicle_patente_unique', 'unique(patente)', 'La patente ya existe'),
+    ]
     
     _defaults = {
         'marca': 'Ford'
@@ -55,16 +61,12 @@ class delsol_vehicle(models.Model):
     def onchange_patente(self):
         if self.patente:
             self.patente = str(self.patente).upper()
-
-    def name_get(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        if isinstance(ids, (int, long)):
-            ids = [ids]
+    
+    @api.depends('marca','modelo','patente','anio')
+    def name_get(self):
         res = []
-        for record in self.browse(cr, uid, ids, context=context):
-            res.append((record.id, self.name_get_str(record)))
-
+        res.append((self.id, self.name_get_str(self)))
+        self.name = self.name_get_str(self)
         return res
 
     def name_get_str(self, record):
