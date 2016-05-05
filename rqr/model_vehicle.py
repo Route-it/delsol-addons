@@ -63,10 +63,12 @@ class delsol_vehicle(models.Model):
             self.patente = str(self.patente).upper()
     
     @api.depends('marca','modelo','patente','anio')
+    @api.multi
     def name_get(self):
         res = []
-        res.append((self.id, self.name_get_str(self)))
-        self.name = self.name_get_str(self)
+        for vehi in self:
+            res.append((vehi.id, vehi.name_get_str(self)))
+            vehi.name = vehi.name_get_str(vehi)
         return res
 
     def name_get_str(self, record):

@@ -30,19 +30,18 @@ class delsol_vehicle_model(models.Model):
         if self.name:
             self.name =  str(self.name).upper()
 
-
-    def name_get(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        if isinstance(ids, (int, long)):
-            ids = [ids]
+    @api.multi
+    def name_get(self):
         res = []
-        for record in self.browse(cr, uid, ids, context=context):
+        for record in self:
             res.append((record.id, self.name_get_str(record)))
-        
         return res
     
     def name_get_str(self,record):
-        res = record.name or ''
-        return res.encode('utf8')    
+        return_value = ''
+        return_value += record.description or ""
+        return_value += '('
+        return_value += record.name
+        return_value += ')'
+        return return_value.encode('utf8')    
 
