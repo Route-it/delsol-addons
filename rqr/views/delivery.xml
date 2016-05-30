@@ -47,7 +47,7 @@
 			<field name="arch" type="xml">
 				<form string="Entregas">
 					<header>
-						<button name="set_delivered" string="Entregar" states="new,reprogrammed,dispatched" type="object" class="oe_highlight" />
+						<button name="set_delivered" string="Entregar" states="new,reprogrammed,dispatched" type="object" class="oe_highlight" readonly="True"/>
 						<button name="set_dispatched" string="Despachar" states="new,reprogrammed" type="object" class="oe_highlight" />
 <!-- 						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/> -->
 						<field name="state" widget="statusbar" statusbar_visible="new,reprogrammed,dispatched,delivered"
@@ -61,6 +61,7 @@
 								<field name="vehicle_id" string="Vehiculo" />
 								<field name="delivery_date" string="Fecha Entrega" />
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
+								<field name="turn_duration_from_child"/>
 								<field name="applay_rqr"/>
 								<field name="tae_stamp"/>
 							</group>
@@ -125,12 +126,11 @@
 			<field name="arch" type="xml">
 				<calendar string="Planificacion de Entregas"
 					event_open_popup="True" color="client_id" date_start="delivery_date"
-					date_delay="delay" quick_add="False" display="[client_id] ; [vehicle_id]">
+					date_delay="turn_duration" quick_add="False" display="[client_id] ; [vehicle_id]">
 					<field name="client_id" string="Cliente" />
 					<field name="vehicle_id" string="Vehiculo" />
 					<field name="delivery_date" string="Fecha Entrega" />
 				</calendar>
-
 			</field>
 		</record>
 

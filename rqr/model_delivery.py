@@ -19,25 +19,28 @@ class delsol_delivery(models.Model):
 
     name = fields.Char(compute="name_get", store=True, readonly=True)
      
-    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade',write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade',write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
-    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
-    delivery_date = fields.Datetime(string="Fecha de entrega",required=True,write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    delivery_date = fields.Datetime(string="Fecha de entrega",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
     delay = fields.Integer(default=1)
     
     color = fields.Integer(default=100)
 
-    vendor_id = fields.Many2one("hr.employee",String="Vendedor",write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    vendor_id = fields.Many2one("hr.employee",String="Vendedor",write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
-    applay_rqr = fields.Boolean("Aplica RQR",write=['rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    applay_rqr = fields.Boolean("Aplica RQR",write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
-    call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente",groups="rqr.group_name_rqr_delivery_resp,rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
+    call_ids = fields.One2many('delsol.call','delivery_id',string="Contactos al cliente", help = "Contactos con el cliente",groups="base.user_root,rqr.group_name_rqr_delivery_resp,rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
     
-    rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega",groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
+    rqr_ids = fields.One2many('delsol.rqr','delivery_id',string="RQRs", help = "RQR asociados a esta entrega",groups="base.user_root,rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator")
 
     contacted = fields.Boolean(string="Contactado",compute="is_contacted",store=True)
+    
+    turn_duration = fields.Float("Duración de turno",compute="change_vehicle",store=True)
+    turn_duration_from_child = fields.Integer("Duración de turno",related="vehicle_id.modelo.turn_duration")
 
     answered_poll = fields.Boolean("Contesto encuesta?")
     sales_asistance = fields.Integer("Asesor de ventas",default=3,help="Califique del 1 al 5")
@@ -48,7 +51,8 @@ class delsol_delivery(models.Model):
     defense_dealer = fields.Integer("Defensa",default=3,help="Califique del 1 al 5")
     comment_poll = fields.Text("Comentaro")
     poll_rqr_id = fields.Many2one("delsol.rqr", string="RQR", readonly=True)
- 
+    
+    
  
     state = fields.Selection([('new','Nueva'),
                               ('reprogrammed','Reprogramada'),
@@ -129,6 +133,10 @@ class delsol_delivery(models.Model):
             res.append((record.id, self.name_get_str(record)))
         return res
     
+    @api.depends('vehicle_id')
+    def change_vehicle(self):
+        self.turn_duration = float(self.vehicle_id.modelo.turn_duration)/60
+        
     def name_get_str(self,record):
             cliente = ''
             vehiculo = ''

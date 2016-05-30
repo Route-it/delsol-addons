@@ -17,10 +17,13 @@ class delsol_vehicle_model(models.Model):
     
     _name = "delsol.vehicle_model"
 
-    name = fields.Char(string="Codigo de catálogo",required=True)
+    name = fields.Char(string="Código de catálogo",required=True)
     
     description = fields.Char(string="Descripción")
     
+    turn_duration = fields.Integer("Tiempo de entrega",help="Tiempo en minutos de duración de turno",default=60)
+    
+
     _sql_constraints = [
             ('vehicle_model_name_unique', 'unique(name)', 'El código debe ser único'),
     ]
@@ -44,4 +47,14 @@ class delsol_vehicle_model(models.Model):
         return_value += record.name
         return_value += ')'
         return return_value.encode('utf8')    
+    
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
+        if name:
+            recs = self.search([('description', operator, name)] + args, limit=limit)
+        if not recs:
+            recs = self.search([('name', operator, name)] + args, limit=limit)
+        return recs.name_get()
 
