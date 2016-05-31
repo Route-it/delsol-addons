@@ -8,7 +8,7 @@ from sre_parse import isdigit
 class delsol_vehicle(models.Model):
     _name = 'delsol.vehicle'
 
-    name = fields.Char(compute="name_get", store=True, readonly=True)
+    name = fields.Char(compute="compute_name", store=True, readonly=True)
 
     marca = fields.Char(string ="Marca")
     modelo = fields.Many2one("delsol.vehicle_model",string ="Modelo")
@@ -64,12 +64,9 @@ class delsol_vehicle(models.Model):
     
     @api.depends('marca','modelo','patente','anio')
     @api.multi
-    def name_get(self):
-        res = []
+    def compute_name(self):
         for vehi in self:
-            res.append((vehi.id, vehi.name_get_str(self)))
             vehi.name = vehi.name_get_str(vehi)
-        return res
 
     def name_get_str(self, record):
             marca = ''

@@ -20,6 +20,18 @@
                </form>
             </field>
 	</record>
+	<record id="delsol_rqr_vehicle_model_tree" model="ir.ui.view">
+		<field name="name">delsol.rqr.vehicle.model.form</field>
+		<field name="model">delsol.vehicle_model</field>
+		<field name="arch" type="xml">
+			<tree string="Modelos">
+				<field name="name"/>
+				<field name="description"/>
+				<field name="turn_duration"/>
+			</tree>
+		</field>
+	</record>
+	
 	<record id="open_view_vehicle_model_all" model="ir.actions.act_window">
 		<field name="name">Modelos</field>
 		<field name="res_model">delsol.vehicle_model</field>
