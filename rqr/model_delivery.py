@@ -25,6 +25,8 @@ class delsol_delivery(models.Model):
 
     delivery_date = fields.Datetime(string="Fecha de entrega",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
+    sector = fields.Selection([("ovalo","Plan Óvalo"),("especial","Venta Especial"),("tradicional","Venta Tradicional")],string="Sector",required="True")
+    
     delay = fields.Integer(default=1)
     
     color = fields.Integer(default=100)
@@ -40,8 +42,8 @@ class delsol_delivery(models.Model):
     contacted = fields.Boolean(string="Contactado",compute="is_contacted",store=True)
     
     turn_duration = fields.Float("Duración de turno",compute="change_vehicle",store=True)
-    turn_duration_from_child = fields.Integer("Duración de turno",related="vehicle_id.modelo.turn_duration")
-
+    turn_duration_from_child = fields.Integer("Duración de turno")
+    
     answered_poll = fields.Boolean("Contesto encuesta?")
     sales_asistance = fields.Integer("Asesor de ventas",default=3,help="Califique del 1 al 5")
     payment_experience = fields.Integer("Experiencia de pago",default=3,help="Califique del 1 al 5")
@@ -51,13 +53,14 @@ class delsol_delivery(models.Model):
     defense_dealer = fields.Integer("Defensa",default=3,help="Califique del 1 al 5")
     comment_poll = fields.Text("Comentaro")
     poll_rqr_id = fields.Many2one("delsol.rqr", string="RQR", readonly=True)
-    
+    vehicle_chasis = fields.Char("Chasis",related="vehicle_id.nro_chasis")
+    vehicle_color = fields.Char("Color",related="vehicle_id.color.name")
     
  
     state = fields.Selection([('new','Nueva'),
                               ('reprogrammed','Reprogramada'),
                               ('dispatched','Despachado'),
-                              ('delivered','Entregado')],string="Estado",default="new",track_visibility='onchange')
+                              ('delivered','Entregado')],string="Estado",default="new",track_visibility='onchange',readonly=True)
     olddate = fields.Datetime()
     tae_stamp = fields.Datetime("Fecha y hora de carga de TAE",help="Fecha y hora de carga de TAE para saber cuándo aproximadamente llega la encuesta")
 
