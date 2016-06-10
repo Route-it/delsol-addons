@@ -27,7 +27,16 @@
 				</search>
 			</field>
 		</record>
-
+		
+		<record id="delsol_call_filter" model="ir.ui.view">
+			<field name="name">delsol.call.select</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="delivery_id" string="Entrega" />
+				</search>
+			</field>
+		</record>
 
 		<record model='ir.ui.view' id='delsol_delivery_list'>
 			<field name="name">delsol.delivery.tree</field>
