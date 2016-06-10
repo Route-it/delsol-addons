@@ -12,7 +12,7 @@ class delsol_vehicle(models.Model):
 
     marca = fields.Char(string ="Marca")
     modelo = fields.Many2one("delsol.vehicle_model",string ="Modelo")
-    color = fields.Many2one("delsol.vehicle_color",string ="Color de vehículo")
+    color = fields.Many2one("delsol.vehicle_color",string ="Color de vehículo",required="True")
     patente = fields.Char(string ="Patente")
     nro_chasis = fields.Char(string="Nro de Chasis")
 
