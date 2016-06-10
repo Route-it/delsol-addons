@@ -60,7 +60,7 @@ class delsol_delivery(models.Model):
     state = fields.Selection([('new','Nueva'),
                               ('reprogrammed','Reprogramada'),
                               ('dispatched','Despachado'),
-                              ('delivered','Entregado')],string="Estado",default="new",track_visibility='onchange',readonly=True)
+                              ('delivered','Entregado')],string="Estado",default="new",readonly=True)
     olddate = fields.Datetime()
     tae_stamp = fields.Datetime("Fecha y hora de carga de TAE",help="Fecha y hora de carga de TAE para saber cuándo aproximadamente llega la encuesta")
 
