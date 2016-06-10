@@ -61,7 +61,7 @@
 						<button name="set_dispatched" string="Despachar" states="new,reprogrammed" type="object" class="oe_highlight" />
 <!-- 						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/> -->
 						<field name="state" widget="statusbar" statusbar_visible="new,reprogrammed,dispatched,delivered"
-							statusbar_colors='{"new":"blue"}' clickable="False" readOnly="True"/>
+							statusbar_colors='{"new":"blue"}'/>
 					</header>
 					<sheet>
 						<group string="Datos de la entrega">
