@@ -22,6 +22,7 @@
 						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
 						<filter string="Contesto encuesta" name="answered_pool"
 							context="{'group_by':'answered_pool'}" />
+						<filter string="Dia" domain="[ ]" context="{'group_by': 'delivery_date:day'}" />
 					</group>
 				</search>
 			</field>
