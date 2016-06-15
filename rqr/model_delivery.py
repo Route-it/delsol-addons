@@ -65,6 +65,8 @@ class delsol_delivery(models.Model):
     tae_stamp = fields.Datetime("Fecha y hora de carga de TAE",help="Fecha y hora de carga de TAE para saber cuándo aproximadamente llega la encuesta")
 
 
+    reprogramming = fields.One2many("delsol.reprogramming")
+    
     def set_new(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
             record.state = 'new'
