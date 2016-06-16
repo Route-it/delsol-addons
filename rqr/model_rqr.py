@@ -83,12 +83,7 @@ class delsol_rqr(models.Model):
     def onchange_state(self):
         self.compute_delay()
 
-    @api.constrains('state')
-    def check_have_actions(self):
-        if bool(self.state) & (self.state == 'solved'):
-            if len(self.corrective_action_ids)<1:
-                ValidationError("Para cerrarlo, debe tener al menos una accion correctiva.")
-                return
+    
         
     @api.depends('state')
     def compute_delay(self):
