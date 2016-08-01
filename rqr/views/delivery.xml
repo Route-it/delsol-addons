@@ -2,6 +2,15 @@
 
 <openerp>
 	<data>
+	
+		<record id="reprogramming_wizard_action" model="ir.actions.act_window">
+			<field name="name">Reprogramación</field>
+			<field name="res_model">delsol.wizard_reprogramming</field>
+			<field name="src_model">delsol.delivery</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
 
 		<record id="delsol_delivery_filter" model="ir.ui.view">
 			<field name="name">delsol.delivery.select</field>
@@ -57,6 +66,7 @@
 			<field name="arch" type="xml">
 				<form string="Entregas">
 					<header>
+						<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action"/>
 						<button name="set_delivered" string="Entregar" states="new,reprogrammed,dispatched" type="object" class="oe_highlight" readonly="True"/>
 						<button name="set_dispatched" string="Despachar" states="new,reprogrammed" type="object" class="oe_highlight" />
 <!-- 						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/> -->
@@ -69,7 +79,7 @@
 								<field name="id" invisible="1" />
 								<field name="client_id" string="Cliente" />
 								<field name="vehicle_id" string="Vehiculo" />
-								<field name="delivery_date" string="Fecha Entrega" />
+								<field name="delivery_date" string="Fecha Entrega" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="sector"/>
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
 								<field name="applay_rqr"/>
@@ -86,6 +96,12 @@
 								<field name="rqr_ids" string="RQRs" context="{'delivery_id':id}"
 									attrs="{'readonly':[('state','=','new')]}" />
 							</page>
+							<page string="Reprogramaciones" attrs="{'invisible':[('state','=','new')]}">
+								<label for="reprogramming_ids" class="oe_inline" string="Reprogramaciones" />
+								<field name="reprogramming_ids" string="Reprogramaciones" context="{'delivery_id':id}"
+									attrs="{'readonly':'True'}" />
+							</page>
+							
 						</notebook>
 						<group string="Encuesta Ford" groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
 							<group>
@@ -108,6 +124,29 @@
 				</form>
 			</field>
 		</record>
+		
+<!-- 		<act_window id="reprogramming_wizard_action" name="Repgramación" src_model="delsol.delivery" -->
+<!-- 			res_model="delsol.wizard_reprogramming" view_mode="form" target="new"/> -->
+		
+		<record model="ir.ui.view" id="reprogramming_wizard_view">
+            <field name="name">delsol.reprogramming.wizard.form</field>
+            <field name="model">delsol.wizard_reprogramming</field>
+            <field name="arch" type="xml">
+                <form string="Reprogramar entrega">
+                    <group>
+                        <field name="new_date"/>
+                        <field name="responsible"/>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="reprogram" type="object"
+                                string="Reprogramar" class="oe_highlight"/>
+                        or
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 		
 		<record model="ir.ui.view" id="delsol_delivery_form_for_contact_resp">
 			<field name="name">delsol.delivery.form.for.contect.resp</field>
@@ -135,7 +174,7 @@
 			<field name="model">delsol.delivery</field>
 			<field name="arch" type="xml">
 				<calendar string="Planificacion de Entregas"
-					event_open_popup="True" color="sector" date_start="delivery_date"
+					event_open_popup="True" color="sector" date_start="delivery_date" 
 					date_delay="turn_duration" quick_add="False" display="[client_id] ; [vehicle_id] ; [vehicle_chasis] ; [vehicle_color]">
 					<field name="client_id" string="Cliente" />
 					<field name="vehicle_id" string="Vehiculo" />
@@ -160,7 +199,7 @@
 								<field name="delivery_id" string="Entrega" />
 								<field name="tipo_rqr" string="Tipo" />
 								<field name="state" string="Estado" />
-								<field name="depto" string="Departamento" />
+<!-- 								<field name="depto" string="Departamento" /> -->
 								<field name="sector" string="Sector" />
 								<field name="responsible_id" string="Responsable" />
 								<field name="create_date" string="Fecha Inicio" readonly="1" />
@@ -393,7 +432,33 @@
 				</form>
 			</field>
 		</record>
-
+		
+		<record model='ir.ui.view' id='delsol_reprogramming_list'>
+			<field name="name">delsol.reprogramming.tree</field>
+			<field name="model">delsol.reprogramming</field>
+			<field name="arch" type="xml">
+				<tree string="Reprogramaciones">
+					<field name="from_date"/>
+					<field name="to_date"/>
+					<field name="responsible"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="delsol_reprogramming_form">
+            <field name="name">delsol.reprogramming.form</field>
+            <field name="model">delsol.reprogramming</field>
+            <field name="arch" type="xml">
+                <form string="Reprogramación" >
+                    <group>
+                    	<field name="from_date"/>
+                        <field name="to_date"/>
+                        <field name="responsible"/>
+                        <field name="reason"/>
+                    </group>
+                </form>
+            </field>
+        </record>
 
 		<record id="open_view_delivery_all" model="ir.actions.act_window">
 			<field name="name">Entregas</field>
@@ -419,5 +484,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
+		
+		
 	</data>
 </openerp>

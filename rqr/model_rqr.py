@@ -20,7 +20,7 @@ class delsol_rqr(models.Model):
     tipo_rqr = fields.Many2one("delsol.rqr_type","Tipo de RQR")
     
     sector = fields.Many2one("hr.department",string="Sector")    
-    depto = fields.Selection([("repuestos","Repuestos"),("admin_plan_ovalo","Administración de Plan Ovalo"),("admin_tradicional","Administración de Venta Tradicional")],string="Departamento")   
+#    depto = fields.Selection([("repuestos","Repuestos"),("admin_plan_ovalo","Administración de Plan Ovalo"),("admin_tradicional","Administración de Venta Tradicional")],string="Departamento")   
     
     #state = fields.Many2one('delsol.rqr_state','Etapa',  copy=False)
     state = fields.Selection([('new','Nuevo'),

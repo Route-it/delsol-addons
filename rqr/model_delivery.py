@@ -64,7 +64,8 @@ class delsol_delivery(models.Model):
     olddate = fields.Datetime()
     tae_stamp = fields.Datetime("Fecha y hora de carga de TAE",help="Fecha y hora de carga de TAE para saber cuándo aproximadamente llega la encuesta")
 
-
+    reprogramming_ids = fields.One2many("delsol.reprogramming","delivery_id",readonly=True)
+    
     def set_new(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
             record.state = 'new'
@@ -199,3 +200,12 @@ class delsol_delivery(models.Model):
                     'type': 'ir.actions.client',
                     'tag': 'reload',
                     }
+    @api.one
+    def reprogram(self,reprogram):
+        new_reprogramming = self.env['delsol.reprogramming'].create({'from_date':self.delivery_date,'to_date':reprogram.new_date,
+                                                                     'responsible':reprogram.responsible,'reason':reprogram.reason,
+                                                                 'delivery_id':self.id})
+        self.reprogramming_ids |= new_reprogramming
+        self.delivery_date = reprogram.new_date
+        self.state = "reprogrammed"
+        return {'type': 'ir.actions.act_window_close'}
