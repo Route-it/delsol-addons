@@ -66,7 +66,7 @@
 			<field name="arch" type="xml">
 				<form string="Entregas">
 					<header>
-						<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action"/>
+						<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','==','delivered')]}"/>
 						<button name="set_delivered" string="Entregar" states="new,reprogrammed,dispatched" type="object" class="oe_highlight" readonly="True"/>
 						<button name="set_dispatched" string="Despachar" states="new,reprogrammed" type="object" class="oe_highlight" />
 <!-- 						<button name="stamp_tae" string="TAE cargado" states="delivered" type="object" attrs="{'invisible':[('tae_stamp','=',True)]}"/> -->

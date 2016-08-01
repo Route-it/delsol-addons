@@ -88,7 +88,7 @@ class delsol_rqr(models.Model):
     @api.depends('state')
     def compute_delay(self):
         result = 0
-        if bool(self.state) & (self.state == 'solved'):
+        if bool(self.state) & ((self.state == 'solved') or (self.state == 'closed')):
             #print (datetime.now() - self.create_date)
             difference = (datetime.utcnow() - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
             result = difference.days

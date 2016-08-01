@@ -15,7 +15,7 @@ class wizard_reprogramming(models.TransientModel):
         
     new_date = fields.Datetime("Nueva fecha",required=True)
     
-    responsible = fields.Selection([("concesionaria","Concesionaria"),("cliente","Cliente")],required=True)
+    responsible = fields.Selection([("concesionaria","Concesionaria"),("cliente","Cliente")],required=True,string="Responsable")
     
     reason = fields.Text("Motivo",required=True)
     
