@@ -26,6 +26,7 @@
 					<filter string="Contactado" domain="[('contacted','=',True)]" />
 					<filter string="No contactado" domain="[('contacted','!=',True)]"/>
 					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]" />
+					<filter string="Este mes" domain="[('delivery_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('delivery_date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
@@ -41,7 +42,8 @@
 			<field name="name">delsol.delivery.graph</field>
         	<field name="model">delsol.delivery</field>
         	<field name="arch" type="xml">
-        		<graph string="Entregas">
+        		<graph string="Entregas" type="line">
+        		    <field name="delivery_date" type="row" interval="day"/>
         		</graph>
         	</field>
     	</record>
