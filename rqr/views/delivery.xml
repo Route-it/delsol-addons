@@ -37,6 +37,15 @@
 			</field>
 		</record>
 		
+		<record id="delsol_delivery_graph" model="ir.ui.view">
+			<field name="name">delsol.delivery.graph</field>
+        	<field name="model">delsol.delivery</field>
+        	<field name="arch" type="xml">
+        		<graph string="Entregas">
+        		</graph>
+        	</field>
+    	</record>
+    
 		<record id="delsol_call_filter" model="ir.ui.view">
 			<field name="name">delsol.call.select</field>
 			<field name="model">delsol.call</field>
@@ -465,7 +474,7 @@
 			<field name="res_model">delsol.delivery</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
-			<field name="view_mode">tree,form,calendar</field>
+			<field name="view_mode">tree,form,calendar,graph</field>
 		</record>
 
 		<record id="open_view_rqr_all" model="ir.actions.act_window">
