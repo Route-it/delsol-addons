@@ -23,7 +23,9 @@ class delsol_delivery(models.Model):
 
     vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
-    delivery_date = fields.Datetime(string="Fecha de entrega",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    client_date = fields.Datetime("Fecha y horario de cita")
+    
+    delivery_date = fields.Datetime("Fecha y horario de entrega",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
     sector = fields.Selection([("ovalo","Plan Óvalo"),("especial","Venta Especial"),("tradicional","Venta Tradicional")],string="Sector",required="True")
     
@@ -55,6 +57,8 @@ class delsol_delivery(models.Model):
     poll_rqr_id = fields.Many2one("delsol.rqr", string="RQR", readonly=True)
     vehicle_chasis = fields.Char("Chasis",related="vehicle_id.nro_chasis")
     vehicle_color = fields.Char("Color",related="vehicle_id.color.name")
+    
+    client_arrival = fields.Datetime("Horario de llegada de cliente", readonly=True)
     
  
     state = fields.Selection([('new','Nueva'),
@@ -207,5 +211,10 @@ class delsol_delivery(models.Model):
                                                                  'delivery_id':self.id})
         self.reprogramming_ids |= new_reprogramming
         self.delivery_date = reprogram.new_date
+        self.client_arrival = False
         self.state = "reprogrammed"
         return {'type': 'ir.actions.act_window_close'}
+    
+    @api.one
+    def stamp_client_arrival(self):
+        self.client_arrival = fields.Datetime.now()
