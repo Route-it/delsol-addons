@@ -13,7 +13,9 @@ class wizard_reprogramming(models.TransientModel):
     
     _name = "delsol.wizard_reprogramming"
         
-    new_date = fields.Datetime("Nueva fecha",required=True)
+    new_date = fields.Datetime("Nueva fecha y hora de cita",required=True)
+    
+    new_delivery_date = fields.Datetime("Nueva fecha y hora de entrega",required=True)
     
     responsible = fields.Selection([("concesionaria","Concesionaria"),("cliente","Cliente")],required=True,string="Responsable")
     

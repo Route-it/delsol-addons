@@ -23,7 +23,7 @@ class delsol_delivery(models.Model):
 
     vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
-    client_date = fields.Datetime("Fecha y horario de cita")
+    client_date = fields.Datetime("Fecha y horario de cita",required=True)
     
     delivery_date = fields.Datetime("Fecha y horario de entrega",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
     
@@ -206,11 +206,12 @@ class delsol_delivery(models.Model):
                     }
     @api.one
     def reprogram(self,reprogram):
-        new_reprogramming = self.env['delsol.reprogramming'].create({'from_date':self.delivery_date,'to_date':reprogram.new_date,
+        new_reprogramming = self.env['delsol.reprogramming'].create({'from_date':self.client_date,'to_date':reprogram.new_date,
                                                                      'responsible':reprogram.responsible,'reason':reprogram.reason,
                                                                  'delivery_id':self.id})
         self.reprogramming_ids |= new_reprogramming
-        self.delivery_date = reprogram.new_date
+        self.client_date = reprogram.new_date
+        self.delivery_date = reprogram.new_delivery_date
         self.client_arrival = False
         self.state = "reprogrammed"
         return {'type': 'ir.actions.act_window_close'}
