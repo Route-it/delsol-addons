@@ -2,15 +2,6 @@
 
 <openerp>
 	<data>
-	
-		<record id="reprogramming_wizard_action" model="ir.actions.act_window">
-			<field name="name">Reprogramación</field>
-			<field name="res_model">delsol.wizard_reprogramming</field>
-			<field name="src_model">delsol.delivery</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">form</field>
-			<field name="target">new</field>
-		</record>
 
 		<record id="delsol_delivery_filter" model="ir.ui.view">
 			<field name="name">delsol.delivery.select</field>
@@ -47,6 +38,15 @@
         		</graph>
         	</field>
     	</record>
+    	
+    	<record id="delsol_delivery_delivery_pivot" model="ir.ui.view">
+			<field name="name">delsol.delivery.pivot</field>
+			<field name="model">delsol.delivery</field>
+			<field name="arch" type="xml">
+				<pivot string="Entregas Pivot">
+				</pivot>
+			</field>
+		</record>
     
 		<record id="delsol_call_filter" model="ir.ui.view">
 			<field name="name">delsol.call.select</field>
@@ -479,7 +479,7 @@
 			<field name="res_model">delsol.delivery</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
-			<field name="view_mode">tree,form,calendar,graph</field>
+			<field name="view_mode">tree,form,calendar,graph,pivot</field>
 		</record>
 
 		<record id="open_view_rqr_all" model="ir.actions.act_window">
@@ -498,7 +498,14 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		
+		<record id="reprogramming_wizard_action" model="ir.actions.act_window">
+			<field name="name">Reprogramación</field>
+			<field name="res_model">delsol.wizard_reprogramming</field>
+			<field name="src_model">delsol.delivery</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
 		
 	</data>
 </openerp>
