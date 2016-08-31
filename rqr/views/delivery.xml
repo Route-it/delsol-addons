@@ -90,7 +90,7 @@
 								<field name="id" invisible="1" />
 								<field name="client_id" string="Cliente" />
 								<field name="vehicle_id" string="Vehiculo" />
-								<field name="client_date"/>
+								<field name="client_date" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="delivery_date" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="sector"/>
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
@@ -148,6 +148,7 @@
                 <form string="Reprogramar entrega">
                     <group>
                         <field name="new_date"/>
+                        <field name="new_delivery_date"/>
                         <field name="responsible"/>
                         <field name="reason"/>
                     </group>
