@@ -18,6 +18,7 @@ class delsol_delivery(models.Model):
     _name = "delsol.delivery"
 
     name = fields.Char(compute="name_get", store=True, readonly=True)
+    active = fields.Boolean("Registro Activo", help = "Si se deja sin seleccionar, el registro quedará archivado.", default=True)
      
     client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade',write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
@@ -26,6 +27,7 @@ class delsol_delivery(models.Model):
     client_date = fields.Datetime("Fecha y horario de cita",required=True)
     
     delivery_date = fields.Datetime("Fecha y horario de entrega",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    create_date = fields.Datetime("Fecha de alta")
     
     sector = fields.Selection([("ovalo","Plan Óvalo"),("especial","Venta Especial"),("tradicional","Venta Tradicional")],string="Sector",required="True")
     
@@ -176,7 +178,7 @@ class delsol_delivery(models.Model):
             message = 'Ya se posee una rqr generada.'
             
             if not bool(delivery.poll_rqr_id):
-                defaults = {'delivery_id': delivery.id,'state':'new'}
+                defaults = {'delivery_id': delivery.id,'state':'new','sector':delivery.sector}
                 
                 target_rqr =  rqr_obj.create(cr, uid, defaults, None)
                 

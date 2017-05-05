@@ -17,7 +17,7 @@
 					<filter string="Contactado" domain="[('contacted','=',True)]" />
 					<filter string="No contactado" domain="[('contacted','!=',True)]"/>
 					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]" />
-					<filter string="Este mes" domain="[('delivery_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('delivery_date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+					<filter string="Este mes" domain="[('delivery_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('delivery_date','&gt;=',time.strftime('%Y-%m-01'))]"/>
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
@@ -47,16 +47,17 @@
 				</pivot>
 			</field>
 		</record>
-    
-		<record id="delsol_call_filter" model="ir.ui.view">
-			<field name="name">delsol.call.select</field>
-			<field name="model">delsol.call</field>
-			<field name="arch" type="xml">
-				<search>
-					<field name="delivery_id" string="Entrega" />
-				</search>
-			</field>
-		</record>
+
+<!--         <record id="view_production_gantt" model="ir.ui.view"> -->
+<!--             <field name="name">delsol.delivery.gantt</field> -->
+<!--             <field name="model">delsol.delivery</field> -->
+<!--             <field name="arch" type="xml"> -->
+<!--                 <gantt date_stop="date_finished" date_start="delivery_date" progress="progress" string="Productions" default_group_by="state"> -->
+<!--                 </gantt> -->
+<!--             </field> -->
+<!--         </record> -->
+
+
 
 		<record model='ir.ui.view' id='delsol_delivery_list'>
 			<field name="name">delsol.delivery.tree</field>
@@ -85,6 +86,14 @@
 							statusbar_colors='{"new":"blue"}'/>
 					</header>
 					<sheet>
+	                    <div class="oe_button_box" name="button_box">
+	                        <button name="toggle_active" type="object" groups="base.group_no_one"
+	                                class="oe_stat_button" icon="fa-archive">
+	                            <field name="active" widget="boolean_button"
+	                                options='{"terminology": "archive"}'/>
+	                        </button>
+	                    </div>
+					
 						<group string="Datos de la entrega">
 							<group>
 								<field name="id" invisible="1" />
@@ -92,6 +101,7 @@
 								<field name="vehicle_id" string="Vehiculo" />
 								<field name="client_date" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="delivery_date" attrs="{'readonly': [('id', '!=', False)]}"/>
+								<field name="create_date" readonly="1"/>
 								<field name="sector"/>
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
 								<field name="applay_rqr"/>
@@ -138,8 +148,6 @@
 			</field>
 		</record>
 		
-<!-- 		<act_window id="reprogramming_wizard_action" name="Repgramación" src_model="delsol.delivery" -->
-<!-- 			res_model="delsol.wizard_reprogramming" view_mode="form" target="new"/> -->
 		
 		<record model="ir.ui.view" id="reprogramming_wizard_view">
             <field name="name">delsol.reprogramming.wizard.form</field>
@@ -201,251 +209,6 @@
 		</record>
 
 
-		<record model='ir.ui.view' id='delsol_delivery_rqr_form'>
-			<field name="name">delsol.rqr.form</field>
-			<field name="model">delsol.rqr</field>
-			<field name="arch" type="xml">
-				<form string="RQR">
-					<sheet>
-						<group string="Datos RQR">
-							<group>
-								<field name="id" invisible="1" />
-								<field name="delivery_id" string="Entrega" />
-								<field name="tipo_rqr" string="Tipo" />
-								<field name="state" string="Estado" />
-<!-- 								<field name="depto" string="Departamento" /> -->
-								<field name="sector" string="Sector" />
-								<field name="responsible_id" string="Responsable" />
-								<field name="create_date" string="Fecha Inicio" readonly="1" />
-								<field name="delay_resolution" readonly="1" />
-								<field name="resolution_id" context="{'rqr_id':id}" />
-								<field name="call_root_id" readonly="1"/>
-								<field name="task_ids" mode="kanban">
-									<kanban>
-										<field name="name" string="Resolucion" />
-										<field name="stage_id" string="Estado" />
-										<field name="date_start" string="Fecha Inicio" />
-										<field name="date_end" string="Fecha Fin" />
-										<templates>
-											<t t-name="kanban-box">
-												<div
-													t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click"
-													style="height:150px;border:blue;">
-
-													<div class="o_dropdown_kanban dropdown" groups="base.group_user">
-														<a class="dropdown-toggle btn" data-toggle="dropdown"
-															href="#">
-															<span class="fa fa-bars fa-lg" />
-														</a>
-														<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-															<t t-if="widget.editable">
-																<li>
-																	<a type="edit">Edit</a>
-																</li>
-															</t>
-															<t t-if="widget.deletable">
-																<li>
-																	<a type="delete">Delete</a>
-																</li>
-															</t>
-														</ul>
-													</div>
-													<div class="oe_kanban_top_left">
-														<field name="name" />
-													</div>
-													<div class="oe_kanban_top_right">
-														<field name="stage_id" />
-													</div>
-													<div class="oe_kanban_bottom_left">
-														<field name="date_start" />
-													</div>
-													<div class="oe_kanban_bottom_right">
-														<field name="date_end" />
-													</div>
-												</div>
-											</t>
-										</templates>
-									</kanban>
-								</field>
-								<field name="call_ids" >
-									<tree string="Llamados">
-										<field name="contact_date" string="Fecha y hora" />
-										<field name="contacted" string="Contactado" />
-										<field name="comment"/>
-									</tree>
-								</field>
-								
-							</group>
-						</group>
-					</sheet>
-					<div class="oe_chatter oe_view_only">
-						<field name="message_follower_ids" widget="mail_followers" />
-						<field name="message_ids" widget="mail_thread" />
-					</div>
-				</form>
-
-
-			</field>
-		</record>
-
-		<record id="view_delsol_rqr_filter" model="ir.ui.view">
-			<field name="name">delsol.rqr.select</field>
-			<field name="model">delsol.rqr</field>
-			<field name="arch" type="xml">
-				<search>
-					<field name="name" string="Definicion de RQR" />
-					<field name="delivery_id" string="Entrega" />
-					<separator />
-					<!-- <filter string="" domain="[(uid,'in','user_ids')]"/> -->
-					<separator />
-					<group expand="0" string="Agrupar por">
-						<filter string="Estado" name="State" context="{'group_by':'state'}" />
-						<filter string="Tipo" name="Type" context="{'group_by':'tipo_rqr'}" />
-					</group>
-				</search>
-			</field>
-		</record>
-
-		<record model='ir.ui.view' id='delsol_delivery_rqr'>
-			<field name="name">delsol.rqr.tree</field>
-			<field name="model">delsol.rqr</field>
-			<field name="arch" type="xml">
-				<tree string="RQR" create="false">
-					<field name="delivery_id" string="Entrega" />
-					<field name="responsible_id" string="Responsable" />
-					<field name="tipo_rqr" string="Tipo" />
-					<field name="state" string="Estado" />
-					<field name="create_date" string="Fecha Inicio" />
-					<field name="delay_resolution" />
-				</tree>
-			</field>
-		</record>
-
-
-		<record model="ir.ui.view" id="delsol_delivery_rqr_kanban">
-			<field name="name">delsol.rqr.kanban</field>
-			<field name="model">delsol.rqr</field>
-			<field name="arch" type="xml">
-				<kanban default_group_by="state" quick_create="false" delete="false"
-					edit="true" class="o_kanban_small_column">
-
-					<field name="delivery_id" string="Entrega" />
-					<field name="tipo_rqr" string="Tipo" />
-					<field name="state" string="Estado" />
-					<field name="create_date" string="Fecha Inicio" />
-					<templates>
-						<t t-name="kanban-box">
-							<div
-								t-attf-class="oe_kanban_color_#{kanban_getcolor(record.id.raw_value)} oe_kanban_card oe_kanban_global_click">
-
-								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
-									<a class="dropdown-toggle btn" data-toggle="dropdown" href="#">
-										<span class="fa fa-bars fa-lg" />
-									</a>
-									<!-- <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"> -->
-									<!-- <t t-if="widget.editable"><li><a type="edit">Editar</a></li></t> -->
-									<!-- <t t-if="widget.deletable"><li><a type="delete">Borrar</a></li></t> -->
-									<!-- <li><ul class="oe_kanban_colorpicker" data-field="color"/></li> -->
-									<!-- </ul> -->
-								</div>
-								<div style="position: relative">
-									<div class="oe_module_vignette">
-										<div class="oe_module_desc">
-											<field name="delivery_id" string="Entrega" />
-											<field name="tipo_rqr" string="Tipo" />
-											<field name="state" string="Estado" />
-											<field name="create_date" string="Fecha Inicio" />
-										</div>
-									</div>
-								</div>
-							</div>
-						</t>
-					</templates>
-				</kanban>
-			</field>
-		</record>
-
-
-		<record id="delsol_delivery_rqr_pivot" model="ir.ui.view">
-			<field name="name">delsol.rqr.pivot</field>
-			<field name="model">delsol.rqr</field>
-			<field name="arch" type="xml">
-				<pivot string="RQR Pivot">
-				</pivot>
-			</field>
-		</record>
-
-		<record model='ir.ui.view' id='delsol_delivery_call'>
-			<field name="name">delsol.call.tree</field>
-			<field name="model">delsol.call</field>
-			<field name="arch" type="xml">
-				<tree string="Llamados">
-					<field name="delivery_id" string="Entrega" />
-					<field name="contact_date" string="Fecha y hora" />
-					<field name="contacted" string="Contactado" />
-					<field name="why_no_contacted" string="Porque?" />
-					<field name="comment" />
-					<field name="rqr_root_id"/>
-					<field name="resolution_id" />
-					<button name="make_rqr" string="Generar RQR" type="object"
-						class="oe_highlight" groups="base.group_user"
-						attrs="{'invisible':[('rqr_root_id','!=',False)]}" />
-				</tree>
-			</field>
-		</record>
-
-		<record model='ir.ui.view' id='delsol_delivery_call_form'>
-			<field name="name">delsol.call.form</field>
-			<field name="model">delsol.call</field>
-			<field name="arch" type="xml">
-				<form string="Contacto">
-					<sheet string="Datos para contacto">
-						<group string="Responsable del contacto" class="oe_read_only">
-							<field name="create_uid" string="Usuario" readonly="1" />
-						</group>
-						<group string="Datos del contacto al cliente">
-							<field name="delivery_id" string="Entrega" />
-						</group>
-						<group>
-							<group col="2">
-								<field name="phone" string="Telefono" readonly="1" />
-								<field name="mobile" string="Movil" readonly="1" />
-								<field name="email" string="Mail" readonly="1" />
-							</group>
-						</group>
-						<group string="Resultado del contacto">
-							<group col="2">
-								<field name="contact_date" string="Fecha y hora" />
-								<field name="contacted" string="Contactado" />
-								<field name="why_no_contacted" string="Porque?"
-									attrs="{'required' : [('contacted', '=', False)], 'invisible': [('contacted','=', True)]}" />
-								<field name="conformity"
-									attrs="{'invisible': [('contacted','=', False)],'readonly':[('rqr_root_id','!=',False)]}" />
-								<field name="asesor_ventas" attrs="{'invisible': [('contacted','=', False)]}" />
-								<field name="experiencia_pago" attrs="{'invisible': [('contacted','=', False)]}" />
-								<field name="cumplimiento" attrs="{'invisible': [('contacted','=', False)]}" />
-								<field name="proceso_entrega" attrs="{'invisible': [('contacted','=', False)]}" />
-							</group>
-
-						</group>
-						<div class="oe_title">
-							<label for="comment" class="oe_inline" />
-							<field name="comment" />
-						</div>
-						<button name="make_rqr" string="Generar RQR" type="object"
-							class="oe_highlight" groups="base.group_user"
-							attrs="{'invisible':[('rqr_root_id','!=',False)]}" />
-						<group>
-							<group>
-								<field name="rqr_root_id" />
-								<field name="resolution_id" />
-							</group>
-						</group>
-
-					</sheet>
-				</form>
-			</field>
-		</record>
 		
 		<record model='ir.ui.view' id='delsol_reprogramming_list'>
 			<field name="name">delsol.reprogramming.tree</field>
@@ -474,28 +237,24 @@
             </field>
         </record>
 
+        <record id="delsol_delivery_gantt" model="ir.ui.view">
+            <field name="name">delsol.delivery.gantt</field>
+            <field name="model">delsol.delivery</field>
+            <field name="arch" type="xml">
+<!--                 <gantt date_stop="closed_date" date_start="progress_date" progress="progress" string="Rqr" default_group_by="sector"> -->
+                <gantt date_delay="turn_duration" date_start="delivery_date" progress="100" string="Rqr" default_group_by="sector">
+                </gantt>
+            </field>
+        </record>
+
+
+
 		<record id="open_view_delivery_all" model="ir.actions.act_window">
 			<field name="name">Entregas</field>
 			<field name="res_model">delsol.delivery</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
 			<field name="view_mode">tree,form,calendar,graph,pivot</field>
-		</record>
-
-		<record id="open_view_rqr_all" model="ir.actions.act_window">
-			<field name="name">RQR</field>
-			<field name="res_model">delsol.rqr</field>
-			<field name="view_type">form</field>
-			<field name="domain">[]</field>
-			<field name="view_mode">tree,form,kanban,pivot</field>
-		</record>
-
-		<record id="open_view_call_all" model="ir.actions.act_window">
-			<field name="name">Llamadas</field>
-			<field name="res_model">delsol.call</field>
-			<field name="view_type">form</field>
-			<field name="domain">[]</field>
-			<field name="view_mode">tree,form</field>
 		</record>
 
 		<record id="reprogramming_wizard_action" model="ir.actions.act_window">

@@ -11,6 +11,16 @@ class delsol_rqr(models.Model):
 
     _inherit = ["mail.thread", "ir.needaction_mixin"]
     
+    STATES = [('new','Nuevo'),
+                                 ('progress','En progreso'),
+                                 ('solved','Resuelta'),
+                                 ('closed','Cerrado'),
+                                 ]
+    
+    FOLDED_STATES = [] #['new',]
+    
+
+    
     name = fields.Char(compute="name_get", store=True, readonly=True)
     
     delivery_id = fields.Many2one("delsol.delivery", String="Entrega relacionada")
@@ -19,19 +29,25 @@ class delsol_rqr(models.Model):
 
     tipo_rqr = fields.Many2one("delsol.rqr_type","Tipo de RQR")
     
-    sector = fields.Many2one("hr.department",string="Sector")    
+    sector = fields.Selection([("ovalo","Plan Óvalo"),("especial","Venta Especial"),("tradicional","Venta Tradicional")],string="Sector",required="True")
+
+    #sector = fields.Many2one("hr.department",string="Sector")    
 #    depto = fields.Selection([("repuestos","Repuestos"),("admin_plan_ovalo","Administración de Plan Ovalo"),("admin_tradicional","Administración de Venta Tradicional")],string="Departamento")   
     
-    #state = fields.Many2one('delsol.rqr_state','Etapa',  copy=False)
-    state = fields.Selection([('new','Nuevo'),
-                                 ('progress','En progreso'),
-                                 ('solved','Resuelta'),
-                                 ('closed','Cerrado'),
-                                 ],string="Estado",required=True,default="new")
+    state = fields.Selection(STATES,string="Estado",required=True,default="new")
+    
+    progress_date = fields.Datetime("Fecha en progreso")
+    solved_date = fields.Datetime("Fecha de resolucion")
+    closed_date = fields.Datetime("Fecha de cierre")
+
+
+    progress = fields.Float(compute='_get_progress', string='Progreso')
 
 
     cause = fields.Text(string='Causa')
     delay_resolution = fields.Integer("Demora Resolucion (Dias)",compute="compute_delay",readonly=True,store=True)
+
+    delay_to_take_action = fields.Integer("Demora en tomar acción (Dias)",compute="compute_delay",default=-1,readonly=True,store=True)
     
     resolution_id = fields.Many2one("delsol.rqr_resolution",string="Resolucion implementada",ondelete='cascade')
 
@@ -53,11 +69,12 @@ class delsol_rqr(models.Model):
     @api.model
     def default_get(self, fields):
         context = self._context or {}
+        
         res = super(delsol_rqr, self).default_get(fields)
 
         if ('delivery_id' in fields) & bool(context.get('delivery_id')):
             res.update({'delivery_id': context.get('delivery_id')})
-        
+            res.update({'sector': context.get('sector')})
         return res
 
 
@@ -67,12 +84,9 @@ class delsol_rqr(models.Model):
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         res = super(delsol_rqr, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=False)
         context = self._context or {}
+
         if bool(view_type) & (view_type == 'form') & bool(context.get('delivery_id')):
-            #doc = etree.XML(res['arch'])
-            #for node in doc.xpath("//field[@name='delivery_id']"):
-                #node.set('domain', "[('id', '=', "+str(context.get('delivery_id'))+")]")#str(context.get('delivery_id')))
-            #    node.set('readonly', "True")
-            #res['arch'] = etree.tostring(doc)
+
             for field in res['fields']:
                 if field == 'delivery_id':
                     res['fields'][field]['readonly'] = True
@@ -80,22 +94,73 @@ class delsol_rqr(models.Model):
         return res
 
     @api.onchange('state')
+    @api.one
     def onchange_state(self):
         self.compute_delay()
+        #if (self.old_state != self.state):
+        #    self.write({'old_state': self.state})
+        #    self.write({'old_state_date' : datetime.utcnow()})
+
+    @api.one
+    def _get_progress(self):
+        return 100
 
     
         
     @api.depends('state')
+    @api.one
     def compute_delay(self):
-        result = 0
-        if bool(self.state) & ((self.state == 'solved') or (self.state == 'closed')):
+        #result_delay_to_take_action = 0
+        #demora en resolver el caso, desde que se dio de alta
+        difference_to_take_action = False
+        if bool(self.state) & (self.state == 'progress'):
+            if self.progress_date == False:
+                self.progress_date = datetime.utcnow()
+            difference = (datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            self.delay_to_take_action = difference.days
+
+            
+        if bool(self.state) & (self.state == 'solved'):
             #print (datetime.now() - self.create_date)
+            #difference = (datetime.utcnow() - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            
+            #calculo dias de demora en reslucion
+            if self.solved_date == False:
+                self.solved_date = datetime.utcnow()
+            difference_delay = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            self.delay_resolution = difference_delay.days
+            if self.progress_date == False:
+                self.progress_date = self.solved_date
+                difference_to_take_action = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            else:
+                difference_to_take_action = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S'))
+            self.delay_to_take_action = difference_to_take_action.days
+        
+        if bool(self.state) & (self.state == 'closed'):
+            if self.closed_date == False:
+                self.closed_date = datetime.utcnow()
+            if self.progress_date == False:
+                self.progress_date = self.closed_date
+            if self.solved_date == False:
+                self.solved_date = self.closed_date
+                if bool(self.progress_date == self.solved_date):
+
+                    difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+                else:
+                    difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S'))
+            else:
+                difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S'))
+            self.delay_to_take_action = difference_to_take_action.days
+
+            difference_delay = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            self.delay_resolution = difference_delay.days
+
+        #demora en cambiar estado, desde el utlimo cambio
+        if (bool(self.state) & (self.state == 'new')):
             difference = (datetime.utcnow() - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
-            result = difference.days
-        else:
-            result = 0
-        self.delay_resolution = result
-        return
+            self.delay_to_take_action = difference.days
+            
+            
     
     @api.depends('delivery_id','tipo_rqr','state')
     def name_get(self, cr, uid, ids, context=None):
@@ -128,31 +193,41 @@ class delsol_rqr(models.Model):
             return delivery +', '+tipo_rqr + ' ('+state+')'
     
     
+    @api.model
+    def state_groups(self, present_ids, domain, **kwargs):
+        folded = {key: (key in self.FOLDED_STATES) for key, _ in self.STATES}
+        # Need to copy self.STATES list before returning it,
+        # because odoo modifies the list it gets,
+        # emptying it in the process. Bad odoo!
+        return self.STATES[:], folded
 
-    def _read_group_state_ids(self, cr, uid, ids, domain, read_group_order=None, access_rights_uid=None, context=None):
-        if context is None:
-            context = {}
-        
-        state_obj = self.pool.get('delsol.rqr_state')
-        order = state_obj._order
-        #access_rights_uid = access_rights_uid or uid
-        if read_group_order == 'state_id desc':
-            order = '%s desc' % order
-        search_domain = []
-        state_ids = state_obj._search(cr, None, search_domain, order=order, access_rights_uid=access_rights_uid, context=context)
-        result = state_obj.name_get(cr, access_rights_uid, state_ids, context=context)
-        # restore order of the search
-        result.sort(lambda x, y: cmp(state_ids.index(x[0]), state_ids.index(y[0])))
-        fold = {}
-        for state in state_obj.browse(cr, access_rights_uid, state_ids, context=context):
-            fold[state.id] = state.fold or False
-        return result
-    
     _group_by_full = {
         #'state': _read_group_state_ids,
-        'state': {"new":False,"progress":False,"solved":False},
+        'state': state_groups
+                
     }
 
+
+    def _read_group_fill_results(self, cr, uid, domain, groupby,
+                                 remaining_groupbys, aggregated_fields,
+                                 count_field, read_group_result,
+                                 read_group_order=None, context=None):
+        """
+        The method seems to support grouping using m2o fields only,
+        while we want to group by a simple status field.
+        Hence the code below - it replaces simple status values
+        with (value, name) tuples.
+        """
+        if groupby == 'state':
+            STATES_DICT = dict(self.STATES)
+            for result in read_group_result:
+                state = result['state']
+                result['state'] = (state, STATES_DICT.get(state))
+
+        return super(delsol_rqr, self)._read_group_fill_results(
+            cr, uid, domain, groupby, remaining_groupbys, aggregated_fields,
+            count_field, read_group_result, read_group_order, context
+        )
     
     
     #

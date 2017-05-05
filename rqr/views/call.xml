@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+    
+		<record id="delsol_call_filter" model="ir.ui.view">
+			<field name="name">delsol.call.select</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="delivery_id" string="Entrega" />
+				</search>
+			</field>
+		</record>
+
+
+		<record model='ir.ui.view' id='delsol_delivery_call'>
+			<field name="name">delsol.call.tree</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<tree string="Llamados">
+					<field name="delivery_id" string="Entrega" />
+					<field name="contact_date" string="Fecha y hora" />
+					<field name="contacted" string="Contactado" />
+					<field name="why_no_contacted" string="Porque?" />
+					<field name="comment" />
+					<field name="rqr_root_id"/>
+					<field name="resolution_id" />
+					<button name="make_rqr" string="Generar RQR" type="object"
+						class="oe_highlight" groups="base.group_user"
+						attrs="{'invisible':[('rqr_root_id','!=',False)]}" />
+				</tree>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_call_form'>
+			<field name="name">delsol.call.form</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<form string="Contacto">
+					<sheet string="Datos para contacto">
+						<group string="Responsable del contacto" class="oe_read_only">
+							<field name="create_uid" string="Usuario" readonly="1" />
+						</group>
+						<group string="Datos del contacto al cliente">
+							<field name="delivery_id" string="Entrega" />
+						</group>
+						<group>
+							<group col="2">
+								<field name="phone" string="Telefono" readonly="1" />
+								<field name="mobile" string="Movil" readonly="1" />
+								<field name="email" string="Mail" readonly="1" />
+							</group>
+						</group>
+						<group string="Resultado del contacto">
+							<group col="2">
+								<field name="contact_date" string="Fecha y hora" />
+								<field name="contacted" string="Contactado" />
+								<field name="why_no_contacted" string="Porque?"
+									attrs="{'required' : [('contacted', '=', False)], 'invisible': [('contacted','=', True)]}" />
+								<field name="conformity"
+									attrs="{'invisible': [('contacted','=', False)],'readonly':[('rqr_root_id','!=',False)]}" />
+								<field name="asesor_ventas" attrs="{'invisible': [('contacted','=', False)]}" />
+								<field name="experiencia_pago" attrs="{'invisible': [('contacted','=', False)]}" />
+								<field name="cumplimiento" attrs="{'invisible': [('contacted','=', False)]}" />
+								<field name="proceso_entrega" attrs="{'invisible': [('contacted','=', False)]}" />
+							</group>
+
+						</group>
+						<div class="oe_title">
+							<label for="comment" class="oe_inline" />
+							<field name="comment" />
+						</div>
+						<button name="make_rqr" string="Generar RQR" type="object"
+							class="oe_highlight" groups="base.group_user"
+							attrs="{'invisible':[('rqr_root_id','!=',False)]}" />
+						<group>
+							<group>
+								<field name="rqr_root_id" />
+								<field name="resolution_id" />
+							</group>
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+
+		<record id="open_view_call_all" model="ir.actions.act_window">
+			<field name="name">Llamadas</field>
+			<field name="res_model">delsol.call</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		
+	</data>
+</openerp>

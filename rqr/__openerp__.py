@@ -28,6 +28,8 @@
         'security/rqr_security.xml',
         'security/ir.model.access.csv',
         'views/delivery.xml',
+        'views/call.xml',
+        'views/rqr.xml',
         'views/res_partner_view.xml',
         'views/vehicle.xml',
         'views/menu.xml',

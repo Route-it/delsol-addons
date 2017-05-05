@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record model='ir.ui.view' id='delsol_delivery_rqr_form'>
+			<field name="name">delsol.rqr.form</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<form string="RQR">
+					<sheet>
+						<group string="Datos RQR">
+							<group>
+								<field name="id" invisible="1" />
+								<field name="delivery_id" string="Entrega" />
+								<field name="tipo_rqr" string="Tipo" />
+								<field name="state" string="Estado" />
+<!-- 								<field name="depto" string="Departamento" /> -->
+								<field name="sector" string="Sector" />
+								<field name="responsible_id" string="Responsable" />
+								<field name="create_date" string="Fecha Inicio" readonly="1" />
+								<field name="progress_date" invisible="1" />
+								<field name="solved_date" invisible="1" />
+								<field name="closed_date" invisible="1" />
+								<field name="delay_resolution" readonly="1"  class="oe_view_only"/>
+								<field name="delay_to_take_action" readonly="1" class="oe_view_only"/>
+								<field name="resolution_id" context="{'rqr_id':id}" />
+								<field name="call_root_id" readonly="1"/>
+								<field name="task_ids" mode="kanban">
+									<kanban>
+										<field name="name" string="Resolucion" />
+										<field name="stage_id" string="Estado" />
+										<field name="date_start" string="Fecha Inicio" />
+										<field name="date_end" string="Fecha Fin" />
+										<templates>
+											<t t-name="kanban-box">
+												<div
+													t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click"
+													style="height:150px;border:blue;">
+
+													<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+														<a class="dropdown-toggle btn" data-toggle="dropdown"
+															href="#">
+															<span class="fa fa-bars fa-lg" />
+														</a>
+														<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+															<t t-if="widget.editable">
+																<li>
+																	<a type="edit">Edit</a>
+																</li>
+															</t>
+															<t t-if="widget.deletable">
+																<li>
+																	<a type="delete">Delete</a>
+																</li>
+															</t>
+														</ul>
+													</div>
+													<div class="oe_kanban_top_left">
+														<field name="name" />
+													</div>
+													<div class="oe_kanban_top_right">
+														<field name="stage_id" />
+													</div>
+													<div class="oe_kanban_bottom_left">
+														<field name="date_start" />
+													</div>
+													<div class="oe_kanban_bottom_right">
+														<field name="date_end" />
+													</div>
+												</div>
+											</t>
+										</templates>
+									</kanban>
+								</field>
+								<field name="call_ids" >
+									<tree string="Llamados">
+										<field name="contact_date" string="Fecha y hora" />
+										<field name="contacted" string="Contactado" />
+										<field name="comment"/>
+									</tree>
+								</field>
+								
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter oe_view_only">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+
+
+			</field>
+		</record>
+
+		<record id="view_delsol_rqr_filter" model="ir.ui.view">
+			<field name="name">delsol.rqr.select</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name" string="Definicion de RQR" />
+					<field name="delivery_id" string="Entrega" />
+					<separator />
+					<!-- <filter string="" domain="[(uid,'in','user_ids')]"/> -->
+					<separator />
+					<group expand="0" string="Agrupar por">
+						<filter string="Estado" name="State" context="{'group_by':'state'}" />
+						<filter string="Tipo" name="Type" context="{'group_by':'tipo_rqr'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='delsol_delivery_rqr'>
+			<field name="name">delsol.rqr.tree</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<tree string="RQR" create="false">
+					<field name="delivery_id" string="Entrega" />
+					<field name="responsible_id" string="Responsable" />
+					<field name="tipo_rqr" string="Tipo" />
+					<field name="state" string="Estado" />
+					<field name="create_date" string="Fecha Inicio" />
+					<field name="delay_to_take_action" />
+					<field name="delay_resolution" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="delsol_delivery_rqr_kanban">
+			<field name="name">delsol.rqr.kanban</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" quick_create="false" delete="false"
+					edit="true" class="o_kanban_small_column">
+
+					<field name="delivery_id" string="Entrega" />
+					<field name="tipo_rqr" string="Tipo" />
+					<field name="state" string="Estado" />
+					<field name="create_date" string="Fecha Inicio" />
+					<templates>
+						<t t-name="kanban-box">
+							<div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.state.raw_value == 'new' ? 'oe_kanban_color_1' : ''}
+							                      #{record.state.raw_value == 'progress' ? 'oe_kanban_color_2' : ''}                      
+							                      #{record.state.raw_value == 'solved' ? 'oe_kanban_color_3' : ''}                      
+							                      #{record.state.raw_value == 'closed' ? 'oe_kanban_color_4' : ''}">
+				
+                                <div class="oe_kanban_tags_section oe_kanban_color_9">
+                                    <field name="state"/>
+                                </div>
+
+                                <div class="o_kanban_card_content o_visible">
+                                        <strong><span><t t-esc="record.delivery_id.value"/></span></strong>
+                                </div>
+
+                                 <div class="o_kanban_card_manage_pane o_invisible">
+                                    <div class="o_kanban_card_manage_section ">
+                                        <span><t t-esc="record.tipo_rqr.value"/></span>
+                                    </div>
+                                    
+                                </div>
+                                <div class="o_project_kanban_manage">
+                                    <a class="o_kanban_manage_toggle_button" href="#">Más <i class="fa fa-caret-down"/></a>
+                                </div>
+
+							<div class="row oe_kanban_bottom_right">
+                                        <strong><field name="create_date"/></strong>
+                                </div>
+							</div>
+						</t>
+					</templates>
+				</kanban>
+			</field>
+		</record>
+
+
+		<record id="delsol_delivery_rqr_pivot" model="ir.ui.view">
+			<field name="name">delsol.rqr.pivot</field>
+			<field name="model">delsol.rqr</field>
+			<field name="arch" type="xml">
+				<pivot string="RQR Pivot">
+				</pivot>
+			</field>
+		</record>
+		
+		<record id="delsol_delivery_rqr_graph" model="ir.ui.view">
+			<field name="name">delsol.rqr.graph</field>
+        	<field name="model">delsol.rqr</field>
+        	<field name="arch" type="xml">
+        		<graph string="RQRs">
+        		    <field name="state" />
+        		    <field name="sector" />
+        		    <field name="delay_to_take_action" type="measure"/>
+        		    <field name="delay_resolution" type="measure"/>
+        		</graph>
+        	</field>
+    	</record>
+
+		<record id="open_view_rqr_all" model="ir.actions.act_window">
+			<field name="name">RQR</field>
+			<field name="res_model">delsol.rqr</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form,graph,pivot</field>
+		</record>
+
+	</data>
+</openerp>
