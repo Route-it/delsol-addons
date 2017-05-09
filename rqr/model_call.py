@@ -104,7 +104,7 @@ class delsol_call(models.Model):
             message = 'Ya se posee una rqr generada.'
             
             if not bool(call.rqr_root_id):
-                defaults = {'delivery_id': call.delivery_id.id,'state':'new','call_root_id':call.id}
+                defaults = {'delivery_id': call.delivery_id.id,'state':'new','call_root_id':call.id,"sector":call.delivery_id.sector}
                 
                 target_rqr =  rqr_obj.create(cr, uid, defaults, None)
                 
