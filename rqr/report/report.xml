@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+<!-- 		<report  -->
+<!-- 	            id="turn" -->
+<!-- 	            model="delsol.delivery" -->
+<!-- 	            string="Comprobante del turno" -->
+<!-- 	            report_type="qweb-pdf" -->
+<!-- 	            name="rqr.report_turn" -->
+<!-- 	            file="report_turn" -->
+<!-- 	            attachment_use="True" -->
+<!-- 	            attachment="'TURNO-'+(object.client_id.name or '').replace('/','')+(object.vehicle_id.modelo.description)+'.pdf'" -->
+<!-- 	    />		 -->
+
+
+	<template id="report_turn">
+	    <!-- Re-browse of the record with the partner lang -->
+<!-- 	    <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" /> -->
+	    <t t-call="report.external_layout">
+	        <div class="page">
+	        	<t t-foreach="docs" t-as="delivery">
+	        
+	            <div class="oe_structure"/>
+	            <div class="row">
+	                <div class="col-xs-12">
+	                	<h1>
+	                		TURNO DE ENTREGA DE UNIDAD 0KM
+	                	</h1>
+					</div>
+	                <div class="col-xs-12">
+	                    <strong>Estimado cliente: el proceso de entrega es un momento muy importante tanto para Ud. como para nosotros, por tal motivo agradeceremos tenga en cuenta los siguientes aspectos.                                             
+	                    </strong>
+	                    <ul>
+	                    	<li>
+	                    - En caso de que usted haya entregado una unidad usada como parte de pago, deberá entregar la documentación 
+	                    correspondiente a la misma 24hs previas a la fecha programada de entrega.  
+	                    	</li>
+	                    	<li>
+						- Presentarse puntualmente en el horario solicitado a fin de no producir demoras en el resto de los 
+						clientes que siguen después de usted. En caso de no poder asistir  ó de sufrir alguna demora, por favor 
+						informar a su Administrativo de Entrega con la mayor antelación posible.
+	                    	</li>
+	                    	<li>
+	                    - El proceso de entrega puede demorar aproximadamente 1 hora y media, le rogamos que disponga de ese tiempo.
+	                    	</li>
+	                    </ul>
+                    </div>
+                </div>
+                <div class="row">
+	                <div class="col-xs-3">
+	                    Nombre y Apellido cliente: 
+	                </div>
+					<div class="col-xs-9"><strong t-field="delivery.client_id.name"/>
+					</div>
+	                <div class="col-xs-3">
+						N° de Cliente en Sistema:
+	                </div>
+					<div class="col-xs-9">
+						<strong t-field="delivery.client_id.vat"/>
+					</div>
+	                <div class="col-xs-3">
+						Teléfono de contacto cliente:
+	                </div>
+					<div class="col-xs-9"><strong t-field="delivery.client_id.phone"/> / <strong t-field="delivery.client_id.mobile"/></div>
+	                <div class="col-xs-3">
+						Unidad a entregar:
+	                </div>
+					<div class="col-xs-9"><strong t-field="delivery.vehicle_id.modelo.description"/></div>
+	                <div class="col-xs-3">
+						Color:
+	                </div>
+					<div class="col-xs-9"><strong t-field="delivery.vehicle_id.color"/></div>
+	                <div class="col-xs-3">
+						Lugar de entrega:
+	                </div>
+					<div class="col-xs-9"><strong>Del Sol Automotor</strong></div>
+	                <div class="col-xs-3">
+						Fecha de entrega: 
+	                </div>
+					<div class="col-xs-9">
+					<strong t-field="delivery.client_date"  t-field-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}" /></div>
+	                <div class="col-xs-3">
+						Hora de presentación:
+	                </div>
+					<div class="col-xs-9">
+					<strong t-field="delivery.client_date"  t-field-options="{&quot;format&quot;: &quot;HH:mm&quot;}" /></div>
+	                <div class="col-xs-3">
+						Nombre del Adm. de entrega:
+	                </div>
+					<div class="col-xs-9">
+						<strong t-field="delivery.vendor_id" />
+					</div>
+<!-- 	                <div class="col-xs-3"> -->
+<!-- 						Gastos de retiro a abonar -->
+<!-- 	                </div> -->
+<!-- 					<div class="col-xs-9"> -->
+<!-- 						TOTAL: -->
+<!-- 					</div> -->
+<!-- 	                <div class="col-xs-3"> -->
+<!-- 						Gastos de accesorios a abonar -->
+<!-- 	                </div> -->
+<!-- 					<div class="col-xs-9"> -->
+<!-- 						TOTAL: -->
+<!-- 					</div> -->
+<!-- 	                <div class="col-xs-3"> -->
+<!-- 						Documentación Vehiculo Usado a traer: -->
+<!-- 	                </div> -->
+<!-- 					<div class="col-xs-9"> -->
+<!-- 						* -->
+<!-- 					</div> -->
+				</div>
+			</t>				
+	        </div>
+	    </t>
+	</template>
+
+	</data>
+</openerp>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+
+
+		<record id="open_view_events_all" model="ir.actions.act_window">
+			<field name="name">RQR</field>
+			<field name="res_model">delsol.event</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+		</record>
+	
+		<record model='ir.ui.view' id='delsol_events'>
+			<field name="name">delsol.event.tree</field>
+			<field name="model">delsol.event</field>
+			<field name="arch" type="xml">
+				<tree string="Event" editable="top" create="0" delete="0" >
+					<field name="code" string="Entrega" />
+					<field name="name" string="Responsable" />
+					<field name="emails" string="Tipo" />
+					<field name="active" string="Estado" />
+				</tree>
+			</field>
+		</record>
+
+		<menuitem name="Eventos" id="menu_events_model_list" parent="menu_configuracion" action="open_view_events_all" />
+	</data>
+</openerp>

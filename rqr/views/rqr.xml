@@ -18,7 +18,7 @@
 <!-- 								<field name="depto" string="Departamento" /> -->
 								<field name="sector" string="Sector" />
 								<field name="responsible_id" string="Responsable" />
-								<field name="create_date" string="Fecha Inicio" readonly="1" />
+								<field name="create_date" string="Fecha Inicio" readonly="1" class="oe_view_only"/>
 								<field name="progress_date" invisible="1" />
 								<field name="solved_date" invisible="1" />
 								<field name="closed_date" invisible="1" />
@@ -80,9 +80,20 @@
 										<field name="comment"/>
 									</tree>
 								</field>
-								
 							</group>
 						</group>
+						<group string="Encuesta Ford" groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
+							<group>
+
+								<field name="answered_poll" string="Contesto encuesta Ford?" readonly="1"  class="oe_view_only"/>
+								<field name="sales_asistance" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_view_only"/>
+								<field name="payment_experience" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_view_only"/>
+								<field name="compliance" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_view_only"/>
+								<field name="delivery_process" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_view_only"/>
+								<field name="comment_poll" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_view_only"/>
+							</group>
+						</group>
+
 					</sheet>
 					<div class="oe_chatter oe_view_only">
 						<field name="message_follower_ids" widget="mail_followers" />
@@ -102,7 +113,9 @@
 					<field name="name" string="Definicion de RQR" />
 					<field name="delivery_id" string="Entrega" />
 					<separator />
-					<!-- <filter string="" domain="[(uid,'in','user_ids')]"/> -->
+					<filter string="Camiones" name="camiones" domain="[('sector','=','camiones')]" />
+					<filter string="Autos" name="autos" domain="[('sector','!=','camiones')]" />
+					<filter string="Sin Cerrar" name="state_not_closed" domain="[('state','!=','closed')]"/>
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Estado" name="State" context="{'group_by':'state'}" />
@@ -116,7 +129,7 @@
 			<field name="name">delsol.rqr.tree</field>
 			<field name="model">delsol.rqr</field>
 			<field name="arch" type="xml">
-				<tree string="RQR" create="false">
+				<tree string="RQR" create="false"  default_order="create_date desc">
 					<field name="delivery_id" string="Entrega" />
 					<field name="responsible_id" string="Responsable" />
 					<field name="tipo_rqr" string="Tipo" />
@@ -192,8 +205,8 @@
         		<graph string="RQRs">
         		    <field name="state" />
         		    <field name="sector" />
-        		    <field name="delay_to_take_action" type="measure"/>
-        		    <field name="delay_resolution" type="measure"/>
+        		    <field name="delay_to_take_action" group_operator="avg" type="measure"/>
+        		    <field name="delay_resolution"  group_operator="avg" type="measure"/>
         		</graph>
         	</field>
     	</record>
@@ -203,6 +216,10 @@
 			<field name="res_model">delsol.rqr</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
+			<field name="context">{
+  					'search_default_state_not_closed': 1
+					}
+			</field>		
 			<field name="view_mode">tree,form,graph,pivot</field>
 		</record>
 

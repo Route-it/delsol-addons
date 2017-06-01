@@ -10,6 +10,9 @@
 			<field name="arch" type="xml">
 				<search>
 					<field name="delivery_id" string="Entrega" />
+					<separator />
+					<filter string="Camiones" name="camiones" domain="[('delivery_sector','=','camiones')]" />
+					<filter string="Autos" name="autos" domain="[('delivery_sector','!=','camiones')]" />
 				</search>
 			</field>
 		</record>

@@ -20,13 +20,21 @@ class delsol_vehicle_model(models.Model):
     name = fields.Char(string="Código de catálogo",required=True)
     
     description = fields.Char(string="Descripción")
+
+    short_name = fields.Char(string="Descripción corta",compute="_compute_short_name")
     
     turn_duration = fields.Integer("Tiempo de entrega",help="Tiempo en minutos de duración de turno",default=60)
-    
+
+    vehicle_type = fields.Selection([("auto","Auto"),("camion","Camión")],string="Tipo",required="True",default='auto')
 
     _sql_constraints = [
             ('vehicle_model_name_unique', 'unique(name)', 'El código debe ser único'),
     ]
+    
+    
+    def _compute_short_name(self):
+        self.short_name = (self.description[:15] + '..') if len(self.description) > 15 else self.description
+
     
     @api.onchange('name')
     def onchange_name(self):      

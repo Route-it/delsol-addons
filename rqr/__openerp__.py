@@ -24,7 +24,6 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'security/rqr_security.xml',
         'security/ir.model.access.csv',
         'views/delivery.xml',
@@ -33,6 +32,10 @@
         'views/res_partner_view.xml',
         'views/vehicle.xml',
         'views/menu.xml',
+        'report/report.xml',
+        'data/events.xml',
+        'data/ir_cron.xml',
+        'data/view.xml',
         'data.xml',
     ],
     # only loaded in demonstration mode

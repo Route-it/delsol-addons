@@ -1,13 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		 <record id="delsol_rqr_vehicle_form" model="ir.ui.view">
-            <field name="name">delsol.rqr.vehicle.form</field>
+
+		<record id="delsol_vehicle_filter" model="ir.ui.view">
+			<field name="name">delsol.vehicle.select</field>
+			<field name="model">delsol.vehicle</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name" string="Vehiculo" />
+					<separator />
+					<filter string="Camiones" name="camiones" domain="[('vehicle_type','!=','auto')]" />
+					<separator />
+					<filter string="Autos" name="autos" domain="[('vehicle_type','=','auto')]" />
+					<separator />
+					<filter string="Pre-Entrega" name="pre_entrega" domain="[('state','in',('not_chequed','damage','missing','to_be_delivery','ready_for_delivery'))]" />
+					<separator />
+					<filter string="Averiados" name="damage" domain="[('state_list.status','=','damage')]" />
+					<group expand="1" string="Agrupar por">
+						<filter string="Dia" domain="[ ]" context="{'group_by': 'date_for_calendar:day'}" />
+						<filter string="Estado" domain="[ ]" context="{'group_by': 'state'}" />
+						<filter string="Prioridad" domain="[ ]" context="{'group_by': 'priority_of_chequed_request'}" name="priority" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+	<record id="delsol_vehicle_tree" model="ir.ui.view">
+		<field name="name">delsol.vehicle.tree</field>
+		<field name="model">delsol.vehicle</field>
+		<field name="arch" type="xml">
+			<tree string="Vehiculos" colors="red:(priority_of_chequed_request=='high')" default_order="create_date desc"> 
+			<!-- ;green:priority_of_chequed_request=='married' --> 
+				<field name="name"/>
+				<field name="state"/>
+				<field name="priority_of_chequed_request"/>
+				<field name="ubicacion"/>
+				<field name="create_date"/>
+			</tree>
+		</field>
+	</record>
+
+
+		 <record id="delsol_vehicle_form" model="ir.ui.view">
+            <field name="name">delsol.vehicle.form</field>
             <field name="model">delsol.vehicle</field>
             <field name="arch" type="xml">
                 <form string="Vehículo">
+					<header>
+                    	<field name="id" invisible="1"/>
+						<div attrs="{'invisible':[('id','=', False)]}">
+						<button name="not_chequed" string="Solicitar chequeo" type="object" states="new" class="oe_highlight" groups="rqr.group_name_rqr_delivery_resp,rqr.group_name_cam_administrator"/>
+						<button name="ready_for_programmed" string="Unidad lista para programar" type="object" states="not_chequed" class="oe_highlight" groups="rqr.group_name_rqr_pre_delivery_resp"/>
+						<button name="damage" string="Unidad dañada" type="object"  states="not_chequed,to_be_delivery" groups="rqr.group_name_rqr_pre_delivery_resp"/>
+						<button name="repaired_damage" string="Unidad reparada, lista para programar" type="object"  states="damage" groups="rqr.group_name_rqr_pre_delivery_resp"/>
+						<button name="state_missing" string="Unidad Faltante" type="object"  states="not_chequed,to_be_delivery" groups="rqr.group_name_rqr_pre_delivery_resp"/>
+						<button name="to_be_delivery" string="Preparar unidad para entrega" type="object"  states="ready_for_programmed,repaired_damage" class="oe_highlight"  groups="rqr.group_name_rqr_delivery_resp,rqr.group_name_cam_administrator"/>
+						<button name="ready_for_delivery" string="Unidad preparada" states="to_be_delivery" type="object" class="oe_highlight" groups="rqr.group_name_rqr_pre_delivery_resp"/>
+						<button name="damage" string="Unidad dañada" type="object"  states="ready_for_delivery" groups="rqr.group_name_rqr_pre_delivery_resp,rqr.group_name_rqr_delivery_resp,rqr.group_name_cam_administrator"/>
+						<button name="state_new" string="Unidad Encontrada" type="object" states="missing"  groups="rqr.group_name_rqr_pre_delivery_resp"/>
+						</div>
+						
+ 						<field name="state" widget="statusbar" nolabel="1" statusbar_visible="new,not_chequed,ready_for_programmed,to_be_delivery,ready_for_delivery,delivered" statusbar_colors="{'new':'blue'}"/>
+						
+					</header>
                 <sheet string="Vehículo">
+	                   	<field name="button_create_delivery_visible" invisible="1"/>
+                	    <div class="oe_button_box" name="button_box">
+	                        <button name="button_new_delivery" type="object" string="Crear Entrega" icon="gtk-add" groups="rqr.group_name_rqr_delivery_resp,rqr.group_name_cam_administrator" class="oe_stat_button" 
+	                         					attrs="{'invisible':[('button_create_delivery_visible','=',False)]}">
+	                        </button>
+
+	                    </div>
+                
                     <group>
+                    	<group>
                     	<field name="name" string="Nombre"/>
                     	<field name="modelo" options="{'no_create_edit': True}"/>
                     	<field name="color" options="{'no_create_edit': True}"/>
@@ -15,23 +82,74 @@
                         <field name="patente"/>
                         <field name="nro_chasis"/>
                         <field name="anio"/>
-                    </group>
+                    	</group>
+                    	<group>
+                        <field name="ubicacion"/>
+                        <field name="create_date"/>
+                        <field name="fecha_facturacion"/>
+                        <field name="priority_of_chequed_request" attrs="{'invisible':[('state','!=', 'not_chequed')]}" groups="rqr.group_name_rqr_delivery_resp,rqr.group_name_cam_administrator,rqr.group_name_rqr_pre_delivery_resp"/>
+                    	
+                    	</group>
+					</group>
+					<notebook  class="oe_view_only" attrs="{'invisible':[('id','=', False)]}" >
+						<page string="Historico de estados">
+							<field name="state_list">
+								<tree limit="5" editable="bottom" create="0" delete="0" default_order="date_status desc">
+									<field name="status"/>
+									<field name="date_status"/>
+									<field name="comments"/>
+								</tree>
+							</field>
+						</page>
+					</notebook>
                 </sheet>
+					<div class="oe_chatter oe_view_only">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
                </form>
             </field>
 	</record>
-	<record id="delsol_rqr_vehicle_model_tree" model="ir.ui.view">
-		<field name="name">delsol.rqr.vehicle.model.form</field>
+	
+	<record model='ir.ui.view' id='delsol_vehicle_calendar'>
+		<field name="name">delsol.vehicle.calendar</field>
+		<field name="model">delsol.vehicle</field>
+		<field name="arch" type="xml">
+			<calendar string="Calendario Pre-Entregas" event_open_popup="True" color="state" date_start="date_for_calendar" 
+				date_delay="turn_duration" quick_add="False" display="[nro_chasis] ; [modelo] ; [color] ">
+				<field name="nro_chasis"/>
+				<field name="modelo"/>
+				<field name="color"/>
+			</calendar>
+		</field>
+	</record>
+	
+	
+	<record id="delsol_vehicle_model_tree" model="ir.ui.view">
+		<field name="name">delsol.vehicle.model.form</field>
 		<field name="model">delsol.vehicle_model</field>
 		<field name="arch" type="xml">
 			<tree string="Modelos">
 				<field name="name"/>
 				<field name="description"/>
+				<field name="vehicle_type"/>
 				<field name="turn_duration"/>
 			</tree>
 		</field>
 	</record>
 	
+	<record id="open_view_vehicle_pre_delivery" model="ir.actions.act_window">
+		<field name="name">Vehículos</field>
+		<field name="res_model">delsol.vehicle</field>
+		<field name="view_type">form</field>
+			<field name="context">{
+  					'search_default_pre_entrega': 1,
+  					'search_default_priority': 1
+					}
+			</field>		
+		<field name="domain">[]</field>
+		<field name="view_mode">tree,form,calendar</field>
+	</record>
 	<record id="open_view_vehicle_model_all" model="ir.actions.act_window">
 		<field name="name">Modelos</field>
 		<field name="res_model">delsol.vehicle_model</field>
@@ -43,9 +161,26 @@
 		<field name="name">Vehículos</field>
 		<field name="res_model">delsol.vehicle</field>
 		<field name="view_type">form</field>
+		<field name="context">{
+ 					'search_default_autos': 1
+				}
+		</field>		
+		<field name="domain">[]</field>
+		<field name="view_mode">tree,form,calendar</field>
+	</record>
+
+	<record id="open_view_vehicle_cam_all" model="ir.actions.act_window">
+		<field name="name">Vehículos</field>
+		<field name="res_model">delsol.vehicle</field>
+		<field name="view_type">form</field>
+		<field name="context">{
+ 					'search_default_camiones': 1
+				}
+		</field>		
 		<field name="domain">[]</field>
 		<field name="view_mode">tree,form</field>
 	</record>
+	
 	<record id="open_view_vehicle_color_all" model="ir.actions.act_window">
 		<field name="name">Colores</field>
 		<field name="res_model">delsol.vehicle_color</field>

@@ -18,7 +18,8 @@ _logger = logging.getLogger(__name__)
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    delivery_ids = fields.One2many('delsol.delivery','client_id',string="Vehiculos entregados", help = "Vehiculos entregados")
+    delivery_ids = fields.One2many('delsol.delivery','client_id',string="Vehiculos entregados", help = "Vehiculos entregados",
+                                   read=['base.group_no_one'])
 
     email = fields.Char('Email')
     phone = fields.Char('Phone')

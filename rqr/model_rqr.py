@@ -29,7 +29,8 @@ class delsol_rqr(models.Model):
 
     tipo_rqr = fields.Many2one("delsol.rqr_type","Tipo de RQR")
     
-    sector = fields.Selection([("ovalo","Plan Óvalo"),("especial","Venta Especial"),("tradicional","Venta Tradicional")],string="Sector",required="True")
+    sector = fields.Selection([("ovalo","Plan Óvalo"),("especial","Venta Especial"),("tradicional","Venta Tradicional"),("camiones","Camiones")],
+                              string="Sector",required="True")
 
     #sector = fields.Many2one("hr.department",string="Sector")    
 #    depto = fields.Selection([("repuestos","Repuestos"),("admin_plan_ovalo","Administración de Plan Ovalo"),("admin_tradicional","Administración de Venta Tradicional")],string="Departamento")   
@@ -45,17 +46,15 @@ class delsol_rqr(models.Model):
 
 
     cause = fields.Text(string='Causa')
-    delay_resolution = fields.Integer("Demora Resolucion (Dias)",compute="compute_delay",readonly=True,store=True)
+    delay_resolution = fields.Integer("Demora Resolucion (Dias)",compute="compute_delay",readonly=True,store=True,group_operator="avg")
 
-    delay_to_take_action = fields.Integer("Demora en tomar acción (Dias)",compute="compute_delay",default=-1,readonly=True,store=True)
+    delay_to_take_action = fields.Integer("Demora en tomar acción (Dias)",compute="compute_delay",default=-1,readonly=True,store=True,group_operator="avg")
     
     resolution_id = fields.Many2one("delsol.rqr_resolution",string="Resolucion implementada",ondelete='cascade')
 
     task_ids = fields.Many2many(comodel_name="project.task", relation="project_task_rqr", column1="task_id", column2="rqr_id", string="Acciones Correctivas") 
 
     call_root_id = fields.Many2one("delsol.call",string="Llamado que la genero",readonly=True)    
-
-    call_ids = fields.One2many(related='delivery_id.call_ids')
 
     severity = fields.Selection([('0','Baja'),
                                  ('1','Media baja'),
@@ -65,6 +64,15 @@ class delsol_rqr(models.Model):
                                  ('5','Critica')
                                  ],string="Severidad",default="2")
 
+    call_ids = fields.One2many(related='delivery_id.call_ids')
+
+    answered_poll = fields.Boolean(related="delivery_id.answered_poll")
+    sales_asistance = fields.Integer(related="delivery_id.sales_asistance")
+    payment_experience = fields.Integer(related="delivery_id.payment_experience")
+    compliance = fields.Integer(related="delivery_id.compliance")
+    delivery_process = fields.Integer(related="delivery_id.delivery_process")
+    comment_poll = fields.Text(related="delivery_id.comment_poll")
+    
     #Sirve para modificar los valores por defecto de la vista
     @api.model
     def default_get(self, fields):
@@ -116,8 +124,8 @@ class delsol_rqr(models.Model):
         if bool(self.state) & (self.state == 'progress'):
             if self.progress_date == False:
                 self.progress_date = datetime.utcnow()
-            difference = (datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
-            self.delay_to_take_action = difference.days
+                difference = (datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+                self.delay_to_take_action = difference.days
 
             
         if bool(self.state) & (self.state == 'solved'):
@@ -127,31 +135,34 @@ class delsol_rqr(models.Model):
             #calculo dias de demora en reslucion
             if self.solved_date == False:
                 self.solved_date = datetime.utcnow()
-            difference_delay = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
-            self.delay_resolution = difference_delay.days
-            if self.progress_date == False:
+                #difference_delay = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+                #self.delay_resolution = difference_delay.days
+            if (self.progress_date == False) :
                 self.progress_date = self.solved_date
+            if (self.progress_date == self.solved_date):
                 difference_to_take_action = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
             else:
                 difference_to_take_action = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S'))
             self.delay_to_take_action = difference_to_take_action.days
+            difference_delay = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            self.delay_resolution = difference_delay.days
         
         if bool(self.state) & (self.state == 'closed'):
             if self.closed_date == False:
                 self.closed_date = datetime.utcnow()
-            if self.progress_date == False:
-                self.progress_date = self.closed_date
-            if self.solved_date == False:
-                self.solved_date = self.closed_date
+                if self.progress_date == False:
+                    self.progress_date = self.closed_date
+                if self.solved_date == False:
+                    self.solved_date = self.closed_date
                 if bool(self.progress_date == self.solved_date):
-
                     difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
                 else:
-                    difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S'))
-            else:
-                difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S'))
-            self.delay_to_take_action = difference_to_take_action.days
-
+                    if bool(self.solved_date == self.closed_date):
+                        difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S'))
+                    else:
+                        difference_to_take_action = (datetime.strptime(self.closed_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S'))
+                    self.delay_to_take_action = difference_to_take_action.days
+    
             difference_delay = (datetime.strptime(self.solved_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
             self.delay_resolution = difference_delay.days
 
