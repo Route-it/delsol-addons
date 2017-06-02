@@ -9,6 +9,7 @@ from openerp import models, fields, api,_
 from openerp.exceptions import ValidationError, Warning
 from email.message import Message
 from datetime import date, datetime
+import pytz
 
 import logging
 import requests
@@ -384,9 +385,13 @@ class delsol_delivery(models.Model):
             smsclave = "Timberline838"
             smsnro = "2974139563" #  Sergio Bellido
             modelo = (self.vehicle_id.modelo.description[:15] + '..') if len(self.vehicle_id.modelo.description) > 15 else self.vehicle_id.modelo.description
-            hora = datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
-            smstexto = "El cliente "+self.client_id.name +" ha arribado. Hora entrega: "+ hora +". "+modelo +" " + self.vehicle_color +" " + self.vehicle_id.patente
-            #"llego el cliente " + cliente_id.nombre
+            
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            
+            hora = pytz.utc.localize(datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')).astimezone(local).strftime('%H:%M')
+
+	    smstexto = "El cliente "+self.client_id.name +" ha arribado. Hora entrega: "+ hora +". "+modelo +" " + self.vehicle_color +" " + self.vehicle_id.patente
             
             r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)
             print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnro + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
@@ -422,11 +427,11 @@ class delsol_delivery(models.Model):
             #"llego el cliente " + cliente_id.nombre
             
             #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)    
-            print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnro + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
+            #print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnro + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
 
-            print r.status_code
-            print r.headers
-            print r.content
+            #print r.status_code
+            #print r.headers
+            #print r.content
         except:
             print "Unexpected error!"
 
