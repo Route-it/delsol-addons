@@ -86,7 +86,7 @@
 						<field name="client_arrival" invisible="1"/>
 
 						<div  attrs="{'invisible':[('id','==',False)]}">
-							<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','=','delivered')]}"/>
+							<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','in',('dispatched','delivered'))]}"/>
 							<button name="stamp_client_arrival" string="Cliente en concesionaria" type="object" attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"/>
 							<button name="set_delivered" string="Entregar" type="object" class="oe_highlight" attrs="{'invisible':['|',('client_arrival','=',False),('state','not in',('new','reprogrammed','dispatched'))]}"/>
 							<button name="set_dispatched" string="Despachar" type="object" class="oe_highlight"  attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"/>
@@ -162,6 +162,10 @@
 						</group>
 
 					</sheet>
+					<div class="oe_chatter oe_view_only">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
 				</form>
 			</field>
 		</record>

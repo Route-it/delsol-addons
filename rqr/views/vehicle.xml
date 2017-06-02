@@ -97,6 +97,7 @@
 								<tree limit="5" editable="bottom" create="0" delete="0" default_order="date_status desc">
 									<field name="status"/>
 									<field name="date_status"/>
+									<field name="user"/>
 									<field name="comments"/>
 								</tree>
 							</field>

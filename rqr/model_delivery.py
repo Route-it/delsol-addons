@@ -20,15 +20,18 @@ class delsol_delivery(models.Model):
     
     _name = "delsol.delivery"
 
-    #_inherit = ["mail.thread", "ir.needaction_mixin"]
+    _inherit = ["mail.thread", "ir.needaction_mixin"]
 
     name = fields.Char(compute="name_get", store=True, readonly=True)
     
     active = fields.Boolean("Registro Activo", help = "Si se deja sin seleccionar, el registro quedará archivado.", default=True)
      
-    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,ondelete='cascade',write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    client_id = fields.Many2one('res.partner',string="Cliente",domain = [('customer','=','True')], help = "Cliente asociado al vehiculo",required=True,
+                                ondelete='cascade',write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'],
+                                track_visibility='onchange')
 
-    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
+    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,track_visibility='onchange',
+                                 write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator'])
 
     client_date = fields.Datetime("Fecha y horario de cita",required=True)
     
@@ -127,7 +130,6 @@ class delsol_delivery(models.Model):
         else:
             self.env.user.notify_info('El cliente no posee el email cargado.')
 
-        #return self.env['popup.message'].info("titulo","mensaje")
                 
     @api.multi
     def download_report_turn(self):
@@ -187,19 +189,22 @@ class delsol_delivery(models.Model):
     
     @api.one
     def set_delivered(self):
-        if (self.vehicle_id.state == 'ready_for_delivery'):
+        if (self.vehicle_id.state  in ('ready_for_delivery','dispatched')):
             if ((bool(self.vehicle_id.patente)) & (bool(self.vehicle_chasis))):  
                 if ((len(self.vehicle_id.patente)>0) & (len(self.vehicle_chasis)>0)):  
                     self.state = 'delivered'
                     self.vehicle_id.state = 'delivered'
                     self.vehicle_id.priority_of_chequed_request = 'normal'
                 else:
+                    self.env.user.notify_warning("El vehiculo no posee patente o nro de chasis cargado.")
                     raise ValidationError("El vehiculo no posee patente o nro de chasis cargado.")
                     return
             else:
+                self.env.user.notify_warning("El vehiculo no posee patente o nro de chasis cargado.")
                 raise ValidationError("El vehiculo no posee patente o nro de chasis cargado.")
                 return
         else:
+            self.env.user.notify_warning("El vehiculo no esta listo para entregar.")
             raise ValidationError("El vehiculo no esta listo para entregar.")
             return
             
@@ -210,6 +215,7 @@ class delsol_delivery(models.Model):
         self.state = "dispatched"
         self.vehicle_id.state = 'dispatched'
         self.vehicle_id.priority_of_chequed_request = 'normal'
+        self.client_arrival = self.delivery_date
 
     def set_close(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
@@ -225,6 +231,7 @@ class delsol_delivery(models.Model):
         if (self.delivery_date != self.olddate) and (self.olddate is not False):
             self.state = 'reprogrammed'
         self.olddate = self.delivery_date
+        self.vehicle_id.priority_of_chequed_request = 'normal'
 
     @api.one
     def stamp_tae(self):
@@ -332,7 +339,7 @@ class delsol_delivery(models.Model):
                      }
             """
         
-            self.browse(cr,uid,ids,context).env.user.notify_info(message)
+            self.env.user.notify_info(message)
     
             res = {'value': {}}
             warning = {'warning': {
@@ -357,6 +364,15 @@ class delsol_delivery(models.Model):
         self.delivery_date = reprogram.new_delivery_date
         self.client_arrival = False
         self.state = "reprogrammed"
+        
+        
+        
+        body = '%s ha modificado la programacion de %s a %s.' % (self.env.user.name, new_reprogramming.from_date,new_reprogramming.to_date)
+
+        super(delsol_delivery,self).message_post(body=body)
+
+        self.env.user.notify_info('Se ha reprogramado la entrega.')
+
         return {'type': 'ir.actions.act_window_close'}
     
     @api.one

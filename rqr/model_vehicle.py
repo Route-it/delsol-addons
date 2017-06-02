@@ -33,15 +33,15 @@ class delsol_vehicle(models.Model):
     name = fields.Char(compute="compute_name", store=True, readonly=True)
 
     marca = fields.Char(string ="Marca")
-    modelo = fields.Many2one("delsol.vehicle_model",string ="Modelo")
+    modelo = fields.Many2one("delsol.vehicle_model",string ="Modelo",track_visibility='onchange')
     vehicle_type = fields.Selection(related='modelo.vehicle_type')
     turn_duration = fields.Integer(compute="_turn_duration")    
 
-    color = fields.Many2one("delsol.vehicle_color",string ="Color de vehículo",required=True)
-    patente = fields.Char(string ="Patente"
+    color = fields.Many2one("delsol.vehicle_color",string ="Color de vehículo",required=True,track_visibility='onchange')
+    patente = fields.Char(string ="Patente",track_visibility='onchange'
                           ,write=['base.user_root','rqr.group_name_rqr_delivery_resp','rqr.group_name_rqr_administrator']
                           )
-    nro_chasis = fields.Char(string="Nro de Chasis")
+    nro_chasis = fields.Char(string="Nro de Chasis",track_visibility='onchange')
 
     
     ubicacion = fields.Char(string="Ubicacion")
@@ -86,7 +86,8 @@ class delsol_vehicle(models.Model):
 
     def _update_status_list(self):
         vehicle_status_obj = self.env['delsol.vehicle_status']
-        defaults = {'vehicle_id': self.id,'status':self.state,'date_status':fields.Datetime.now(),'comments':'','priority_of_chequed_request':self.priority_of_chequed_request}
+        defaults = {'vehicle_id': self.id,'status':self.state,'date_status':fields.Datetime.now(),'user':self.env.user.name,
+                    'comments':'','priority_of_chequed_request':self.priority_of_chequed_request}
         target_vs =  vehicle_status_obj.create(defaults)
 
 
@@ -206,6 +207,11 @@ class delsol_vehicle(models.Model):
     def onchange_patente(self):
         if self.patente:
             self.patente = str(self.patente).upper()
+
+    @api.onchange('nro_chasis')
+    def onchange_nro_chasis(self):
+        if self.nro_chasis:
+            self.nro_chasis = str(self.nro_chasis).upper()
     
     @api.depends('marca','modelo','patente','anio')
     @api.multi

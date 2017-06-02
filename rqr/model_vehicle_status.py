@@ -27,6 +27,7 @@ class delsol_vehicle_status(models.Model):
 
     priority_of_chequed_request = fields.Selection(PRIORITY,default="normal",string="Prioridad",required=True,readonly=True)
     
+    user = fields.Many2one("res.user",string="Usuario",readonly=True)
     status = fields.Selection(STATES ,default="new",string="Estado",readonly=True)
     date_status = fields.Datetime("Fecha de cambio de estado",readonly=True)
     comments = fields.Text("Comentarios")
