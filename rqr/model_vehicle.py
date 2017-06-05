@@ -3,6 +3,8 @@
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from sre_parse import isdigit
+from datetime import date, datetime
+import pytz
 
 
 class delsol_vehicle(models.Model):
@@ -86,7 +88,8 @@ class delsol_vehicle(models.Model):
 
     def _update_status_list(self):
         vehicle_status_obj = self.env['delsol.vehicle_status']
-        defaults = {'vehicle_id': self.id,'status':self.state,'date_status':fields.Datetime.now(),'user':self.env.user.name,
+        date_status = fields.Datetime.to_string(datetime.now(pytz.utc))
+        defaults = {'vehicle_id': self.id,'status':self.state,'date_status':date_status,'user_id':self.env.user.id,
                     'comments':'','priority_of_chequed_request':self.priority_of_chequed_request}
         target_vs =  vehicle_status_obj.create(defaults)
 

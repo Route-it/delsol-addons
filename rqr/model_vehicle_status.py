@@ -6,7 +6,7 @@ from openerp import models, fields, api
 class delsol_vehicle_status(models.Model):
     _name = 'delsol.vehicle_status'
     
-
+    _order = 'id desc'
     STATES = [("new","Nueva"),
                                ("not_chequed","Unidad A Chequear"),
                                ("ready_for_programmed","Lista Para Programar"),
@@ -27,7 +27,7 @@ class delsol_vehicle_status(models.Model):
 
     priority_of_chequed_request = fields.Selection(PRIORITY,default="normal",string="Prioridad",required=True,readonly=True)
     
-    user = fields.Many2one("res.user",string="Usuario",readonly=True)
+    user_id = fields.Many2one('res.users', string='Usuario', required=True, default=lambda self: self.env.user.id)
     status = fields.Selection(STATES ,default="new",string="Estado",readonly=True)
     date_status = fields.Datetime("Fecha de cambio de estado",readonly=True)
     comments = fields.Text("Comentarios")
