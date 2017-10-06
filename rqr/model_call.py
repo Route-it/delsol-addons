@@ -9,7 +9,6 @@ from openerp import models, fields, api
 from openerp.exceptions import ValidationError, Warning
 from datetime import date
 
-
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -22,7 +21,7 @@ class delsol_call(models.Model):
     
     delivery_id = fields.Many2one("delsol.delivery")
     delivery_state = fields.Selection(string="Estado de entrega",related="delivery_id.state",readonly=True)
-    delivery_sector = fields.Selection(related="delivery_id.sector",readonly=True)
+    delivery_sector = fields.Selection(related="delivery_id.sector",readonly=True,store=True)
         
     phone = fields.Char(string="Telefono",related="delivery_id.client_id.phone",readonly=True)
     mobile = fields.Char(string="Movil",related="delivery_id.client_id.mobile",readonly=True)
@@ -30,7 +29,7 @@ class delsol_call(models.Model):
     
     contact_date = fields.Datetime(string="Fecha de contacto")
     contact_type = fields.Selection([('tel', 'Telefono'),('mail','Correo electronico')],"Tipo de contacto")
-    contacted = fields.Boolean(string="Contactado?")
+    contacted = fields.Boolean(string="Contactado",default=False)
     why_no_contacted = fields.Many2one("delsol.why_no_contacted")
     
     conformity = fields.Selection([('ms', 'Muy Satisfactorio'),('s','Satisfactorio'),('rqr','RQR')],"Nivel de Conformidad")
@@ -76,7 +75,26 @@ class delsol_call(models.Model):
                 return
             
             
-            
+    """
+    def _read_group_prepare_data(self, key, value, groupby_dict, context):
+        value = super(delsol_call, self)._read_group_prepare_data(key, value, groupby_dict, context=context)
+        gb = groupby_dict.get(key)
+        if gb and gb['type'] in ('boolean'):
+            value = 'No ' + self._fields[key]._column_string if value is False else self._fields[key]._column_string
+        return value
+
+
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False,lazy=True):
+        ret_val = super(delsol_call, self).read_group(cr, uid, domain, fields, groupby, offset=offset, limit=limit, context=context, orderby=orderby,lazy=lazy)
+        for rt in ret_val:
+            if rt.has_key('contacted'):
+                if rt.get('contacted', False):
+                    rt['contacted'] = 'Contactado'
+                else:
+                    rt['contacted'] = 'No Contactado'
+        return ret_val
+    """   
+         
     #Sirve para modificar los valores por defecto de la vista
     @api.model
     def default_get(self, fields):
@@ -114,22 +132,8 @@ class delsol_call(models.Model):
                 message = 'Se genero correctamente la RQR.'
 
 
-            """
-            warning = {
-                        'title': 'Mensaje !',
-                        'message': message
-                     }
-            """
             
-            res = {'value': {}}
-            warning = {'warning': {
-                    'title': 'Mensaje',
-                    'message': message,
-                    }}        
-            res.update(warning)
-    
-            #return {'warning': warning}
-            #return res
+            self.env.user.notify_info(message)    
             return {
                     'type': 'ir.actions.client',
                     'tag': 'reload',

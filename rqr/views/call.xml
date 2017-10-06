@@ -13,6 +13,18 @@
 					<separator />
 					<filter string="Camiones" name="camiones" domain="[('delivery_sector','=','camiones')]" />
 					<filter string="Autos" name="autos" domain="[('delivery_sector','!=','camiones')]" />
+					<separator />
+					<filter string="Este mes" domain="[('contact_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('contact_date','&gt;=',time.strftime('%Y-%m-01'))]"/>
+					<separator />
+					<group expand="0" string="Agrupar por">
+						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
+						<filter string="Sector" name="delivery_sector" context="{'group_by':'delivery_sector'}" />
+					<separator />
+						<filter string="Responsable de Llamado" name="responsible_call" context="{'group_by':'create_uid'}" />
+						<filter string="Porque no se contacto al cliente" name="why_no_contacted" context="{'group_by':'why_no_contacted'}" />
+						<filter string="Llamados por dia" domain="[ ]" context="{'group_by': 'contact_date:day'}" />
+					</group>
+					<separator />
 				</search>
 			</field>
 		</record>
@@ -91,12 +103,32 @@
 		</record>
 		
 
+
+		<record id="delsol_delivery_call_pivot" model="ir.ui.view">
+			<field name="name">delsol.call.pivot</field>
+			<field name="model">delsol.call</field>
+			<field name="arch" type="xml">
+				<pivot string="Call Center Pivot">
+				</pivot>
+			</field>
+		</record>
+		
+		<record id="delsol_delivery_call_graph" model="ir.ui.view">
+			<field name="name">delsol.call.graph</field>
+        	<field name="model">delsol.call</field>
+        	<field name="arch" type="xml">
+        		<graph string="Llamados">
+        		    <field name="contacted"/>
+        		</graph>
+        	</field>
+    	</record>
+
 		<record id="open_view_call_all" model="ir.actions.act_window">
 			<field name="name">Llamadas</field>
 			<field name="res_model">delsol.call</field>
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">tree,form,graph,pivot</field>
 		</record>
 
 		

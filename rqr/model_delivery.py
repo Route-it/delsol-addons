@@ -383,16 +383,15 @@ class delsol_delivery(models.Model):
         try:
             smsuser = "DELSOLAUTOMOTOR"
             smsclave = "Timberline838"
+
             smsnro = "2974139563" #  Sergio Bellido
             modelo = (self.vehicle_id.modelo.description[:15] + '..') if len(self.vehicle_id.modelo.description) > 15 else self.vehicle_id.modelo.description
-            
+
             user_tz = self.env.user.tz or pytz.utc
             local = pytz.timezone(user_tz)
             
             hora = pytz.utc.localize(datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')).astimezone(local).strftime('%H:%M')
-
-	    smstexto = "El cliente "+self.client_id.name +" ha arribado. Hora entrega: "+ hora +". "+modelo +" " + self.vehicle_color +" " + self.vehicle_id.patente
-            
+            smstexto = "El cliente "+self.client_id.name +" ha arribado. Hora entrega: "+ hora +". "+modelo +" " + self.vehicle_color +" " + self.vehicle_id.patente
             r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)
             print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnro + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
 

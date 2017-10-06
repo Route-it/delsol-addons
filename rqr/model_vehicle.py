@@ -6,7 +6,6 @@ from sre_parse import isdigit
 from datetime import date, datetime
 import pytz
 
-
 class delsol_vehicle(models.Model):
     _name = 'delsol.vehicle'
 
