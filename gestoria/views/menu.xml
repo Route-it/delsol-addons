@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+
+		<menuitem name="Gestoria" id="menu_gestoria" parent="base.delsol_main_menu" action="open_view_gestoria_all"/>
+
+
+	</data>
+</openerp>

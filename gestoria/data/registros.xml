@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+        <record id="formality_registry" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">1</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry2" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">2</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry3" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">3</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry4" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">4</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry5" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">5</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry6" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">5</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry6" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="code">6</field>
+            <field name="city">Comodoro Rivadavia</field>
+        </record>
+        <record id="formality_registry7" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">AV. ALVEAR NRO:615</field>
+            <field name="tel">(02945)452355</field>
+            <field name="zip_code">9200</field>
+            <field name="code"></field>
+            <field name="city">Esquel</field>
+        </record>
+        <record id="formality_registry8" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">MOSCONI NRO:80</field>
+            <field name="tel">(02804)451174</field>
+            <field name="zip_code">9120</field>
+            <field name="code">1</field>
+            <field name="city">Puerto Madryn</field>
+        </record>
+        <record id="formality_registry9" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">SAN MARTIN NRO:186</field>
+            <field name="tel">(0280)4452751</field>
+            <field name="zip_code">9120</field>
+            <field name="code">2</field>
+            <field name="city">Puerto Madryn</field>
+        </record>
+        <record id="formality_registry10" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">MORENO NRO:773</field>
+            <field name="tel">(0280)4482285</field>
+            <field name="zip_code">9103</field>
+            <field name="code"></field>
+            <field name="city">Rawson</field>
+        </record>
+        <record id="formality_registry11" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">AV.SAN MARTIN NRO:446</field>
+            <field name="tel">(0297)4893246</field>
+            <field name="zip_code">9020</field>
+            <field name="code"></field>
+            <field name="city">Sarmiento</field>
+        </record>
+        <record id="formality_registry12" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">SARMIENTO NRO:440</field>
+            <field name="tel">(0280)4426944</field>
+            <field name="zip_code">9100</field>
+            <field name="code">1</field>
+            <field name="city">Trelew</field>
+        </record>
+        <record id="formality_registry13" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">BELGRANO NRO:648</field>
+            <field name="tel">(0280)4422051</field>
+            <field name="zip_code">9100</field>
+            <field name="code">2</field>
+            <field name="city">Trelew</field>
+        </record>
+        <record id="formality_registry14" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">PECORARO NRO:527</field>
+            <field name="tel">(0280)4438104</field>
+            <field name="zip_code">9100</field>
+            <field name="code">3</field>
+            <field name="city">Trelew</field>
+        </record>
+
+
+
+
+        <record id="formality_registry15" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">SAN MARTIN 2108</field>
+            <field name="tel">(0297)4838081</field>
+            <field name="zip_code">9011</field>
+            <field name="code">1</field>
+            <field name="city">Caleta Olivia</field>
+        </record>
+        <record id="formality_registry16" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">25 DE MAYO NRO:86</field>
+            <field name="tel">(0297)4830519</field>
+            <field name="zip_code">9011</field>
+            <field name="code">2</field>
+            <field name="city">Caleta Olivia</field>
+        </record>
+        <record id="formality_registry17" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">AV. 17 DE OCTUBRE 822</field>
+            <field name="tel">(02902)494847</field>
+            <field name="zip_code">9405</field>
+            <field name="code"></field>
+            <field name="city">El Calafate</field>
+        </record>
+        <record id="formality_registry18" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">SANTIAGO DEL ESTERO 901</field>
+            <field name="tel">(0297)4996552</field>
+            <field name="zip_code">9015</field>
+            <field name="code"></field>
+            <field name="city">Pico Truncado</field>
+        </record>
+        <record id="formality_registry19" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">AV. 12 DE OCTUBRE 846</field>
+            <field name="tel">(0297)4870134</field>
+            <field name="zip_code">9050</field>
+            <field name="code"></field>
+            <field name="city">Puerto Deseado</field>
+        </record>
+        <record id="formality_registry20" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">AV. ROCA 665</field>
+            <field name="tel">(02962)498269</field>
+            <field name="zip_code">9300</field>
+            <field name="code"></field>
+            <field name="city">Puerto Santa Cruz</field>
+        </record>
+        <record id="formality_registry21" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">PASTEUR 225</field>
+            <field name="tel">(02962)422087</field>
+            <field name="zip_code">9400</field>
+            <field name="code">1</field>
+            <field name="city">Rio Gallegos</field>
+        </record>
+        <record id="formality_registry21" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">PERITO MORENO 360</field>
+            <field name="tel">(02962)444740</field>
+            <field name="zip_code">9400</field>
+            <field name="code">2</field>
+            <field name="city">Rio Gallegos</field>
+        </record>
+        <record id="formality_registry22" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">GENDARME CORONEL 478 BºGENDARM</field>
+            <field name="tel">(02902)421766</field>
+            <field name="zip_code">9407</field>
+            <field name="code"></field>
+            <field name="city">Rio Turbio</field>
+        </record>
+        <record id="formality_registry23" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">MITRE 340</field>
+            <field name="tel">(02962)454369</field>
+            <field name="zip_code">9310</field>
+            <field name="code"></field>
+            <field name="city">San Julian</field>
+        </record>
+        <record id="formality_registry24" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">MITRE 340</field>
+            <field name="tel">(02962)454369</field>
+            <field name="zip_code">9310</field>
+            <field name="code"></field>
+            <field name="city">San Julian</field>
+        </record>
+        <record id="formality_registry25" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">O`HIGGINS 148</field>
+            <field name="tel">(02964)433441 </field>
+            <field name="zip_code">9420</field>
+            <field name="code">1</field>
+            <field name="city">Rio Grande</field>
+        </record>
+        <record id="formality_registry26" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">ALBERDI 131</field>
+            <field name="tel">(02964)431826</field>
+            <field name="zip_code">9420</field>
+            <field name="code">2</field>
+            <field name="city">Rio Grande</field>
+        </record>
+        <record id="formality_registry27" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address">AVDA. PERITO MORENO 848</field>
+            <field name="tel">(02964)424476</field>
+            <field name="zip_code">V9420CBE</field>
+            <field name="code">3</field>
+            <field name="city">Rio Grande</field>
+        </record>
+        <record id="formality_registry28" model="delsol.vehicle_registry">
+            <field name="name">Reg</field>
+            <field name="address"></field>
+            <field name="tel"></field>
+            <field name="zip_code"></field>
+            <field name="code"></field>
+            <field name="city">Cordoba</field>
+        </record>
+    </data>
+</openerp>

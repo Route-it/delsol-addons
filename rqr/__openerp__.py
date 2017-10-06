@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Gestion de Entregas",
+    'name': "Gestion de RQR y llamados posteriores (Ventas)",
 
     'summary': """
         Modulo de trackeo RQRS Ford""",
@@ -20,22 +20,20 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','project','hr','mail'],
+    'depends': ['base','delsol_base','entregas','project','hr'],
 
     # always loaded
     'data': [
-        'security/rqr_security.xml',
+        'security/actions_security.xml',
+        'security/profiles_security.xml',
+        'security/menu_security.xml',
         'security/ir.model.access.csv',
-        'views/delivery.xml',
         'views/call.xml',
+        'views/delivery.xml',
         'views/rqr.xml',
-        'views/res_partner_view.xml',
-        'views/vehicle.xml',
         'views/menu.xml',
-        'report/report.xml',
-        'data/events.xml',
-        'data/ir_cron.xml',
-        'data/view.xml',
+        'views/events.xml',
+        'views/ir_cron.xml',
         'data.xml',
     ],
     # only loaded in demonstration mode

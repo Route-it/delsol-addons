@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+<!-- 		<record model="ir.ui.view" id="entregas.delsol_client_form"> -->
+<!-- 			<field name="name">delsol.res.partner.form</field> -->
+<!-- 			<field name="model">res.partner</field> -->
+<!-- 			<field name="inherit_id" ref="base.view_partner_form" /> -->
+
+<!-- 			<field name="arch" type="xml"> -->
+
+<!-- 				<notebook position="inside"> -->
+<!-- 					<page string="Entregas" autofocus="autofocus"> -->
+<!-- 						<field name="delivery_ids" mode="kanban"> -->
+<!-- 							<kanban> -->
+<!-- 								<field name="client_id" string="Cliente" /> -->
+<!-- 								<field name="vehicle_id" string="Vehiculo" /> -->
+<!-- 								<field name="delivery_date" string="Fecha Entrega" /> -->
+<!-- 								<templates> -->
+<!-- 									<t t-name="kanban-box"> -->
+
+<!-- 										<div t-attf-class="oe_kanban_color_546 oe_kanban_card oe_kanban_global_click" style="height:150px"> -->
+
+<!-- 											<div class="o_dropdown_kanban dropdown" groups="base.group_user"> -->
+<!-- 												<a class="dropdown-toggle btn" data-toggle="dropdown" -->
+<!-- 													href="#"> -->
+<!-- 													<span class="fa fa-bars fa-lg" /> -->
+<!-- 												</a> -->
+<!-- 												<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"> -->
+<!-- 													<t t-if="widget.editable"> -->
+<!-- 														<li> -->
+<!-- 															<a type="edit">Edit</a> -->
+<!-- 														</li> -->
+<!-- 													</t> -->
+<!-- 													<t t-if="widget.deletable"> -->
+<!-- 														<li> -->
+<!-- 															<a type="delete">Delete</a> -->
+<!-- 														</li> -->
+<!-- 													</t> -->
+<!-- 												</ul> -->
+<!-- 											</div> -->
+<!-- 											<div class="oe_kanban_top_left"> -->
+<!-- 												<field name="client_id" /> -->
+<!-- 											</div> -->
+<!-- 											<div class="oe_kanban_bottom_left"> -->
+<!-- 												<field name="vehicle_id" /> -->
+<!-- 											</div> -->
+<!-- 											<div class="oe_kanban_bottom_right"> -->
+<!-- 												<field name="delivery_date" /> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</t> -->
+<!-- 								</templates> -->
+<!-- 							</kanban> -->
+<!-- 						</field> -->
+<!-- 					</page> -->
+<!-- 				</notebook> -->
+
+
+<!-- 			</field> -->
+<!-- 		</record> -->
+
+	</data>
+</openerp>

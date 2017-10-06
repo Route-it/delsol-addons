@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="rqr_delays" model="delsol.event">
+            <field name="name">Calculo de demoras en RQR</field>
+            <field name="code">on_rqr_delays</field>
+            <field name="emails"></field>
+            <field name="acive">False</field>
+        </record>
+
+    </data>
+</openerp>

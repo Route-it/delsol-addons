@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		 <record id="vehicle_form" model="ir.ui.view">
+            <field name="name">delsol.vehicle.form</field>
+            <field name="model">delsol.vehicle</field>
+            <field name="inherit_id" ref="delsol_base.vehicle_form"></field>
+            <field name="arch" type="xml">
+                    <field name="nro_chasis" position="after">
+	                        <field name="patente"/>
+	                </field>
+<!-- 	                <notebook  position="inside"> -->
+<!-- 	                	<page string="Tramites de gestoria"> -->
+<!-- 							<field name="formality_ids"> -->
+<!-- 								<tree limit="5" create="0" delete="0"> -->
+<!-- 									<field name="fomarlity_responsible_id"/> -->
+<!-- 									<field name="state"/> -->
+<!-- 									<field name="formality_in_registry_date"/> -->
+<!-- 									<field name="patent_date"/> -->
+<!-- 									<field name="fordward_sales_admin_date"/> -->
+<!-- 									<field name="comments"/> -->
+<!-- 								</tree> -->
+<!-- 							</field> -->
+<!-- 						</page> -->
+<!-- 	                </notebook> -->
+            </field>
+	</record>
+	</data>
+</openerp>

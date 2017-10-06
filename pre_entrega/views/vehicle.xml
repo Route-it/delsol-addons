@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="vehicle_filter" model="ir.ui.view">
+			<field name="name">delsol.vehicle.select</field>
+			<field name="model">delsol.vehicle</field>
+			<field name="inherit_id" ref="delsol_base.vehicle_filter"></field>
+			<field name="arch" type="xml">
+				<search position="inside">
+					<filter string="Pre-Entrega" name="pre_entrega" domain="[('state','in',('not_chequed','damage','missing','to_be_delivery'))]" />
+					<separator />
+					<filter string="Averiados" name="damage" domain="[('state_list.status','=','damage')]" />
+				</search>
+			</field>
+		</record>
+
+
+	<record id="vehicle_tree" model="ir.ui.view">
+		<field name="name">delsol.vehicle.tree</field>
+		<field name="model">delsol.vehicle</field>
+		<field name="inherit_id" ref="delsol_base.vehicle_tree"></field>
+		<field name="arch" type="xml">
+			<tree position="attributes">
+	            <attribute name="colors" >red:(priority_of_chequed_request=='high')</attribute>
+			</tree> 
+			<tree position="inside">
+				<field name="priority_of_chequed_request"/>
+			</tree>
+		</field>
+	</record>
+
+		 <record id="vehicle_form" model="ir.ui.view">
+            <field name="name">delsol.vehicle.form</field>
+            <field name="model">delsol.vehicle</field>
+            <field name="inherit_id" ref="delsol_base.vehicle_form"></field>
+            <field name="arch" type="xml">
+				<field name="id" position="after">
+						<button name="ready_for_programmed" string="Unidad lista para programar" type="object" states="not_chequed" class="oe_highlight" 
+							groups="pre_entrega.group_name_ready_for_programmed"/>
+						<button name="damage" string="Unidad dañada" type="object"  states="not_chequed,to_be_delivery"
+							groups="pre_entrega.group_name_damage"/>
+						<button name="repaired_damage" string="Unidad reparada, lista para programar" type="object"  states="damage" 
+							groups="pre_entrega.group_name_repaired_damage"/>
+						<button name="state_missing" string="Unidad Faltante" type="object"  states="not_chequed,to_be_delivery" 
+							groups="pre_entrega.group_name_missing"/>
+						<button name="ready_for_delivery" string="Unidad preparada" states="to_be_delivery" type="object" class="oe_highlight" 
+							groups="pre_entrega.group_name_ready_for_delivery"/>
+						<button name="not_chequed" string="Unidad Encontrada" type="object" states="missing"  
+							groups="pre_entrega.group_name_not_chequed"/>
+				</field>
+                    <group position="inside">
+                    	<group position="inside">
+	                        <field name="priority_of_chequed_request" attrs="{'invisible':[('state','!=', 'not_chequed')]}" />
+                    	</group>
+					</group>
+            </field>
+	</record>
+	
+	<record model='ir.ui.view' id='delsol_vehicle_calendar'>
+		<field name="name">delsol.vehicle.calendar</field>
+		<field name="model">delsol.vehicle</field>
+		<field name="arch" type="xml">
+			<calendar string="Calendario Pre-Entregas" event_open_popup="True" color="state" date_start="date_for_calendar" 
+				date_delay="turn_duration" quick_add="False" display="[nro_chasis] ; [modelo] ; [color] ">
+				<field name="nro_chasis"/>
+				<field name="modelo"/>
+				<field name="color"/>
+			</calendar>
+		</field>
+	</record>
+	
+	
+	<record id="open_view_vehicle_pre_delivery" model="ir.actions.act_window">
+		<field name="name">Vehículos</field>
+		<field name="res_model">delsol.vehicle</field>
+		<field name="view_type">form</field>
+			<field name="context">{
+  					'search_default_pre_entrega': 1,
+  					'search_default_priority': 1
+					}
+			</field>		
+		<field name="domain">[]</field>
+		<field name="view_mode">tree,form,calendar</field>
+	</record>
+
+	
+	</data>
+</openerp>

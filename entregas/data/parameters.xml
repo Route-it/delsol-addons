@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="delivery_date_max" model="delsol.config">
+            <field name="name">Fechas de entregas futuras en X dias</field>
+            <field name="app">Delivery</field>
+            <field name="descrption">Dato: (entero numerico)
+            			Restringe que la fecha de entrega
+            			no pueda ser mayor que N  dias posteriores a la fecha</field>
+            <field name="value">30</field>
+        </record>
+        <record id="delivery_permit_pass_date" model="delsol.config">
+            <field name="name">Fechas de entregas en el pasado</field>
+            <field name="app">Delivery</field>
+            <field name="description">Dato: True/False
+            				Permite fechas (True) o no (False) en el pasado.</field>
+            <field name="value">False</field>
+        </record>
+        <record id="delivery_client_date" model="delsol.config">
+            <field name="name">Fechas de cita del cliente NN minutos antes</field>
+            <field name="app">Delivery</field>
+            <field name="description">Dato: N (entero numerico positivo) en minutos.
+            				Permite configurar la anticipacion de la fecha-hora de cita, respecto a la
+            				fecha-hora de entrega. Se aplica si "calcular automaticamente" esta activada</field>
+            <field name="value">30</field>
+        </record>
+        <record id="delivery_client_date_blocked" model="delsol.config">
+            <field name="name">Fechas de cita del cliente calculada automaticamente</field>
+            <field name="app">Delivery</field>
+            <field name="description">Dato: True/False.
+            				Permite configurar que la fecha de cita del cliente en una entrega, sea calculada
+            				automaticamente. La misma quedará en modo solo lectura de ser activada.</field>
+            <field name="value">True</field>
+        </record>
+
+
+    </data>
+</openerp>

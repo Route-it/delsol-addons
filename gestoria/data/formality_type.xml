@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="formality_type1" model="delsol.formality_type">
+            <field name="number">01</field>
+            <field name="descrption">Formulario de inscripcion inicial</field>
+        </record>
+        <record id="formality_type2" model="delsol.formality_type">
+            <field name="number">03</field>
+            <field name="descrption">Solicitud de inscripcion de contrario de prenda</field>
+        </record>
+        <record id="formality_type3" model="delsol.formality_type">
+            <field name="number">12</field>
+            <field name="descrption">Formulario de verificacion tecnica</field>
+        </record>
+        <record id="formality_type4" model="delsol.formality_type">
+            <field name="number">59</field>
+            <field name="descrption"></field>
+        </record>
+		
+    </data>
+</openerp>

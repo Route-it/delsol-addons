@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		<menuitem name="Eventos" id="menu_events_model_list" parent="base.delsol_main_menu" 
+				action="open_view_events_all" groups="group_name_menu_delsol_event"/>
+	</data>
+</openerp>

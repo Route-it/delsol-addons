@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+    	
+    	<record model="ir.module.category" id="module_delsol_actions_category">
+            <field name="name">Del Sol Acciones</field>
+            <field name="description">Módulo base de concesionario</field>
+            <field name="sequence">16</field>
+        </record>
+    	<record model="ir.module.category" id="module_delsol_menu_category">
+            <field name="name">Del Sol Menu</field>
+            <field name="description">Módulo base de concesionario</field>
+            <field name="sequence">16</field>
+        </record>
+    	<record model="ir.module.category" id="module_delsol_profiles_category">
+            <field name="name">Del Sol Perfiles</field>
+            <field name="description">Módulo base de concesionario</field>
+            <field name="sequence">16</field>
+        </record>
+    	
+	</data>
+</openerp>

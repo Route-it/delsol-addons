@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+
+		<menuitem name="Entregas" id="menu_entregas" parent="base.delsol_main_menu"  groups="group_name_menu_delivery"/>
+			<menuitem name="Autos" id="menu_entregas_autos" parent="menu_entregas" action="open_view_delivery_all"  groups="group_name_menu_delsol_autos"/>
+			<menuitem name="Camiones" id="menu_entregas_camiones" parent="menu_entregas" action="open_view_delivery_cam_all" groups="group_name_menu_delsol_camiones"/>
+		
+
+	</data>
+</openerp>

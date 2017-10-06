@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="formality_filter" model="ir.ui.view">
+			<field name="name">delsol.formality.select</field>
+			<field name="model">delsol.formality</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="client_id" />
+					<field name="nro_chasis" />
+					<field string="Tramite" name="formality_type_ids" />
+					<field string="Responsable" name="fomarlity_responsible_id" />
+					<field string="Registro" name="vehicle_registry_id" />
+					<field string="Estado Tramite" name="state" />
+					<separator />
+					<filter string="En Gestoria" name="in_formality"
+						domain="[('state','!=','finalized')]" />
+					<separator />
+					<group expand="1" string="Agrupar por">
+						<filter string="Registro" domain="[ ]"
+							context="{'group_by': 'vehicle_registry_id'}" />
+						<filter string="Estado" name="group_state" domain="[ ]" context="{'group_by': 'state'}" />
+					</group>
+					<separator />
+				</search>
+			</field>
+		</record>
+
+
+
+
+		<record id="formality_tree" model="ir.ui.view">
+			<field name="name">delsol.formality.tree</field>
+			<field name="model">delsol.formality</field>
+			<field name="arch" type="xml">
+				<tree string="Tramites de Gestoria">
+					<field name="nro_chasis" />
+					<field name="client_id" />
+					<field name="state" />
+					<field name="vehicle_registry_id" />
+					<field name="papers_received_date" />
+					<field name="title_delivery_to_client_date" />
+					<field name="create_date" />
+					<field name="fomarlity_responsible_id" />
+					<field name="comments" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="formality_form" model="ir.ui.view">
+			<field name="name">delsol.formality.form</field>
+			<field name="model">delsol.formality</field>
+			<field name="arch" type="xml">
+				<form string="Vehículo">
+					<header>
+						<field name="id" invisible="1" />
+
+<!-- 						<button name="set_initiated" string="Papeles Presentados" type="object" class="oe_highlight" attrs="[('state','==','new')]"/> -->
+<!-- 						<button name="set_observed" string="Tramite Observado" type="object" attrs="[('state','==','initiated')]"/> -->
+<!-- 						<button name="set_delayed" string="Tramite Demorado" type="object" attrs="[('state','==','initiated')]"/> -->
+<!-- 						<button name="set_completed" string="Tramite Completado" type="object" class="oe_highlight" attrs="[('state','in',('initiated','delayed','observed'))]"/> -->
+<!-- 						<button name="set_finalized" string="Titulo Entregado" type="object" class="oe_highlight" attrs="[('state','==','completed')]"/> -->
+
+						<field name="state" widget="statusbar" nolabel="1" statusbar_visible="new,initiated,completed,finalized" statusbar_colors="{'new':'blue'}" />
+
+					</header>
+					<sheet string="Tramite">
+						<h1>
+						<field name="client_id" options="{'no_create_edit': True}" />
+						</h1>
+						<h2>
+						<field name="vehicle_id" options="{'no_create_edit': True}" groups="delsol_base.group_name_administrator"/>
+						</h2>
+						<group>
+							<group string="Gestoria">
+								<field name="fomarlity_responsible_id" options="{'no_create_edit': True}" />
+								<field name="create_date" />
+								<field name="title_delivery_to_client_date" />
+								<field name="time_delayed_in_formality" />
+							</group>
+							<group string="Registro">
+								<field name="formality_type_ids" />
+								<field name="formality_in_registry_date" />
+								<field name="vehicle_registry_id" />
+								<field name="papers_received_date" />
+							</group>
+							<group string="Gerencia">
+								<field name="folder_sign_send_date" />
+								<field name="folder_sign_receiv_date" />
+							</group>
+							<group string="Vehiculo">
+								<field name="nro_chasis" />
+								<field name="patent_date" />
+								<field name="patent" />
+							</group>
+						</group>
+						<group>
+							<field name="comments" />
+
+						</group>
+
+					</sheet>
+					<div class="oe_chatter oe_view_only">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+
+		<record id="open_view_gestoria_all" model="ir.actions.act_window">
+			<field name="name">Vehiculos en Gestoria</field>
+			<field name="res_model">delsol.formality</field>
+			<field name="view_type">form</field>
+			<field name="context">{
+				'search_default_group_state': 1
+				}
+			</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+	</data>
+</openerp>

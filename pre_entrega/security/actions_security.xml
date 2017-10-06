@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+    	<record id="group_name_ready_for_programmed" model="res.groups">
+        	<field name="name">Preentrega - Listo para programar</field>
+        	<field name="category_id" ref="delsol_base.module_delsol_actions_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_ready_for_delivery" model="res.groups">
+        	<field name="name">Preentrega - Unidad preparada</field>
+        	<field name="category_id" ref="delsol_base.module_delsol_actions_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	
+    	<record id="group_name_not_chequed" model="res.groups">
+        	<field name="name">Preentrega - Unidad Encontrada</field>
+        	<field name="category_id" ref="delsol_base.module_delsol_actions_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_damage" model="res.groups">
+        	<field name="name">Preentrega - Unidad Dañada</field>
+        	<field name="category_id" ref="delsol_base.module_delsol_actions_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_repaired_damage" model="res.groups">
+        	<field name="name">Preentrega - Unidad Reparada</field>
+        	<field name="category_id" ref="delsol_base.module_delsol_actions_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_missing" model="res.groups">
+        	<field name="name">Preentrega - Unidad Faltante</field>
+        	<field name="category_id" ref="delsol_base.module_delsol_actions_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	
+	</data>
+</openerp>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="delsol_config_filter" model="ir.ui.view">
+			<field name="name">delsol.config.select</field>
+			<field name="model">delsol.config</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name" />
+					<field name="app" />
+					<field name="description" />
+					<group expand="0" string="Agrupar por">
+						<filter string="Aplicacion" name="app" context="{'group_by':'app'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="config_tree" model="ir.ui.view">
+			<field name="name">delsol.config.tree</field>
+			<field name="model">delsol.config</field>
+			<field name="arch" type="xml">
+				<tree string="Configuraciones" default_order="create_date desc">
+					<field name="name" />
+					<field name="app" />
+					<field name="description" />
+					<field name="value" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="config_form" model="ir.ui.view">
+			<field name="name">delsol.config.form</field>
+			<field name="model">delsol.config</field>
+			<field name="arch" type="xml">
+				<form string="Configuracion">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="app" />
+							<field name="description" />
+							<field name="value" />
+
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="open_view_delsol_config" model="ir.actions.act_window">
+			<field name="name">Configuracion</field>
+			<field name="res_model">delsol.config</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="context">{
+  					'search_default_app': 1,
+					}
+			</field>		
+			<field name="view_mode">tree,form</field>
+		</record>
+	</data>
+</openerp>

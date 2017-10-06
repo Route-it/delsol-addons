@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<!-- Top menu item -->
+		<!-- -->
+		<menuitem name="Del Sol" id="base.delsol_main_menu" groups="group_name_menu_delsol" 
+		            web_icon="delsol_base,static/description/icon.png"
+		/>
+
+		<menuitem name="Clientes" id="menu_clientes" parent="base.delsol_main_menu"
+			action="open_view_client_all" sequence="1"
+			groups="group_name_menu_delsol_clientes" />
+
+		<menuitem name="Vehículos" id="menu_vehiculos" parent="base.delsol_main_menu"
+			sequence="10" groups="group_name_menu_delsol_vehiculos" />
+		<menuitem name="Autos" id="menu_entregas_vehiculos" parent="menu_vehiculos"
+			action="open_view_vehicle_all" groups="group_name_menu_delsol_autos" />
+		<menuitem name="Camiones" id="menu_entregas_vehiculos_camiones"
+			parent="menu_vehiculos" action="open_view_vehicle_cam_all" groups="group_name_menu_delsol_camiones" />
+		<menuitem name="Modelos" id="menu_vehicle_model_list" parent="menu_vehiculos"
+			action="open_view_vehicle_model_all" groups="group_name_menu_delsol_modelos" />
+		<menuitem name="Colores" id="menu_vehicle_color_list" parent="menu_vehiculos"
+			action="open_view_vehicle_color_all" groups="group_name_menu_delsol_colores" />
+
+
+		<menuitem name="Configuracion Del Sol" id="menu_delsol_config"
+			parent="base.menu_custom" />
+		<menuitem action="open_view_delsol_config" id="menu_delsol_config_settings"
+			name="Lista" parent="menu_delsol_config" />
+
+	</data>
+</openerp>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+		<menuitem name="Pre-entrega" id="menu_pre_delivery" parent="base.delsol_main_menu" 
+		action="open_view_vehicle_pre_delivery"
+		groups="group_name_menu_delsol_preentrega"/>
+
+	</data>
+</openerp>

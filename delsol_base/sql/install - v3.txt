@@ -1,0 +1,72 @@
+************ v4 ****************
+A Arreglar:
+	pip install wkhtmltopdf
+	
+	#pip install tesseract
+	#pip install tesseract-ocr
+	#pip install libtesseract 
+	#pip install leptonica (solo para windows? http://www.leptonica.org/download.html)
+
+pip install pymssql
+
+************ v3 ****************
+
+mover el modulo rqr a resguardo
+
+Copiar el todos los modulos.
+Cambiar el owner como daemon:daemon
+
+Ejecutar lo siguiente para marcar el modulo como desinstalado:
+select * from ir_module_module
+UPDATE ir_module_module SET state = 'uninstalled' WHERE name = 'rqr';
+
+
+Eliminar las vistas desclaradas de RQR, ya que cambian 
+select * from ir_ui_view where arch_fs like '%rqr%'
+delete from ir_ui_view where arch_fs like '%rqr%' 
+
+Actualizar los vehiculos con chasis null
+update delsol_vehicle set nro_chasis = 'abcdefg1234' where nro_chasis is null and state = 'delivered'
+
+
+Activar el modo desarrollador
+Actualizar lista de modulos
+Reiniciar el servidor
+
+
+Instalar en el siguiente orden:
+delsol_base
+Correr update_vehicle_client_id.sql
+delsol_events
+entregas
+pre_entrega
+rqr
+gestoria (se instala por la patente )
+
+Correr : 
+1) update delsol_vehicle_model set name = 'EDIA_OLD' where name = 'Edia'
+2)
+select *  from delsol_vehicle_model where upper(name) like '%KA6%'
+select *  from delsol_vehicle where modelo in (139,363)
+delete from delsol_vehicle_model where id = 363
+update delsol_vehicle_model set name = upper(name)
+
+3) update res_country_state set name = 'Chubut' where name = 'CHUBUT'
+
+
+Eliminar el grupo "Vendedor" manualmente
+
+Modificar la password de mail de sistemas en: delsol_events/models/model_process_events.py
+
+Esperable WARNINGS :
+column user is in the table delsol_vehicle_status but not in the corresponding object delsol.vehicle_status
+column sector_moved0 is in the table delsol_rqr but not in the corresponding object delsol.rqr
+column depto is in the table delsol_rqr but not in the corresponding object delsol.rqr
+column sector_hr is in the table delsol_rqr but not in the corresponding object delsol.rqr
+column client_id is in the table delsol_delivery but not in the corresponding object delsol.delivery
+
+
+Setear los permisos de los usuarios segun perfil requerido.
+
+Descomentar el envio de sms en la entrega para Sergio.
+

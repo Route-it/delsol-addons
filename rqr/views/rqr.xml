@@ -82,7 +82,7 @@
 								</field>
 							</group>
 						</group>
-						<group string="Encuesta Ford" groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
+						<group string="Encuesta Ford">
 							<group>
 
 								<field name="answered_poll" string="Contesto encuesta Ford?" readonly="1"  class="oe_view_only"/>
@@ -115,11 +115,12 @@
 					<separator />
 					<filter string="Camiones" name="camiones" domain="[('sector','=','camiones')]" />
 					<filter string="Autos" name="autos" domain="[('sector','!=','camiones')]" />
-					<filter string="Sin Cerrar" name="state_not_closed" domain="[('state','!=','closed')]"/>
+					<filter string="Sin Resolver" name="state_not_solved" domain="[('state','not in',('closed','solved'))]"/>
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Estado" name="State" context="{'group_by':'state'}" />
 						<filter string="Tipo" name="Type" context="{'group_by':'tipo_rqr'}" />
+						<filter string="Responsable" name="Responsible" context="{'group_by':'responsible_id'}" />
 					</group>
 				</search>
 			</field>
@@ -217,7 +218,7 @@
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
 			<field name="context">{
-  					'search_default_state_not_closed': 1
+  					'search_default_state_not_solved': 1
 					}
 			</field>		
 			<field name="view_mode">tree,form,graph,pivot</field>
