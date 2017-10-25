@@ -3,19 +3,18 @@
 
     <data noupdate="1">
 
-        <record id="delivery_expired" model="delsol.event">
-            <field name="name">Fechas de entregas vencidas y no entregadas</field>
-            <field name="code">on_delivery_expired</field>
+        <record id="rqr_delays" model="delsol.event">
+            <field name="name">Calculo de demoras en RQR</field>
+            <field name="code">on_rqr_delays</field>
             <field name="emails"></field>
-            <field name="acive">False</field>
+            <field name="active">False</field>
         </record>
-        <record id="delivery_expired" model="delsol.event">
-            <field name="name">Fechas de entregas vencidas y no entregadas</field>
-            <field name="code">on_rqr_created</field>
+        <record id="rqr_advice" model="delsol.event">
+            <field name="name">RQR asignadas y no asignadas</field>
+            <field name="code">rqr_advice</field>
             <field name="emails"></field>
-            <field name="acive">False</field>
+            <field name="active">False</field>
         </record>
-
 
     </data>
 </openerp>

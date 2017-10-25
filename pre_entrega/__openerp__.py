@@ -30,6 +30,9 @@
         'security/menu_security.xml',
         'views/vehicle.xml',
         'views/menu.xml',
+        'data/events.xml',
+        'data/ir_cron.xml',
+        'data/parameters.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

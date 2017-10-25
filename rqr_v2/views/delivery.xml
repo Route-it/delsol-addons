@@ -3,16 +3,6 @@
 <openerp>
 	<data>
 
-		<record id="reprogramming_wizard_action" model="ir.actions.act_window">
-			<field name="name">Reprogramación</field>
-			<field name="res_model">delsol.wizard_reprogramming</field>
-			<field name="src_model">delsol.delivery</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">form</field>
-			<field name="target">new</field>
-		</record>
-
-
 		<record id="delsol_delivery_filter" model="ir.ui.view">
 			<field name="name">delsol.delivery.select</field>
 			<field name="model">delsol.delivery</field>
@@ -20,14 +10,24 @@
 				<search>
 					<field name="name" string="Entrega" />
 					<field name="client_id" string="Cliente" />
-					<field name="vehicle_id" string="Vehiculo" />
+					<field name="vehicle_id" string="Vehiculo Entregado" />
 					<field name="vendor_id" string="Vendedor" />
-					<field name="vehicle_chasis" string="Nro Chasis" />
+
 					<separator />
-					<filter string="Este mes" name="this_month" domain="[('delivery_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('delivery_date','&gt;=',time.strftime('%Y-%m-01'))]"/>
+					<filter string="Contactado" domain="[('contacted','=',True)]" />
+					<filter string="No contactado" domain="[('contacted','!=',True)]"/>
+					<filter string="Contesto encuesta Ford" domain="[('answered_poll','=',True)]" />
+					<filter string="Este mes" domain="[('delivery_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('delivery_date','&gt;=',time.strftime('%Y-%m-01'))]"/>
 					<separator />
 					<filter string="Camiones" name="camiones" domain="[('sector','=','camiones')]" />
 					<filter string="Autos" name="autos" domain="[('sector','!=','camiones')]" />
+					<separator />
+					<group expand="0" string="Agrupar por">
+						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
+						<filter string="Contesto encuesta" name="answered_pool"
+							context="{'group_by':'answered_pool'}" />
+						<filter string="Dia" domain="[ ]" context="{'group_by': 'delivery_date:day'}" />
+					</group>
 				</search>
 			</field>
 		</record>
@@ -38,6 +38,7 @@
         	<field name="arch" type="xml">
         		<graph string="Entregas" type="line">
         		    <field name="delivery_date" type="row" interval="month"/>
+        		    <field name="reprogramming_ids" group_operator="avg" type="measure"/>
         		</graph>
         	</field>
     	</record>
@@ -85,14 +86,10 @@
 						<field name="client_arrival" invisible="1"/>
 
 						<div  attrs="{'invisible':[('id','==',False)]}">
-							<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','=','delivered')]}"
-								groups="entregas.group_name_reprogram"/>
-							<button name="stamp_client_arrival" string="Cliente en concesionaria" type="object" attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"
-								groups="entregas.group_name_client_in_dealer"/>
-							<button name="set_delivered" string="Entregar" type="object" class="oe_highlight" attrs="{'invisible':['|',('client_arrival','=',False),('state','not in',('new','reprogrammed','dispatched'))]}"
-								groups="entregas.group_name_delivered"/>
-							<button name="set_dispatched" string="Despachar" type="object" class="oe_highlight"  attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"
-								groups="entregas.group_name_dispatched"/>
+							<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','in',('dispatched','delivered'))]}"/>
+							<button name="stamp_client_arrival" string="Cliente en concesionaria" type="object" attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"/>
+							<button name="set_delivered" string="Entregar" type="object" class="oe_highlight" attrs="{'invisible':['|',('client_arrival','=',False),('state','not in',('new','reprogrammed','dispatched'))]}"/>
+							<button name="set_dispatched" string="Despachar" type="object" class="oe_highlight"  attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"/>
 						</div>
 						<field name="state" widget="statusbar" statusbar_visible="new,reprogrammed,dispatched,delivered"
 							statusbar_colors='{"new":"blue"}'/>
@@ -113,61 +110,66 @@
    	                        		icon="terp-mail-forward" attrs="{'invisible':['|',('id','==',False),('client_email','==',False)]}"/>
                 		</div>
 
+
+
+
 						<group string="Datos de la entrega">
 							<group>                               
-	   	                        <field name="client_vehicle_readonly" invisible="1"/>
-								<field name="client_id" string="Cliente" readonly="1"/>
-								<field name="vehicle_id" string="Vehiculo"  attrs="{'readonly': [('client_vehicle_readonly', '=', True)]}" options="{'no_create_edit': True}"
-											domain="[('state','in',('to_be_delivery','ready_for_delivery'))]" />
-								<field name="delivery_date" attrs="{'readonly': [('id', '!=', False)]}"/>
+								<field name="client_id" string="Cliente" attrs="{'readonly': [('state', '=', 'delivered')]}"/>
+								<field name="vehicle_id" string="Vehiculo"  domain="[('state','in',('to_be_delivery','ready_for_delivery'))]" attrs="{'readonly': [('state', '=', 'delivered')],'no_create_edit':True}"/>
 								<field name="client_date" attrs="{'readonly': [('id', '!=', False)]}"/>
+								<field name="delivery_date" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="create_date" readonly="1"  attrs="{'invisible':[('id','==',False)]}"/>
-								<field name="sector"  attrs="{'readonly': [('client_vehicle_readonly', '=', True)]}"/>
+								<field name="sector"  attrs="{'readonly': [('state', '=', 'delivered')]}"/>
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
+								<field name="applay_rqr"/>
 								<field name="tae_stamp" attrs="{'invisible':['|',('id','==',False),('state','not in',('delivered'))]}"/>
 								<field name="client_arrival" attrs="{'invisible':[('client_arrival','=',False)]}"/>
 							</group>
 						</group>
-						<notebook>
+						<notebook groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
+							<page string="Contactos al cliente">
+								<label for="call_ids" class="oe_inline" string="Contactos al cliente" />
+								<field name="call_ids" string="Contactos" context="{'delivery_id':id}" />
+							</page>
+							<page string="RQRs" attrs="{'invisible':[('state','=','new')]}">
+								<label for="rqr_ids" class="oe_inline" string="RQRs" />
+								<field name="rqr_ids" string="RQRs" context="{'delivery_id':id}"
+									attrs="{'readonly':[('state','=','new')]}" />
+							</page>
 							<page string="Reprogramaciones" attrs="{'invisible':[('state','=','new')]}">
+								<label for="reprogramming_ids" class="oe_inline" string="Reprogramaciones" />
 								<field name="reprogramming_ids" string="Reprogramaciones" context="{'delivery_id':id}"
 									attrs="{'readonly':'True'}" />
 							</page>
 							
 						</notebook>
+						<group string="Encuesta Ford" attrs="{'invisible':[('tae_stamp','=',False)]}" groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
+							<group>
+
+								<field name="answered_poll" string="Contesto encuesta Ford?"
+									attrs="{'invisible':[('state','=', 'new')]}" />
+								<field name="sales_asistance" attrs="{'invisible': [('answered_poll','=', False)]}" />
+								<field name="payment_experience" attrs="{'invisible': [('answered_poll','=', False)]}" />
+								<field name="compliance" attrs="{'invisible': [('answered_poll','=', False)]}" />
+								<field name="delivery_process" attrs="{'invisible': [('answered_poll','=', False)]}" />
+								<field name="comment_poll" attrs="{'invisible': [('answered_poll','=', False)]}" />
+								<field name="poll_rqr_id" string="RQR de encuesta"/>
+								<button name="make_poll_rqr" string="Generar RQR" type="object"
+									class="oe_highlight" groups="base.group_user"
+									attrs="{'invisible':['|',('poll_rqr_id','!=',False),('answered_poll','=',False)]}" />	
+							</group>
+						</group>
 
 					</sheet>
 					<div class="oe_chatter oe_read_only">
 						<field name="message_follower_ids" widget="mail_followers" />
 						<field name="message_ids" widget="mail_thread" />
 					</div>
-
 				</form>
 			</field>
 		</record>
 		
-
-<!-- 		<record model="ir.ui.view" id="delsol_delivery_form_for_contact_resp"> -->
-<!-- 			<field name="name">delsol.delivery.form.for.contact</field> -->
-<!-- 			<field name="model">delsol.delivery</field> -->
-<!-- 			<field name="inherit_id" ref="delsol_delivery_form" /> -->
-<!-- 			<field name="groups_id" eval="[(6,0,[ref('rqr.group_name_contact')])]" /> -->
-<!-- 			<field name="arch" type="xml"> -->
-<!-- 				<xpath expr="//field[@name='client_id']" position="attributes"> -->
-<!-- 					<attribute name="readonly">1</attribute> -->
-<!-- 				</xpath> -->
-<!-- 				<xpath expr="//field[@name='vehicle_id']" position="attributes"> -->
-<!-- 					<attribute name="readonly">1</attribute> -->
-<!-- 				</xpath> -->
-<!-- 				<xpath expr="//field[@name='delivery_date']" position="attributes"> -->
-<!-- 					<attribute name="readonly">1</attribute> -->
-<!-- 				</xpath> -->
-<!-- 				<xpath expr="//field[@name='vendor_id']" position="attributes"> -->
-<!-- 					<attribute name="readonly">1</attribute> -->
-<!-- 				</xpath> -->
-<!-- 			</field> -->
-<!-- 		</record> -->
-
 		
 		<record model="ir.ui.view" id="reprogramming_wizard_view">
             <field name="name">delsol.reprogramming.wizard.form</field>
@@ -190,6 +192,26 @@
             </field>
         </record>
 		
+		<record model="ir.ui.view" id="delsol_delivery_form_for_contact_resp">
+			<field name="name">delsol.delivery.form.for.contect.resp</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="delsol_delivery_form" />
+			<field name="groups_id" eval="[(6,0,[ref('rqr.group_name_rqr_contact_resp')])]" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='client_id']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='vehicle_id']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='delivery_date']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='vendor_id']" position="attributes">
+					<attribute name="readonly">1</attribute>
+				</xpath>
+			</field>
+		</record>
 
 		<record model='ir.ui.view' id='delsol_delivery_calendar'>
 			<field name="name">delsol.delivery.calendar</field>
@@ -273,5 +295,14 @@
 			<field name="view_mode">tree,form,calendar,graph,pivot</field>
 		</record>
 
+		<record id="reprogramming_wizard_action" model="ir.actions.act_window">
+			<field name="name">Reprogramación</field>
+			<field name="res_model">delsol.wizard_reprogramming</field>
+			<field name="src_model">delsol.delivery</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+		
 	</data>
 </openerp>

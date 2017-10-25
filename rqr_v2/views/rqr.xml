@@ -9,13 +9,13 @@
 			<field name="arch" type="xml">
 				<form string="RQR">
 					<sheet>
-<!-- 						<button name="call_advice" string="test" type="object" class="oe_highlight" /> -->
 						<group string="Datos RQR">
 							<group>
 								<field name="id" invisible="1" />
 								<field name="delivery_id" string="Entrega" />
 								<field name="tipo_rqr" string="Tipo" />
 								<field name="state" string="Estado" />
+<!-- 								<field name="depto" string="Departamento" /> -->
 								<field name="sector" string="Sector" />
 								<field name="responsible_id" string="Responsable" />
 								<field name="create_date" string="Fecha Inicio" readonly="1" class="oe_read_only"/>
@@ -82,15 +82,15 @@
 								</field>
 							</group>
 						</group>
-						<group string="Encuesta Ford"  class="oe_read_only">
+						<group string="Encuesta Ford" groups="rqr.group_name_rqr_contact_resp,rqr.group_name_rqr_administrator">
 							<group>
 
-								<field name="answered_poll" string="Contesto encuesta Ford?" readonly="1" />
-								<field name="sales_asistance" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1" />
-								<field name="payment_experience" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1" />
-								<field name="compliance" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1" />
-								<field name="delivery_process" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1" />
-								<field name="comment_poll" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1" />
+								<field name="answered_poll" string="Contesto encuesta Ford?" readonly="1"  class="oe_read_only"/>
+								<field name="sales_asistance" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_read_only"/>
+								<field name="payment_experience" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_read_only"/>
+								<field name="compliance" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_read_only"/>
+								<field name="delivery_process" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_read_only"/>
+								<field name="comment_poll" attrs="{'invisible': [('answered_poll','=', False)]}" readonly="1"  class="oe_read_only"/>
 							</group>
 						</group>
 
@@ -115,12 +115,11 @@
 					<separator />
 					<filter string="Camiones" name="camiones" domain="[('sector','=','camiones')]" />
 					<filter string="Autos" name="autos" domain="[('sector','!=','camiones')]" />
-					<filter string="Sin Resolver" name="state_not_solved" domain="[('state','not in',('closed','solved'))]"/>
+					<filter string="Sin Cerrar" name="state_not_closed" domain="[('state','!=','closed')]"/>
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Estado" name="State" context="{'group_by':'state'}" />
 						<filter string="Tipo" name="Type" context="{'group_by':'tipo_rqr'}" />
-						<filter string="Responsable" name="Responsible" context="{'group_by':'responsible_id'}" />
 					</group>
 				</search>
 			</field>
@@ -218,7 +217,7 @@
 			<field name="view_type">form</field>
 			<field name="domain">[]</field>
 			<field name="context">{
-  					'search_default_state_not_solved': 1
+  					'search_default_state_not_closed': 1
 					}
 			</field>		
 			<field name="view_mode">tree,form,graph,pivot</field>

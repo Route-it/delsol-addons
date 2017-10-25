@@ -15,10 +15,10 @@
 			<field name="model">delsol.event</field>
 			<field name="arch" type="xml">
 				<tree string="Event" editable="top" create="0" delete="0" >
-					<field name="code" string="Entrega" />
-					<field name="name" string="Responsable" />
-					<field name="emails" string="Tipo" />
-					<field name="active" string="Estado" />
+					<field name="code" string="Codigo" />
+					<field name="name" string="Nombre" />
+					<field name="emails" string="Emails" />
+					<field name="active" string="Registro Activo" />
 				</tree>
 			</field>
 		</record>

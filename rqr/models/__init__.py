@@ -7,3 +7,4 @@ import model_rqr_type
 import model_rqr
 import model_delivery
 import model_process_rqr_delays
+import model_rqr_advice

@@ -124,7 +124,10 @@ class delsol_rqr(models.Model):
         if bool(self.state) & (self.state == 'progress'):
             if self.progress_date == False:
                 self.progress_date = datetime.utcnow()
-            difference = (datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+                difference = (datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(self.create_date, '%Y-%m-%d %H:%M:%S'))
+            else:
+                difference = datetime.utcnow() - datetime.strptime(self.progress_date, '%Y-%m-%d %H:%M:%S')
+                
             self.delay_to_take_action = difference.days
 
             
@@ -247,4 +250,6 @@ class delsol_rqr(models.Model):
     #
     #
     
-    
+    #@api.multi
+    #def call_advice(self):
+    #    self.env["delsol.rqr_advice"].process()

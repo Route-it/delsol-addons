@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="project_project_data" model="project.project">
+            <field name="name">Acciones Correctivas</field>
+            <field name="privacy_visibility">followers</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="alias_model">project.task</field>
+            <field name="alias_name">Acciones Correctivas</field>
+            <field name="alias_model_id" ref="project.model_project_task"/>
+            <field name="alias_contact">everyone</field>
+            <field name="alias_parent_model_id" ref="project.model_project_project"/>
+        </record>
+
+        <record id="project_stage_data_0" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">Nuevo</field>
+            <field name="project_ids" eval="[(4, ref('project_project_data'))]"/>
+        </record>
+
+        <record id="project_stage_data_1" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">En Pogreso</field>
+            <field name="project_ids" eval="[(4, ref('project_project_data'))]"/>
+        </record>
+
+        <record id="project_stage_data_2" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Terminado</field>
+            <field name="project_ids" eval="[(4, ref('project_project_data'))]"/>
+        </record>
+
+    </data>
+</openerp>

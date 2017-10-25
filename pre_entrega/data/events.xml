@@ -3,9 +3,9 @@
 
     <data noupdate="1">
 
-        <record id="rqr_delays" model="delsol.event">
-            <field name="name">Calculo de demoras en RQR</field>
-            <field name="code">on_rqr_delays</field>
+        <record id="ready_for_programmed" model="delsol.event">
+            <field name="name">Vehiculos que fueron chequeados</field>
+            <field name="code">on_ready_for_programmed</field>
             <field name="emails"></field>
             <field name="acive">False</field>
         </record>

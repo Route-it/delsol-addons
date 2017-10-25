@@ -36,6 +36,7 @@
             <field name="inherit_id" ref="delsol_base.vehicle_form"></field>
             <field name="arch" type="xml">
 				<field name="id" position="after">
+
 						<button name="ready_for_programmed" string="Unidad lista para programar" type="object" states="not_chequed" class="oe_highlight" 
 							groups="pre_entrega.group_name_ready_for_programmed"/>
 						<button name="damage" string="Unidad dañada" type="object"  states="not_chequed,to_be_delivery"

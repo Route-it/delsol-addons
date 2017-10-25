@@ -31,7 +31,7 @@ class delsol_vehicle_model(models.Model):
             ('vehicle_model_name_unique', 'unique(name)', 'El código debe ser único'),
     ]
     
-    
+    @api.one
     def _compute_short_name(self):
         self.short_name = (self.description[:15] + '..') if len(self.description) > 15 else self.description
 
