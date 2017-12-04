@@ -5,7 +5,9 @@
 
         <record id="predelivery_checked_expired" model="delsol.config">
             <field name="name">Dias de vencimiento del chequeo</field>
-            <field name="descrption">Dato: (entero numerico)
+            <field name="code">predelivery_checked_expired</field>
+            <field name="app">pre_entrega</field>
+            <field name="description">Dato: (entero numerico)
             			Configura a cuantos dias se considera vencido el chequeo de la unidad.
             			La misma, debe ser rechequeada en caso de estar vencida.</field>
             <field name="value">21</field>

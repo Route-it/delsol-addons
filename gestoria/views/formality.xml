@@ -10,7 +10,7 @@
 					<field name="client_id" />
 					<field name="nro_chasis" />
 					<field string="Tramite" name="formality_type_ids" />
-					<field string="Responsable" name="fomarlity_responsible_id" />
+					<field string="Responsable" name="formality_responsible_id" />
 					<field string="Registro" name="vehicle_registry_id" />
 					<field string="Estado Tramite" name="state" />
 					<separator />
@@ -42,58 +42,76 @@
 					<field name="papers_received_date" />
 					<field name="title_delivery_to_client_date" />
 					<field name="create_date" />
-					<field name="fomarlity_responsible_id" />
+					<field name="formality_responsible_id" />
 					<field name="comments" />
 				</tree>
 			</field>
 		</record>
 
-
 		<record id="formality_form" model="ir.ui.view">
 			<field name="name">delsol.formality.form</field>
 			<field name="model">delsol.formality</field>
 			<field name="arch" type="xml">
-				<form string="Vehículo">
+				<form string="Tramite">
 					<header>
 						<field name="id" invisible="1" />
+						<field name="title_received_date" invisible="1" />
+						<field name="folder_sign_send_date" invisible="1" />
+						<field name="folder_sign_receiv_date" invisible="1" />
 
-<!-- 						<button name="set_initiated" string="Papeles Presentados" type="object" class="oe_highlight" attrs="[('state','==','new')]"/> -->
-<!-- 						<button name="set_observed" string="Tramite Observado" type="object" attrs="[('state','==','initiated')]"/> -->
-<!-- 						<button name="set_delayed" string="Tramite Demorado" type="object" attrs="[('state','==','initiated')]"/> -->
-<!-- 						<button name="set_completed" string="Tramite Completado" type="object" class="oe_highlight" attrs="[('state','in',('initiated','delayed','observed'))]"/> -->
-<!-- 						<button name="set_finalized" string="Titulo Entregado" type="object" class="oe_highlight" attrs="[('state','==','completed')]"/> -->
+						<button name="set_go_gerencia" string="Pasar a Gerencia" type="object" class="oe_highlight oe_read_only"
+							attrs="{'invisible':['|',('folder_sign_send_date','!=',False),('state','!=','new')]}"/>
+						<button name="set_back_gerencia" string="Firmar carpeta" groups="gestoria.group_name_gestoria_gerencia" type="object" class="oe_highlight oe_read_only"
+							attrs="{'invisible':['|',('folder_sign_receiv_date','!=',False),('folder_sign_send_date','==',False)]}"/>
+
+						<button name="set_initiated" string="Papeles Presentados" type="object" class="oe_highlight oe_read_only" states="new"/>
+						
+						<button name="set_observed" string="Tramite Observado" type="object" states="initiated" class="oe_read_only"/>
+						<button name="set_delayed" string="Tramite Demorado" type="object" states="initiated" class="oe_read_only"/>
+						<button name="set_completed" string="Tramite Completado" type="object" class="oe_highlight oe_read_only" states="initiated,delayed,observed"/>
+
+						<button name="set_title_recived" string="Titulo Recibido" type="object" class="oe_highlight oe_read_only"
+							attrs="{'invisible':['|',('state','!=','completed'),'&amp;',('state','=','completed'),('title_received_date','=',True)]}"/>
+
+						<button name="set_finalized" string="Registrar entrega de Titulo" type="object" class="oe_highlight oe_read_only"
+							attrs="{'invisible':['|',('state','!=','completed'),'&amp;',('state','=','completed'),('title_received_date','=',False)]}"/>
+
 
 						<field name="state" widget="statusbar" nolabel="1" statusbar_visible="new,initiated,completed,finalized" statusbar_colors="{'new':'blue'}" />
 
 					</header>
 					<sheet string="Tramite">
 						<h1>
-						<field name="client_id" options="{'no_create_edit': True}" />
+						<field name="client_id" readonly="1" />
 						</h1>
 						<h2>
-						<field name="vehicle_id" options="{'no_create_edit': True}" groups="delsol_base.group_name_administrator"/>
+						<field name="vehicle_id" options="{'no_create_edit': True}"/>
 						</h2>
 						<group>
 							<group string="Gestoria">
-								<field name="fomarlity_responsible_id" options="{'no_create_edit': True}" />
-								<field name="create_date" />
-								<field name="title_delivery_to_client_date" />
-								<field name="time_delayed_in_formality" />
+								<field name="formality_responsible_id" options="{'no_create_edit': True}" />
+								<field name="create_date" readonly="1" class="oe_read_only"/>
+								<field name="title_delivery_to_client_date" class="oe_read_only" />
+								<field name="time_delayed_in_formality"  class="oe_read_only"/>
 							</group>
 							<group string="Registro">
-								<field name="formality_type_ids" />
-								<field name="formality_in_registry_date" />
+								<field name="formality_type_ids" widget="many2many_tags"/>
+								<field name="formality_in_registry_date" class="oe_read_only"/>
 								<field name="vehicle_registry_id" />
-								<field name="papers_received_date" />
-							</group>
-							<group string="Gerencia">
-								<field name="folder_sign_send_date" />
-								<field name="folder_sign_receiv_date" />
+								<field name="registry_by_address" widget="url" readonly="1"/>
+								
+								<a  href="{{ record.registry_by_address.value }}" target="_blank">TASK</a><br/>
+								<field name="client_address"  class="oe_edit_only" readonly="1"/>
+								<field name="papers_received_date" class="oe_read_only"/>
 							</group>
 							<group string="Vehiculo">
 								<field name="nro_chasis" />
 								<field name="patent_date" />
 								<field name="patent" />
+							</group>
+							<group string="Gerencia" class="oe_read_only">
+								<field name="folder_sign_send_date" />
+								<field name="folder_sign_receiv_date" />
 							</group>
 						</group>
 						<group>
@@ -102,7 +120,7 @@
 						</group>
 
 					</sheet>
-					<div class="oe_chatter oe_view_only">
+					<div class="oe_chatter oe_read_only">
 						<field name="message_follower_ids" widget="mail_followers" />
 						<field name="message_ids" widget="mail_thread" />
 					</div>

@@ -36,7 +36,7 @@
             <field name="inherit_id" ref="delsol_base.vehicle_form"></field>
             <field name="arch" type="xml">
 				<field name="id" position="after">
-
+					<div attrs="{'invisible':[('pass_predelivery_proccess','=', True)]}" class="oe_inline" style="display: inline">
 						<button name="ready_for_programmed" string="Unidad lista para programar" type="object" states="not_chequed" class="oe_highlight" 
 							groups="pre_entrega.group_name_ready_for_programmed"/>
 						<button name="damage" string="Unidad dañada" type="object"  states="not_chequed,to_be_delivery"
@@ -49,10 +49,13 @@
 							groups="pre_entrega.group_name_ready_for_delivery"/>
 						<button name="not_chequed" string="Unidad Encontrada" type="object" states="missing"  
 							groups="pre_entrega.group_name_not_chequed"/>
+					</div>
+
+<!-- 						<button name="set_any_state" string="Cambiar Estado" type="object" groups="delsol_base.group_name_set_any_state"/> -->
 				</field>
                     <group position="inside">
                     	<group position="inside">
-	                        <field name="priority_of_chequed_request" attrs="{'invisible':[('state','!=', 'not_chequed')]}" />
+	                        <field name="priority_of_chequed_request" attrs="{'invisible':['|',('state','!=', 'not_chequed'),('pass_predelivery_proccess','=', True)]}" />
                     	</group>
 					</group>
             </field>

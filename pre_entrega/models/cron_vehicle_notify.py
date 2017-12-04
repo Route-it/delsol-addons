@@ -2,32 +2,15 @@
 
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
-from sre_parse import isdigit
 from datetime import date, datetime
 import pytz
 import logging
 
-class delsol_vehicle_notify(models.Model):
+class vehicle_notify(models.Model):
 
-    _inherit = ["delsol.vehicle"]
-        
-    @api.one    
-    def ready_for_programmed(self):
-        super(delsol_vehicle_notify, self).ready_for_programmed()
-
-        users = self.env['res.users'].search([])
-
-        if ((len(users.ids) >0)&(self.priority_of_chequed_request == "high")): 
-            for u in users:
-                if u.has_group("entregas.group_name_admin_entregas"):
-                    msg = '%s Se ha chequeado.' % self.name
-                    u.notify_info(msg)
-
-
-    @api.multi
-    def exec_cron(self):
-        self.process()
-
+    _auto = False
+    _name = "delsol.vehicle_notify"
+    
     @api.model
     def process(self):
 
@@ -61,7 +44,10 @@ class delsol_vehicle_notify(models.Model):
                             
                         base_url = self.env['ir.config_parameter'].get_param('web.base.url')
                         for v in vehicles_for_body:
-                            modelo = (v.modelo.description[:15] + '..') if len(v.modelo.description) > 15 else v.modelo.description
+                            if bool(v.modelo.description):
+                                modelo = (v.modelo.description[:15] + '..') if len(v.modelo.description) > 15 else v.modelo.description
+                            else:
+                                modelo = ''
                             fecha_hora_solicitud_chequeo = ''
                             if bool(v.date_for_calendar):
                                 fecha_hora_solicitud_chequeo = datetime.strptime(v.date_for_calendar, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
@@ -80,29 +66,9 @@ class delsol_vehicle_notify(models.Model):
                         body += "\n\n\n<br><br><br>"
 
                 
-                print body
-
-                IrMailServer = self.env['ir.mail_server']
-                msg = IrMailServer.build_email(
-                    email_from="sistemas@delsolautomotor.com.ar",
-                    #email_to=[(e) for e in events.emails.split(",")],
-                    email_to=['diego.richi@gmail.com'],
-                    subject="Vehiculos para programar",
-                    body=body,
-                    subtype="html",
-                    reply_to="",
-                    )
-        
-                logging.debug("Cuerpo del mail:"+body)
-        
-                msg_id = IrMailServer.send_email(message=msg,
-                          smtp_server="smtp.office365.com",
-                          smtp_encryption="starttls",
-                          smtp_port="587",
-                          smtp_user="sistemas@delsolautomotor.com.ar",
-                          smtp_password="Runa2503"
-                          )
-
+                delsol_mail_server = self.env['delsol.mail_server']
+                delsol_mail_server.send_mail("Vehiculos para programar",body,[(e) for e in events.emails.split(",")])
+                
             else:
                 logging.info("Cron on_ready_for_programmed: nada para enviar.")
             logging.info("Cron on_ready_for_programmed completado.")

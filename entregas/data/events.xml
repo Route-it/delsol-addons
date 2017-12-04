@@ -9,6 +9,12 @@
             <field name="emails"></field>
             <field name="acive">False</field>
         </record>
+        <record id="on_delivery_of_day" model="delsol.event">
+            <field name="name">Listado de entregas del dia</field>
+            <field name="code">on_delivery_of_day</field>
+            <field name="emails"></field>
+            <field name="acive">False</field>
+        </record>
 
 
     </data>

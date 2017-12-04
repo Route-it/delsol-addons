@@ -29,6 +29,7 @@
         'security/profiles_security.xml',
         'security/ir.model.access.csv',
         'views/res_partner_view.xml',
+        'views/change_state.xml',
         'views/vehicle.xml',
         'views/configuration.xml',
         'views/menu.xml',

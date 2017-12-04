@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "delsol_events",
+    'name': "usados",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -24,13 +24,11 @@
 
     # always loaded
     'data': [
-        'security/menu_security.xml',
-        'views/view.xml',
-        'views/menu.xml',
-        'data/parameters.xml',
+        # 'security/ir.model.access.csv',
+        'views/delivery.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
-        #'demo/demo.xml',
+        'demo/demo.xml',
     ],
 }

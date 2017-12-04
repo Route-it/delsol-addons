@@ -28,10 +28,14 @@
         'security/actions_security.xml',
         'security/profiles_security.xml',
         'security/ir.model.access.csv',
+        'views/change_delivery_state.xml',
         'views/delivery.xml',
         'views/vehicle.xml',
         'views/res_partner_view.xml',
         'views/menu.xml',
+        'data/events.xml',
+        'data/ir_cron.xml',
+        'data/parameters.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

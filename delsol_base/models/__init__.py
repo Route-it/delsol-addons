@@ -8,3 +8,4 @@ import model_vehicle_model
 import model_vehicle_status
 import model_vehicle
 import model_config
+import wizard_change_state

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="formality_type_tree" model="ir.ui.view">
+			<field name="name">delsol.formality_type.tree</field>
+			<field name="model">delsol.formality_type</field>
+			<field name="arch" type="xml">
+				<tree string="Tipos de tramites">
+					<field name="number" />
+					<field name="description" />
+				</tree>
+			</field>
+		</record>
+		<record id="formality_type_form" model="ir.ui.view">
+			<field name="name">delsol.formality_type.form</field>
+			<field name="model">delsol.formality_type</field>
+			<field name="arch" type="xml">
+				<form string="Tipos de tramites.">
+					<sheet>
+						<group>
+							<group>
+								<field name="number" />
+								<field name="description" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="vehicle_registry_tree" model="ir.ui.view">
+			<field name="name">delsol.vehicle_registry.tree</field>
+			<field name="model">delsol.vehicle_registry</field>
+			<field name="arch" type="xml">
+				<tree string="Registros del Automotor">
+								<field name="name" />
+								<field name="address" />
+								<field name="tel" />
+								<field name="code" />
+								<field name="city" />
+								<field name="res_partner_id" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="vehicle_registry_form" model="ir.ui.view">
+			<field name="name">delsol.vehicle_registry.form</field>
+			<field name="model">delsol.vehicle_registry</field>
+			<field name="arch" type="xml">
+				<form string="Registros del Automotor">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="address" />
+								<field name="tel" />
+								<field name="code" />
+								<field name="city" />
+								<field name="res_partner_id" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="open_view_gestoria_fomality_type_all" model="ir.actions.act_window">
+			<field name="name">Tipos de tramites</field>
+			<field name="res_model">delsol.formality_type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<record id="open_view_gestoria_vehicle_registry_all" model="ir.actions.act_window">
+			<field name="name">Registros del automotor</field>
+			<field name="res_model">delsol.vehicle_registry</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+	</data>
+</openerp>

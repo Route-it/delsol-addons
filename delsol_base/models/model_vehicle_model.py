@@ -33,7 +33,8 @@ class delsol_vehicle_model(models.Model):
     
     @api.one
     def _compute_short_name(self):
-        self.short_name = (self.description[:15] + '..') if len(self.description) > 15 else self.description
+        if bool(self.description):
+            self.short_name = (self.description[:15] + '..') if len(self.description) > 15 else self.description
 
     
     @api.onchange('name')

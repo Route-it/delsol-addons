@@ -10,14 +10,14 @@ class delsol_vehicle(models.Model):
 
     _inherit = ["delsol.vehicle"]
 
-    #def _get_states(self):
-    #    list = super(delsol_vehicle, self)._get_states()
-    #    list.append(("formality","En Gestoria"))
+    def _get_states(self):
+        list = super(delsol_vehicle, self)._get_states()
+        list.append(("formality","En Gestoria"))
 
 
     patente = fields.Char(string ="Patente")
 
-    #formality_ids = fields.One2many("delsol.formality","vehicle_id",string="Tramites de gestoria") 
+    formality_ids = fields.One2many("delsol.formality","vehicle_id",string="Tramites de gestoria") 
 
     """
     @api.one

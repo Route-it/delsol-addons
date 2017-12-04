@@ -4,7 +4,10 @@
 	<data>
 	
 
-		<menuitem name="Gestoria" id="menu_gestoria" parent="base.delsol_main_menu" action="open_view_gestoria_all"/>
+		<menuitem name="Gestoria" id="menu_gestoria" parent="base.delsol_main_menu" groups="group_name_menu_gestoria"/>
+		<menuitem name="Lista" id="menu_gestoria_lista" parent="menu_gestoria" action="open_view_gestoria_all" groups="group_name_menu_gestoria_lista"/>
+		<menuitem name="Tipos de tramites" id="menu_gestoria_formality_type" parent="menu_gestoria" action="open_view_gestoria_fomality_type_all" groups="group_name_menu_gestoria_formality_type"/>
+		<menuitem name="Registros" id="menu_gestoria_vehicle_registry" parent="menu_gestoria" action="open_view_gestoria_vehicle_registry_all" groups="group_name_menu_gestoria_vehicle_registry"/>
 
 
 	</data>

@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 
-    <data noupdate="1">
+    <data>
 
-        <record id="formality_link_list_reg" model="delsol.config">
+        <record id="gestoria_link_list_reg" model="delsol.config">
             <field name="name">Listado de registros</field>
-            <field name="app">Formality</field>
-            <field name="descrption">Enlance al listado de registros de dnrpa, consulta CBU, telefono direccion y responsable del registro</field>
+            <field name="code">gestoria_link_list_reg</field>
+            <field name="app">gestoria</field>
+            <field name="description">Enlance al listado de registros de dnrpa, consulta CBU, telefono direccion y responsable del registro</field>
             <field name="value">http://www.dnrpa.gov.ar/portal_dnrpa/seccionales.php?registro=True</field>
         </record>
-        <record id="formality_link_reg_by_address" model="delsol.config">
+        <record id="gestoria_link_reg_by_address" model="delsol.config">
             <field name="name">Registro por direccion</field>
-            <field name="app">Formality</field>
-            <field name="descrption">Enlance a la consulta de registros del automotor por direccion</field>
+            <field name="code">gestoria_link_reg_by_address</field>
+            <field name="app">gestoria</field>
+            <field name="description">Enlance a la consulta de registros del automotor por direccion</field>
             <field name="value">http://www.dnrpa.gov.ar/guia_calles/guia_cons_1.php?tipo_registro_seccional=A</field>
         </record>
-        <record id="formality_link_formality_state" model="delsol.config">
+        <record id="gestoria_link_gestoria_state" model="delsol.config">
             <field name="name">Estado del tramite</field>
-            <field name="app">Formality</field>
-            <field name="descrption">Enlance a la consulta de estado de tramite</field>
+            <field name="code">gestoria_link_gestoria_state</field>
+            <field name="app">gestoria</field>
+            <field name="description">Enlance a la consulta de estado de tramite</field>
             <!-- este se puede automatizar para que actualice solo el estado del tramite. -->
             <field name="value">https://www2.jus.gov.ar/dnrpa-consultatramite/EstadoTramite/EstadoConsultaDetalle</field>
         </record>
-        <record id="formality_link_verif_plant" model="delsol.config">
+        <record id="gestoria_link_verif_plant" model="delsol.config">
             <field name="name">Consultar Plantas Verificadoras</field>
-            <field name="app">Formality</field>
-            <field name="descrption">Enlance a la consulta de plantas verificadoras</field>
+            <field name="code">gestoria_link_verif_plant</field>
+            <field name="app">gestoria</field>
+            <field name="description">Enlance a la consulta de plantas verificadoras</field>
             <field name="value">http://www.dnrpa.gov.ar/portal_dnrpa/pverificadoras.php</field>
         </record>
-        <record id="formality_link_money_formality" model="delsol.config">
+        <record id="gestoria_link_money_gestoria" model="delsol.config">
             <field name="name">Consultar de aranceles</field>
-            <field name="app">Formality</field>
-            <field name="descrption">Enlance a la consulta aranceles actualizados (PDF)</field>
+            <field name="code">gestoria_link_money_gestoria</field>
+            <field name="app">gestoria</field>
+            <field name="description">Enlance a la consulta aranceles actualizados (PDF)</field>
             <field name="value">http://www.dnrpa.gov.ar/portal_dnrpa/aranceles.php</field>
         </record>
-        <record id="formality_link_patente_radicacion" model="delsol.config">
+        <record id="gestoria_link_patente_radicacion" model="delsol.config">
             <field name="name">Consultar de radicacion por patente</field>
-            <field name="app">Formality</field>
-            <field name="descrption">Enlance a la consulta de radicacion por patenes</field>
+            <field name="code">gestoria_link_patente_radicacion</field>
+            <field name="app">gestoria</field>
+            <field name="description">Enlance a la consulta de radicacion por patenes</field>
             <field name="value">http://www.dnrpa.gov.ar/portal_dnrpa/radicacion.php</field>
         </record>
 		

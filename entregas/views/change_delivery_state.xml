@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="change_delivery_state_wizard_action" model="ir.actions.act_window">
+			<field name="name">Cambiar Estado</field>
+			<field name="res_model">delsol.wizard_change_delivery_state</field>
+			<field name="src_model">delsol.delivery</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+
+		<record model="ir.ui.view" id="change_delivery_state_wizard_view">
+            <field name="name">delsol.change_delivery_state.wizard.form</field>
+            <field name="model">delsol.wizard_change_delivery_state</field>
+            <field name="arch" type="xml">
+                <form string="Cambiar Estado">
+                    <group>
+                        <field name="change_state_date"/>
+                        <field name="delivery_id" />
+                        <field name="user_id"/>
+                        <field name="new_state"/>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="change_state" type="object"
+                                string="Cambiar Estado" class="oe_highlight"/>
+                        
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+	</data>
+</openerp>

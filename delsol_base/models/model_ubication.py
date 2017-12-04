@@ -14,15 +14,11 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class config(models.Model):
+class ubication(models.Model):
     
-    _name = 'delsol.config'
+    _name = 'delsol.ubication'
     
     name = fields.Text('Nombre')
-    code = fields.Text('Codigo')
-    app = fields.Text('Aplicacion')
-    description = fields.Text('Descripcion')
-    value = fields.Char('Valor')
-
+    
     
     

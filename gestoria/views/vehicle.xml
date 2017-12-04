@@ -9,20 +9,20 @@
                     <field name="nro_chasis" position="after">
 	                        <field name="patente"/>
 	                </field>
-<!-- 	                <notebook  position="inside"> -->
-<!-- 	                	<page string="Tramites de gestoria"> -->
-<!-- 							<field name="formality_ids"> -->
-<!-- 								<tree limit="5" create="0" delete="0"> -->
-<!-- 									<field name="fomarlity_responsible_id"/> -->
-<!-- 									<field name="state"/> -->
-<!-- 									<field name="formality_in_registry_date"/> -->
-<!-- 									<field name="patent_date"/> -->
-<!-- 									<field name="fordward_sales_admin_date"/> -->
-<!-- 									<field name="comments"/> -->
-<!-- 								</tree> -->
-<!-- 							</field> -->
-<!-- 						</page> -->
-<!-- 	                </notebook> -->
+	                <notebook  position="inside">
+	                	<page string="Tramites de gestoria" groups="gestoria.group_name_gestoria_gestor">
+							<field name="formality_ids">
+								<tree limit="5" create="0" delete="0">
+									<field name="formality_responsible_id"/>
+									<field name="state"/>
+									<field name="formality_in_registry_date"/>
+									<field name="patent_date"/>
+									<field name="fordward_sales_admin_date"/>
+									<field name="comments"/>
+								</tree>
+							</field>
+						</page>
+	                </notebook>
             </field>
 	</record>
 	</data>

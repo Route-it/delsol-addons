@@ -83,17 +83,27 @@
 					<header>
 						<field name="id" invisible="1" />
 						<field name="client_arrival" invisible="1"/>
+						<div style="display:none;">
+							<field name="vehicle_pass_predelivery_proccess" invisible="1"/>
+						</div>
+						<field name="button_delivery_visible" invisible="1"/>
 
-						<div  attrs="{'invisible':[('id','==',False)]}">
+						<div  attrs="{'invisible':[('id','==',False)]}" style="display: inline">
+						<div attrs="{'invisible':[('vehicle_pass_predelivery_proccess','=',True)]}" class="oe_inline" style="display: inline">
 							<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','=','delivered')]}"
 								groups="entregas.group_name_reprogram"/>
 							<button name="stamp_client_arrival" string="Cliente en concesionaria" type="object" attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"
 								groups="entregas.group_name_client_in_dealer"/>
-							<button name="set_delivered" string="Entregar" type="object" class="oe_highlight" attrs="{'invisible':['|',('client_arrival','=',False),('state','not in',('new','reprogrammed','dispatched'))]}"
+						</div>
+							<!-- pasar a un campo calculado la visibilidad de este boton -->
+							<button name="set_delivered" string="Entregar" type="object" class="oe_highlight" attrs="{'invisible':[('button_delivery_visible','==',False)]}"
 								groups="entregas.group_name_delivered"/>
 							<button name="set_dispatched" string="Despachar" type="object" class="oe_highlight"  attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"
 								groups="entregas.group_name_dispatched"/>
+							<button name="%(change_delivery_state_wizard_action)d" string="Cambiar Estado"
+								type="action" groups="entregas.group_name_set_any_delivery_state" />
 						</div>
+
 						<field name="state" widget="statusbar" statusbar_visible="new,reprogrammed,dispatched,delivered"
 							statusbar_colors='{"new":"blue"}'/>
 					</header>
@@ -113,23 +123,29 @@
    	                        		icon="terp-mail-forward" attrs="{'invisible':['|',('id','==',False),('client_email','==',False)]}"/>
                 		</div>
 
+	                    <field name="vehicle_state" invisible="1"/>
+						<div style="background-color:yellow" attrs="{'invisible':[('vehicle_state','not in',('damage'))]}">
+										El vehiculo se encuentra averiado
+						</div>
 						<group string="Datos de la entrega">
 							<group>                               
 	   	                        <field name="client_vehicle_readonly" invisible="1"/>
 								<field name="client_id" string="Cliente" readonly="1"/>
-								<field name="vehicle_id" string="Vehiculo"  attrs="{'readonly': [('client_vehicle_readonly', '=', True)]}" options="{'no_create_edit': True}"
-											domain="[('state','in',('to_be_delivery','ready_for_delivery'))]" />
+								<field name="vehicle_id" string="Vehiculo"  attrs="{'readonly': [('client_vehicle_readonly', '=', True)]}" 
+											options="{'no_create_edit': True}" />
+<!-- 											domain="[('state','in',('to_be_delivery','ready_for_delivery','damage'))]" class="display:inline"  /> -->
 								<field name="delivery_date" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="client_date" attrs="{'readonly': [('id', '!=', False)]}"/>
 								<field name="create_date" readonly="1"  attrs="{'invisible':[('id','==',False)]}"/>
 								<field name="sector"  attrs="{'readonly': [('client_vehicle_readonly', '=', True)]}"/>
+								
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
 								<field name="tae_stamp" attrs="{'invisible':['|',('id','==',False),('state','not in',('delivered'))]}"/>
 								<field name="client_arrival" attrs="{'invisible':[('client_arrival','=',False)]}"/>
 							</group>
 						</group>
 						<notebook>
-							<page string="Reprogramaciones" attrs="{'invisible':[('state','=','new')]}">
+							<page string="Reprogramaciones" attrs="{'invisible':[('reprogramming_ids','=',[])]}">
 								<field name="reprogramming_ids" string="Reprogramaciones" context="{'delivery_id':id}"
 									attrs="{'readonly':'True'}" />
 							</page>

@@ -1,0 +1,30 @@
+Implementacion:
+
+1) saltear circuito de preentrega y entrega.
+2) cambio de estado para entrega y vehiculo
+3) Entrega vehiculo dañado
+
+nuevos permisos:
+base.group_name_without_preentrega
+base.group_name_set_any_state
+entregas.group_name_admin_entregas_damaged
+entregas.group_name_set_any_delivery_state
+
+
+PROBAR EN TEST PRIMERO! 
+
+Copiar las apps al servidor: base, entregas y preentregas
+eliminar *.pyc recursivamente
+Detener el servidor
+Borrar las apps del addons
+copiar las apps nuevas al addons
+Cambiar los permisos
+Levantar el servidor
+Actualizar delsol_base.
+
+activar evento on_delivery_of_day
+Activar cron: Aviso de entregas del dia
+
+Modificar la clase mail_delsol y cambiar el tema de a quien le envia mails.
+
+Modificar la clase model_delivery y descomentar el envio de sms

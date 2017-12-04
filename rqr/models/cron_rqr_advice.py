@@ -10,7 +10,7 @@ import textwrap
 
 class delsol_vehicle_notify(models.Model):
 
-        
+    _auto = False
     _name = "delsol.rqr_advice"
      
     @api.model
@@ -86,35 +86,9 @@ class delsol_vehicle_notify(models.Model):
         
                     body += "\n\n<br><br>"
 
-                self.send_mail("Aviso de RQRs pendientes",body,"diego.richi@gmail.com")
+                delsol_mail_server = self.env['delsol.mail_server']
+                delsol_mail_server.send_mail("Aviso de RQRs pendientes",body,[(e) for e in events.emails.split(",")])
+
+
 
         logging.info("finalizando cron rqr_advice")
-
-                
-    def send_mail(self,psubject,body,to):
-
-        events = self.env['delsol.event'].search([('active','=',True),('code','=','rqr_advice')])
-        
-
-        IrMailServer = self.env['ir.mail_server']
-        msg = IrMailServer.build_email(
-            email_from="sistemas@delsolautomotor.com.ar",
-            email_to=[(e) for e in events.emails.split(",")],
-            #email_to=['diego.richi@gmail.com'],
-            subject=psubject,
-            body=body,
-            subtype="html",
-            reply_to="",
-            )
-
-        logging.debug("Cuerpo del mail:"+body)
-
-        msg_id = IrMailServer.send_email(message=msg,
-                  smtp_server="smtp.office365.com",
-                  smtp_encryption="starttls",
-                  smtp_port="587",
-                  smtp_user="sistemas@delsolautomotor.com.ar",
-                  smtp_password="Pabo6058"
-                  )
-
-

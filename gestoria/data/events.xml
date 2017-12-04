@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="formality_completed" model="delsol.event">
+            <field name="name">Tramites de gestoria completados</field>
+            <field name="code">on_formality_completed</field>
+            <field name="emails"></field>
+            <field name="acive">False</field>
+        </record>
+
+    </data>
+</openerp>

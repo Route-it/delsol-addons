@@ -25,7 +25,7 @@
 			<field name="inherit_id" ref="delsol_base.vehicle_form"></field>
             <field name="arch" type="xml">
 				<field name="id" position="after">
-					<button name="not_chequed" string="Solicitar chequeo" type="object" states="new" 
+					<button name="not_chequed" string="Solicitar chequeo" type="object" attrs="{'invisible':['|',('id','=',False),('state','!=','new')]}" 
 						class="oe_highlight" groups="entregas.group_name_not_chequed"/>
 					<button name="to_be_delivery" string="Preparar unidad para entrega" type="object"  states="ready_for_programmed,repaired_damage" 
 						class="oe_highlight" groups="entregas.group_name_to_be_delivered"/>
@@ -38,6 +38,10 @@
 	                        </button>
 	                    </div>
                 </field>
+                <field name="fecha_facturacion" position="after">
+	                   	<field name="delivery_id" attrs="{'invisible':[('delivery_id','=',False)]}"/>
+				</field>                
+                
             </field>
 	</record>
 	

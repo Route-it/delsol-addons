@@ -20,14 +20,19 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','delsol_base','mail'],
+    'depends': ['base','delsol_base','mail','delsol_events'],
 
     # always loaded
     'data': [
-#        'security/gestoria_security.xml',
-#        'views/formality.xml',
+        'security/menu_security.xml',
+        'security/profiles_security.xml',
+        'views/formality.xml',
+        'views/gestoria.xml',
         'views/vehicle.xml',
-#        'views/menu.xml',
+        'views/menu.xml',
+        'data/links.xml',
+        'data/formality_type.xml',
+        'data/vehicle_registry.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

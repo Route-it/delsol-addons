@@ -6,11 +6,13 @@ from sre_parse import isdigit
 from datetime import date, datetime
 import pytz
 
+
+
 class delsol_vehicle(models.Model):
     _name = 'delsol.vehicle'
 
     _inherit = ["mail.thread", "ir.needaction_mixin"]
-
+    
     def _get_states(self):
         return [("new","Nueva"),
                                ("not_chequed","Unidad A Chequear"),
@@ -23,6 +25,7 @@ class delsol_vehicle(models.Model):
                                ("dispatched","Despachado"),
                                ("delivered","Entregado")
                                ]
+
 
     PRIORITY = [("normal","Normal"),
                                ("high","Alta")]
@@ -64,12 +67,11 @@ class delsol_vehicle(models.Model):
 
     last_date_of_change_status = fields.Datetime("Utlimo cambio de estado",compute="_compute_last_change_status_date")
 
-    button_create_delivery_visible = fields.Boolean(compute="_button_create_delivery_visible")    
-
-
     #Fecha Arribo al concecionario -> por lista de estados?
 
     arrival_to_dealer_date = fields.Datetime(readonly=True)
+
+    pass_predelivery_proccess = fields.Boolean("Saltear proceso de preentrega",track_visibility='onchange',default=False)
     
     
     """logistica    
@@ -83,6 +85,37 @@ class delsol_vehicle(models.Model):
     _sql_constraints = [
             ('vehicle_chasis_unique', 'unique(nro_chasis)', 'El chasis ya existe'),
     ]
+
+
+    @api.model
+    def create(self, vals):
+        if bool(vals.get('pass_predelivery_proccess')):
+            vals['state'] = 'ready_for_delivery'
+        vehicle = super(delsol_vehicle, self).create(vals)
+        return vehicle
+
+    @api.multi
+    def write(self, vals):
+        if bool(vals.get('pass_predelivery_proccess')):
+            vals['state'] = 'ready_for_delivery'
+        vehicle = super(delsol_vehicle, self).write(vals)
+        return vehicle
+
+    @api.one
+    def change_state(self,new_state):
+        vehicle_status_obj = self.env['delsol.vehicle_status']
+        defaults = {'vehicle_id': self.id,'status':new_state.new_state,'date_status':new_state.change_state_date,'user_id':new_state.user_id.id,
+                    'comments':new_state.reason,'priority_of_chequed_request':self.priority_of_chequed_request}
+        target_vs =  vehicle_status_obj.create(defaults)
+
+        self.state = new_state.new_state
+        if new_state.new_state == 'not_chequed' or new_state.new_state == 'to_be_delivery':
+            self.date_for_calendar = fields.Datetime.now()
+        else:
+            self.date_for_calendar = False
+            
+    
+
 
 
     @api.one
@@ -101,20 +134,6 @@ class delsol_vehicle(models.Model):
         self.vin = (chasis_len > 7 & self.nro_chasis[chasis_from:]) or ''
 
     @api.multi
-    def _button_create_delivery_visible(self):
-            self.ensure_one()
-            if bool(self.id):
-                result_search = self.env['delsol.delivery'].search([('vehicle_id','=',self.id)])
-                if len(result_search)>0:
-                    self.button_create_delivery_visible = False
-                else:
-                    if (self.state not in ('ready_for_delivery','to_be_delivery')):
-                        self.button_create_delivery_visible = False
-                    else:
-                        self.button_create_delivery_visible = True
-        
-        
-        
         
     @api.one
     def _turn_duration(self):
@@ -133,6 +152,13 @@ class delsol_vehicle(models.Model):
         if (not bool(self.client_id)) or (self.client_id == False):
             self.env.user.notify_info('La entrega no puede ser creada. Falta definir el cliente.')
             return
+        # este es diferente porque en delivery esta el metodo default_get definido.
+        context = {'vehicle_id':self.id}
+        if (self.pass_predelivery_proccess):
+            context['default_delivery_date'] =  datetime.now(pytz.utc).strftime('%Y-%m-%d %H:%M:%S')
+            context['default_client_date'] =  datetime.now(pytz.utc).strftime('%Y-%m-%d %H:%M:%S')
+
+        
         return {
             'name': 'Entrega',
             'view_type': 'form',
@@ -140,7 +166,7 @@ class delsol_vehicle(models.Model):
             'res_model': 'delsol.delivery',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'context': {'vehicle_id':self.id},
+            'context': context,
             #'domain': [('id', 'in', [x.id for x in self.invoice_ids])],
         }
 
@@ -172,7 +198,21 @@ class delsol_vehicle(models.Model):
     @api.one    
     def repaired_damage(self):
         self.date_for_calendar = False
-        self.state = 'repaired_damage'
+        
+        #buscar si el vehiculo esta entregado/despachado. En tal caso, pasarlo a entregado
+        
+        result_search = self.env['delsol.delivery'].search([('vehicle_id','=', self.id)])
+        
+        if len(result_search)>0:
+            if (result_search[0].state == "delivered"):
+                self.state = 'delivered'
+            if (result_search[0].state == "dispatched"):
+                self.state = 'dispatched'
+            if (result_search[0].state == "new") | (result_search[0].state == "reprogrammed"):
+                self.state = 'repaired_damage'
+        else:
+            self.state = 'repaired_damage'
+        
         self._update_status_list()
 
     @api.one    

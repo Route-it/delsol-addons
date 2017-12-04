@@ -14,9 +14,11 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class delsol_process_events(models.Model):
+class delsol_delivery_expired(models.Model):
+
+    _auto = False
     
-    _name = "delsol.process_events"
+    _name = "delsol.delivery_expired"
      
     @api.model
     def process(self):
@@ -55,7 +57,10 @@ class delsol_process_events(models.Model):
         
                 base_url = self.env['ir.config_parameter'].get_param('web.base.url')
                 for d in deliverys:
-                    modelo = (d.vehicle_id.modelo.description[:15] + '..') if len(d.vehicle_id.modelo.description) > 15 else d.vehicle_id.modelo.description
+                    if bool(d.vehicle_id.modelo.description):
+                        modelo = (d.vehicle_id.modelo.description[:15] + '..') if len(d.vehicle_id.modelo.description) > 15 else d.vehicle_id.modelo.description
+                    else:
+                        modelo = ''
                     fecha_hora = datetime.datetime.strptime(d.delivery_date, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
                     if bool(d.client_id):
                         body += d.client_id.name +" | " 
@@ -74,7 +79,10 @@ class delsol_process_events(models.Model):
         
                 base_url = self.env['ir.config_parameter'].get_param('web.base.url')
                 for d in deliverys_no_tae:
-                    modelo = (d.vehicle_id.modelo.description[:15] + '..') if len(d.vehicle_id.modelo.description) > 15 else d.vehicle_id.modelo.description
+                    if bool(d.vehicle_id.modelo.description):                    
+                        modelo = (d.vehicle_id.modelo.description[:15] + '..') if len(d.vehicle_id.modelo.description) > 15 else d.vehicle_id.modelo.description
+                    else:
+                        modelo = ''
                     fecha_hora = datetime.datetime.strptime(d.delivery_date, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
                     if bool(d.client_id):
                         body += d.client_id.name +" | " 
@@ -88,26 +96,11 @@ class delsol_process_events(models.Model):
                     body +="\n<br>"
         
                 body += "\n\n\n<br><br><br>"
-                
-                IrMailServer = self.env['ir.mail_server']
-                msg = IrMailServer.build_email(
-                    email_from="sistemas@delsolautomotor.com.ar",
-                    email_to=[(e) for e in events.emails.split(",")],
-                    subject="Aviso de entregas vencidas",
-                    body=body,
-                    subtype="html",
-                    reply_to="",
-                    )
-        
-                logging.debug("Cuerpo del mail:"+body)
-        
-                msg_id = IrMailServer.send_email(message=msg,
-                          smtp_server="smtp.office365.com",
-                          smtp_encryption="starttls",
-                          smtp_port="587",
-                          smtp_user="sistemas@delsolautomotor.com.ar",
-                          smtp_password="Runa9366"
-                          )
+
+                delsol_mail_server = self.env['delsol.mail_server']
+                delsol_mail_server.send_mail("Aviso de entregas vencidas",body,[(e) for e in events.emails.split(",")])
+
+
             else:
                 logging.info("Cron on_delivery_expired: nada para enviar.")
             logging.info("Cron on_delivery_expired completado.")

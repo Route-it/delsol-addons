@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="server_smtp_name" model="delsol.config">
+            <field name="name">Nombre de la configuracion del servidor SMTP</field>
+            <field name="code">server_smtp</field>
+            <field name="app">events</field>
+            <field name="description">Dato: (String)
+            			Va el campo descripcion que posee el servidor de correo saliente
+            			en la parte de configuracion</field>
+            <field name="value">Sistemas</field>
+        </record>
+    </data>
+</openerp>

@@ -16,6 +16,7 @@ _logger = logging.getLogger(__name__)
 
 class delsol_process_events(models.Model):
     
+    _auto = False
     _name = "delsol.process_rqr_delays"
      
     @api.model

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
-from openerp.exceptions import ValidationError
-from sre_parse import isdigit
-from Cython.Plex.Lexicons import State
 
 
 class delsol_vehicle_registry(models.Model):
@@ -20,7 +17,7 @@ class delsol_vehicle_registry(models.Model):
     @api.one
     def name_get(self):
         nom = self.name or ''
-        nro = self.nro or ''
+        nro = self.code or ''
         cit = self.city or ''
         return (self.id,str(nom) + ' nro:' + str(nro) + ' - ' + str(cit))
         

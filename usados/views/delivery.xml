@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record model='ir.ui.view' id='delsol_delivery_form'>
+			<field name="name">delsol.delivery.form</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="entregas.delsol_delivery_form"></field>
+			<field name="arch" type="xml">
+					<field name="sector" position="after">
+								<field name="client_deliver_used_vehicle" attrs="{'readonly':[('state','in',('delivered','dispatched'))]}"/>
+					</field>
+			</field>
+		</record>
+		
+		
+	</data>
+</openerp>

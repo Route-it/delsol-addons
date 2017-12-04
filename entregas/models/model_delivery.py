@@ -14,6 +14,7 @@ import pytz
 import logging
 import requests
 import datetime
+from test.test_index import NewSeq
 
 _logger = logging.getLogger(__name__)
 
@@ -25,6 +26,27 @@ class delsol_delivery(models.Model):
 
     _order = "delivery_date desc"
 
+    @api.model
+    def _vehicle_id_domain(self):
+        cond_one = ('state', 'in', ('to_be_delivery','ready_for_delivery','damage'))
+        
+        # vehiculos que no estan e entregado/despachado pero estan listos para entregar
+        result_search = self.env['delsol.delivery'].search([('vehicle_id.state','in', ('to_be_delivery','ready_for_delivery')),
+                                                            ('state','in',('new','reprogrammed'))])
+        
+        
+        # entregas de vehiculos daniados, en cualquier estado (no deberian poder volver a programarse)
+        # los vehiculos que se entregan "daniados" no se pasan a entregado cuando se entregan
+        result_search |= self.env['delsol.delivery'].search([('vehicle_id.state','=', 'damage')])
+        
+        if len(result_search)>0:
+            vehicle_ids_programmed = result_search.mapped('vehicle_id.id')
+            cond_two = ('id','not in',vehicle_ids_programmed)
+            return [cond_one,cond_two]
+        return [cond_one]
+
+
+
     name = fields.Char(compute="name_get", store=True, readonly=True)
     
     active = fields.Boolean("Registro Activo", help = "Si se deja sin seleccionar, el registro quedará archivado.", default=True)
@@ -32,7 +54,8 @@ class delsol_delivery(models.Model):
     client_id = fields.Many2one(related='vehicle_id.client_id',string="Cliente",required=True,readonly=True,
                                 track_visibility='onchange')
 
-    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,track_visibility='onchange')
+    vehicle_id = fields.Many2one('delsol.vehicle',string="Vehiculo", help = "Vehiculo",required=True,track_visibility='onchange',
+                                 domain=_vehicle_id_domain)
 
     client_vehicle_readonly = fields.Boolean(compute="_client_vehicle_readonly")
 
@@ -54,8 +77,13 @@ class delsol_delivery(models.Model):
     turn_duration = fields.Float("Duración de turno",compute="depends_vehicle",store=True)
     turn_duration_from_child = fields.Integer("Duración de turno")
     
+    vehicle_state = fields.Selection("Estado del vehiculo",related="vehicle_id.state")
     vehicle_chasis = fields.Char("Chasis",related="vehicle_id.nro_chasis")
     vehicle_color = fields.Char("Color",related="vehicle_id.color.name")
+    vehicle_pass_predelivery_proccess = fields.Boolean(related="vehicle_id.pass_predelivery_proccess")
+    
+    button_delivery_visible = fields.Boolean(compute="_button_delivery_visible")
+    
     client_email = fields.Char(related="client_id.email")
     
     client_arrival = fields.Datetime("Horario de llegada de cliente", readonly=True)
@@ -72,6 +100,36 @@ class delsol_delivery(models.Model):
     comments = fields.Text("Anotaciones")
 
 
+    def _button_delivery_visible(self):
+        if (self.vehicle_pass_predelivery_proccess) & (self.state == 'delivered'):
+                self.button_delivery_visible=False
+                return
+            
+        if bool(self.client_arrival):
+            if self.state not in ('new','reprogrammed','dispatched'):
+                self.button_delivery_visible=False
+                return
+        else:
+            if not bool(self.vehicle_pass_predelivery_proccess):
+                    self.button_delivery_visible=False
+                    return
+            
+        self.button_delivery_visible=True
+         
+        #self.vehicle_pass_predelivery_proccess #si True debe ser visible, si false, debe ser visible
+        
+        #('client_arrival','=',False),('state','not in',('new','reprogrammed','dispatched')),'|',('vehicle_pass_predelivery_proccess','=',False)
+
+
+    @api.one
+    def change_state(self,new_state):
+        mybody = "El usuario "+ self.env.user.display_name +", ha cambiado el estado de "+self.state + " a "+ new_state.new_state +" fuera del circuito normal"
+        self.message_post(body=mybody, subject="Cambio de estado de entrega")
+
+        statement = eval("self.set_"+new_state.new_state)
+        statement()
+        #eval("self.set_new") 
+        
     @api.multi
     def send_report_turn_to_client(self):
         self.ensure_one()
@@ -170,9 +228,13 @@ class delsol_delivery(models.Model):
         return res
 
     
-    def set_new(self, cr, uid, ids, context=None):
-        for record in self.browse(cr, uid, ids, context=context):
-            record.state = 'new'
+    @api.one
+    def set_new(self):
+        self.client_arrival = False
+        self.tae_stamp = False
+        if (self.vehicle_id.state in ('delivered','dispatched')) & (self.state in ('delivered','dispatched')):
+            self.vehicle_id.state = 'ready_for_delivery'
+        self.state = 'new'
     
     @api.one
     def set_delivered(self):
@@ -182,6 +244,7 @@ class delsol_delivery(models.Model):
                     self.state = 'delivered'
                     self.vehicle_id.state = 'delivered'
                     self.vehicle_id.priority_of_chequed_request = 'normal'
+                    self.env.user.notify_info("Recuerde cargar la fecha de TAE en el sistema.")
                 else:
                     self.env.user.notify_warning("El vehiculo no posee patente o nro de chasis cargado.")
                     raise ValidationError("El vehiculo no posee patente o nro de chasis cargado.")
@@ -191,9 +254,20 @@ class delsol_delivery(models.Model):
                 raise ValidationError("El vehiculo no posee patente o nro de chasis cargado.")
                 return
         else:
-            self.env.user.notify_warning("El vehiculo no esta listo para entregar.")
-            raise ValidationError("El vehiculo no esta listo para entregar.")
-            return
+            if ((self.vehicle_id.state  in ('damaged')) & self.env.user.has_group('entregas.group_name_admin_entregas_damaged')):
+                mybody = "El usuario "+ self.env.user.display_name +", autoriz&oacute; la entrega del veh&iacute;culo da&ntilde;ado"
+                self.env.user.notify_warning("El vehiculo se entrega dañado.")
+                self.env.user.notify_info("Recuerde cargar la fehca de TAE en el sistema.")
+                self.message_post(body=mybody, subject="Entrega de Vehiculo dañado")
+                self.state = 'delivered'
+                #se deja en estado damaged
+                #self.vehicle_id.state = 'delivered'
+                self.vehicle_id.priority_of_chequed_request = 'normal'
+                return
+            else:
+                self.env.user.notify_warning("El vehiculo no esta listo para entregar.")
+                raise ValidationError("El vehiculo no esta listo para entregar.")
+                return
             
             
     
@@ -203,10 +277,18 @@ class delsol_delivery(models.Model):
         self.vehicle_id.state = 'dispatched'
         self.vehicle_id.priority_of_chequed_request = 'normal'
         self.client_arrival = self.delivery_date
+        self.tae_stamp = False
 
-    def set_close(self, cr, uid, ids, context=None):
-        for record in self.browse(cr, uid, ids, context=context):
-            record.state = 'closed'
+    @api.one
+    @api.constrains('delivery_date')
+    def check_delivery_date(self):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        delivery_date = pytz.utc.localize(datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')).astimezone(local).strftime('%Y-%m-%d')
+        now_date = pytz.utc.localize(datetime.datetime.now()).astimezone(local).strftime('%Y-%m-%d')
+        
+        if  delivery_date < now_date :
+            raise ValidationError("La fecha de programacion no puede ser en el pasado")
 
     @api.constrains('delivery_date')
     def set_reprogrammed(self):
@@ -214,6 +296,8 @@ class delsol_delivery(models.Model):
             self.state = 'reprogrammed'
         self.olddate = self.delivery_date
         self.vehicle_id.priority_of_chequed_request = 'normal'
+        self.client_arrival = False
+        self.tae_stamp = False
 
     @api.one
     def stamp_tae(self):
@@ -221,16 +305,21 @@ class delsol_delivery(models.Model):
             self.tae_stamp = fields.Datetime.now()
         
 
-
+    @api.one
     @api.constrains('vehicle_id')
-    def chek_vehicle_ready_for_delivery(self, cr, uid, ids, context=None):
-        for record in self.browse(cr, uid, ids, context=context):
-            if bool(record.vehicle_id):
-                result_search = self.pool.get('delsol.delivery').search(cr, uid, [('vehicle_id','=',record.vehicle_id.id)], context=context)
-                if len(result_search)>1:
-                    raise ValidationError("El vehiculo ya fue entregado")
-                    return
-                if (record.vehicle_id.state not in ("to_be_delivery","ready_for_delivery")):
+    def chek_vehicle_ready_for_delivery(self):
+        if bool(self.vehicle_id):
+            result_search = self.env['delsol.delivery'].search([('vehicle_id','=',self.vehicle_id.id)])
+            if len(result_search)>1:
+                msg = "El vehiculo ya fue entregado/despachado"
+                if (result_search[0].state == 'new')|(result_search[0].state == 'reprogrammed'):
+                   msg = "La entrega ya esta programada." 
+                raise ValidationError(msg)
+                return
+            if (self.vehicle_id.state not in ("to_be_delivery","ready_for_delivery")):
+                if ((self.vehicle_id.state  in ('damage')) & self.env.user.has_group('entregas.group_name_admin_entregas_damaged')):
+                    self.env.user.notify_warning("El vehiculo se encuentra dañado!!.")                        
+                else:
                     raise ValidationError("El vehiculo no esta listo para programar la entrega.")
                     return
 
@@ -252,7 +341,8 @@ class delsol_delivery(models.Model):
         
         if ((self.state == 'delivered') |
             (self.vehicle_id.state == 'to_be_delivery') |
-            (self.vehicle_id.state == 'ready_for_delivery')):
+            (self.vehicle_id.state == 'ready_for_delivery') |
+            (self.vehicle_id.state == 'damage')):
             self.client_vehicle_readonly = True
         else:
             self.client_vehicle_readonly = False
@@ -356,7 +446,7 @@ class delsol_delivery(models.Model):
             smsnro = smsnro.replace(' ','').replace('-','').replace('/','')
             
             
-            smstexto = "Del sol le da la bienvenida y le desea muchas felicidades. La clave de la wifi DEL_SOL_CLIENTES es ford2017"
+            smstexto = "Del sol le da la bienvenida y le desea muchas felicidades. La clave de la wifi DEL SOL CLIENTES es delsolautomotor"
             #"llego el cliente " + cliente_id.nombre
             
             #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)    
