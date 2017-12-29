@@ -151,11 +151,11 @@ class delsol_call(models.Model):
             contactado = ''
                 
             if record.delivery_id:
-                entrega = str(record.delivery_id.name_get_str(record.delivery_id)) or ''
+                entrega = record.delivery_id.name_get_str(record.delivery_id)
             
             if record.contacted:
                 contactado = "Contactado"
             else:
                 contactado = "No Contactado"
 
-            return str(entrega) + '(' + str(contactado) + ')'  
+            return entrega + '(' + contactado + ')'  
