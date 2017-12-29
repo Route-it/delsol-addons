@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record model='ir.ui.view' id='delsol_delivery_form'>
+			<field name="name">delsol.vehicle.form</field>
+			<field name="model">delsol.vehicle</field>
+			<field name="inherit_id" ref="delsol_base.vehicle_form"></field>
+			<field name="arch" type="xml">
+					<field name="ubicacion" position="after">
+								<field name="transfurlong_state" readonly="1"/>
+					</field>
+			</field>
+		</record>
+		
+		
+	</data>
+</openerp>
