@@ -54,29 +54,53 @@ class cron_transfurlong(models.Model):
             
                 soup = BeautifulSoup(r.content,"lxml")
 
-
-                table = soup.body.find(id='row')
+                spanlinks = soup.body.find(class_='pagelinks')
                 
-                if not (table is None): 
-                    filas = table.find_all('tr')
-                    for fila in filas:
-                        chasis = fila.td.text[0:17]
-                        
-                        chasis_corto = chasis[9:]
-                        
-                        vehicles = self.env['delsol.vehicle'].search([('nro_chasis','ilike',chasis_corto)])
-                        
-                        if len(vehicles)==1:
-                            vehicle = vehicles[0]
-                            if (vehicle.transfurlong_state != 'Entregada'):
-                                vehicle.transfurlong_state = estados.get(i)
-                        else:
-                            print 'No se procesa:' + chasis_corto
-                        kount += 1
+                nropags = 1
+                
+                url_ = url_listadoVehiculos
+                
+                if not (spanlinks == None):
+                    lastlink = spanlinks.find('a',text='Ultimo')
+                    if not (lastlink == None):
+                        link = lastlink.attrs['href'].split('=')
+                    
+                        nropags = int(link[len(link)-1])
+                        url_ = link[0]+'='+link[1]+'='
+                
+                for pag in range(1,nropags+1):
+                    if url_ != url_listadoVehiculos:
+                        r = s.get(url='http://www.transfurlong.com.ar'+url_+str(pag))
+                    else:
+                        r = s.post(url=url_,data=payload)
+                             
+                
+                    soup = BeautifulSoup(r.content,"lxml")
+                
+                    table = soup.body.find(id='row')
+                    
+                    if not (table is None): 
+                        filas = table.find_all('tr')
+                        for fila in filas:
+                            chasis = fila.td.text[0:17]
+                            
+                            chasis_corto = chasis[9:]
+                            
+                            vehicles = self.env['delsol.vehicle'].search([('nro_chasis','ilike',chasis_corto)])
+                            
+                            if len(vehicles)>=1:
+                                for vehicle in vehicles:
+                                    if (vehicle.transfurlong_state != 'Entregada'):
+                                        vehicle.transfurlong_state = estados.get(i)
+                            else:
+                                print 'No se procesa:' + chasis_corto
+                            kount += 1
 
             print 'cantidad'+ str(kount)
         except Exception as e:
             raise Warning("Error: Intente nuevamente mas tarde\\n"+e.message)
         finally:
             print 'Done'
+
+
 

@@ -4,6 +4,7 @@ from datetime import datetime
 
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
+import pytz
 
 
 class delsol_formality(models.Model):
@@ -98,7 +99,10 @@ class delsol_formality(models.Model):
         street2 = self.client_id.street2 if bool(self.client_id.street2) else ''
         
         address = street + ' ' + street2
-        self.client_address = address if len(address)>1 else 'El cliente no tiene direccion cargada.'
+        if len(address)>1:
+            self.client_address = address  
+        else:
+            self.client_address =  'El cliente no tiene direccion cargada.'
 
     @api.one
     def _registry_by_address(self):
@@ -110,6 +114,11 @@ class delsol_formality(models.Model):
         #    <field name="name">Registro por direccion</field>
         #    <field name="code">gestoria_link_reg_by_address</field>
 
+    @api.onchange('patent')
+    @api.one
+    def onchange_patente(self):
+        if self.patent:
+            self.patent = str(self.patent).upper()
         
         
     @api.one
@@ -138,12 +147,14 @@ class delsol_formality(models.Model):
 
     @api.multi
     def set_go_gerencia(self):
+        
         for i in self:
             if not bool(i.folder_sign_receiv_date):
                 i.folder_sign_send_date = datetime.now()
     
     @api.multi
     def set_back_gerencia(self):
+
         for i in self:
             if not bool(i.folder_sign_receiv_date):
                 i.folder_sign_receiv_date = datetime.now()
@@ -151,10 +162,17 @@ class delsol_formality(models.Model):
     @api.multi
     def set_initiated(self):
         for i in self:
-            if (not bool(i.folder_sign_receiv_date)) | (not bool(i.vehicle_registry_id)) | (not bool(i.formality_responsible_id)):
-                self.env.user.notify_info('Debe firmarse primero la carpeta.\n Debe asignar un registro.\n Debe asignar un responsable del tramite')
+            if (not bool(i.folder_sign_receiv_date)): 
+                self.env.user.notify_info('Debe firmarse primero la carpeta.')
+                return 
+            if (not bool(i.vehicle_registry_id)):
+                self.env.user.notify_info('Debe asignar un registro.')
+                return 
+            if (not bool(i.formality_responsible_id)):
+                self.env.user.notify_info('Debe asignar un responsable del tramite')
                 return 
             i.state = 'initiated'
+
             i.formality_in_registry_date = datetime.now()
 
     @api.multi
@@ -178,17 +196,21 @@ class delsol_formality(models.Model):
                 return
 
             i.state = 'completed'
+
             i.papers_received_date = datetime.now()
             i.fordward_sales_admin_date = datetime.now() 
             i.formality_complete_date = datetime.now()
     
     @api.multi
     def set_title_recived(self):
+
         for i in self:
             i.title_received_date = datetime.now()
+
             
     @api.multi
     def set_finalized(self):
+
         for i in self:
             i.state = 'finalized'
             i.title_delivery_to_client_date = datetime.now()

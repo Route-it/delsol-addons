@@ -43,7 +43,7 @@ class delsol_delivery(models.Model):
                 
                 smstexto = "El cliente "+self.client_id.name +" ha arribado. Tiene un vehiculo usado para entregar"
     
-                #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)
+                #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnrololo + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)
                 print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnrololo + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
     
                 self.env.user.notify_info('Se ha notificado por sms al responsable de usados para recibir dicho vehiculo.')

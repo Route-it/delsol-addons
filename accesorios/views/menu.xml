@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+
+		<menuitem name="Accesorios" id="menu_accesories" parent="base.delsol_main_menu"  groups="accesorios.group_name_menu_accesorios"/>
+			<menuitem name="Clientes a llamar" id="menu_accesories_to_contact" parent="menu_accesories" action="open_view_accesories_contact_all"  groups="accesorios.group_name_menu_clientes_a_llamar"/>
+			<menuitem name="Instalaciones" id="menu_accesories_to_install" parent="menu_accesories" action="open_view_accesories_install_all" groups="accesorios.group_name_menu_accesorios_instalaciones"/>
+			<menuitem name="Accesorios" id="menu_accesories_accesories" parent="menu_accesories" action="open_view_accesories_all" groups="accesorios.group_name_menu_accesorios_accesorios"/>
+
+
+
+	</data>
+</openerp>

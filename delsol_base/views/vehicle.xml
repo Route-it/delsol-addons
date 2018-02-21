@@ -10,6 +10,7 @@
 				<search>
 					<field name="name" string="Vehiculo" />
 					<field name="nro_chasis" string="Numero de Chasis" />
+					<field name="serie_vin" string="Numero de vin" />
 					<separator />
 					<filter string="Camiones" name="camiones"
 						domain="[('vehicle_type','!=','auto')]" />
@@ -62,8 +63,10 @@
 								<field name="name" string="Nombre" />
 								<field name="modelo" options="{'no_create_edit': True}" />
 								<field name="color" options="{'no_create_edit': True}" />
-								<field name="marca" />
+								<field name="marca"/>
+								<field name="serie_vin"/>
 								<field name="nro_chasis" />
+								<field name="fabricante_origen_anio"/>
 								<field name="anio" />
 							</group>
 							<group>
@@ -74,8 +77,8 @@
 
 							</group>
 						</group>
-						<notebook class="oe_read_only" attrs="{'invisible':[('id','=', False)]}">
-							<page string="Historico de estados">
+						<notebook attrs="{'invisible':[('id','=', False)]}">
+							<page string="Historico de estados" class="oe_read_only" >
 								<field name="state_list">
 									<tree limit="5" editable="bottom" create="0" delete="0">
 										<field name="status" />
@@ -108,27 +111,6 @@
 			</field>
 		</record>
 
-
-		<record id="vehicle_model_tree" model="ir.ui.view">
-			<field name="name">delsol.vehicle.model.tree</field>
-			<field name="model">delsol.vehicle_model</field>
-			<field name="arch" type="xml">
-				<tree string="Modelos">
-					<field name="name" />
-					<field name="description" />
-					<field name="vehicle_type" />
-					<field name="turn_duration" />
-				</tree>
-			</field>
-		</record>
-
-		<record id="open_view_vehicle_model_all" model="ir.actions.act_window">
-			<field name="name">Modelos</field>
-			<field name="res_model">delsol.vehicle_model</field>
-			<field name="view_type">form</field>
-			<field name="domain">[]</field>
-			<field name="view_mode">tree,form</field>
-		</record>
 
 		<record id="open_view_vehicle_all" model="ir.actions.act_window">
 			<field name="name">Vehículos</field>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="delivery_accesories_form" model="ir.ui.view">
+			<field name="name">delsol.delivery.accesories.form</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="entregas.delsol_delivery_form"></field>
+			<field name="arch" type="xml">
+
+				<group position="inside">
+					<group>
+						<field name="accesories_contact"></field>						
+						<field name="accesories_installed" attrs="{'invisible':[('accesories_contact','=',True)]}"></field>						
+					</group>
+				</group>
+			</field>
+		</record>
+
+	</data>
+</openerp>

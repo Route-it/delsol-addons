@@ -71,10 +71,10 @@
 						<button name="set_completed" string="Tramite Completado" type="object" class="oe_highlight oe_read_only" states="initiated,delayed,observed"/>
 
 						<button name="set_title_recived" string="Titulo Recibido" type="object" class="oe_highlight oe_read_only"
-							attrs="{'invisible':['|',('state','!=','completed'),'&amp;',('state','=','completed'),('title_received_date','=',True)]}"/>
+							attrs="{'invisible':['|',('state','!=','completed'),('title_received_date','!=',False)]}"/>
 
 						<button name="set_finalized" string="Registrar entrega de Titulo" type="object" class="oe_highlight oe_read_only"
-							attrs="{'invisible':['|',('state','!=','completed'),'&amp;',('state','=','completed'),('title_received_date','=',False)]}"/>
+							attrs="{'invisible':[('title_received_date','=',False)]}"/>
 
 
 						<field name="state" widget="statusbar" nolabel="1" statusbar_visible="new,initiated,completed,finalized" statusbar_colors="{'new':'blue'}" />
@@ -91,23 +91,25 @@
 							<group string="Gestoria">
 								<field name="formality_responsible_id" options="{'no_create_edit': True}" />
 								<field name="create_date" readonly="1" class="oe_read_only"/>
+								<field name="fordward_sales_admin_date" readonly="1" class="oe_read_only"/>
+								
+								<field name="title_received_date" readonly="1" class="oe_read_only"/>
+								
 								<field name="title_delivery_to_client_date" class="oe_read_only" />
 								<field name="time_delayed_in_formality"  class="oe_read_only"/>
 							</group>
 							<group string="Registro">
 								<field name="formality_type_ids" widget="many2many_tags"/>
-								<field name="formality_in_registry_date" class="oe_read_only"/>
+								<field name="client_address" readonly="1"/>
+								<field name="registry_by_address" widget="url" readonly="1" text="Ir al sitio"/>
 								<field name="vehicle_registry_id" />
-								<field name="registry_by_address" widget="url" readonly="1"/>
-								
-								<a  href="{{ record.registry_by_address.value }}" target="_blank">TASK</a><br/>
-								<field name="client_address"  class="oe_edit_only" readonly="1"/>
+								<field name="formality_in_registry_date" class="oe_read_only"/>
 								<field name="papers_received_date" class="oe_read_only"/>
 							</group>
-							<group string="Vehiculo">
+							<group string="Vehiculo" >
 								<field name="nro_chasis" />
-								<field name="patent_date" />
-								<field name="patent" />
+								<field name="patent_date" attrs="{'readonly':['|',('state','=','completed'),('state','=','finalized')]}"/>
+								<field name="patent" attrs="{'readonly':['|',('state','=','completed'),('state','=','finalized')]}"/>
 							</group>
 							<group string="Gerencia" class="oe_read_only">
 								<field name="folder_sign_send_date" />
@@ -127,8 +129,6 @@
 				</form>
 			</field>
 		</record>
-
-
 
 		<record id="open_view_gestoria_all" model="ir.actions.act_window">
 			<field name="name">Vehiculos en Gestoria</field>

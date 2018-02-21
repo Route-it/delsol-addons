@@ -51,13 +51,13 @@ class delsol_vehicle(models.Model):
                     return    
             elif (len(pat) == 7) & (int(anio) >= 2016):
                 if not pat[0:2].isalpha():
-                    raise ValidationError("Los primeros dos dígitos de la patente no son letras")
+                    raise ValidationError("Los primeros dos dígitos de la patente deben ser letras")
                     return
                 if not pat[2:5].isdigit():
-                    raise ValidationError("Los d{igitos 3 4 y 5 deben ser números")
+                    raise ValidationError("Los digitos 3 4 y 5 deben ser números")
                     return
                 if not pat[5:7].isalpha():
-                    raise ValidationError("Los últimos dos dígitos deben ser números")
+                    raise ValidationError("Los últimos dos dígitos deben ser letras")
                     return
             # Se quita la obligacion de cargar patente.
             # Revisar en que momento hay que obligar cargarla.
@@ -66,6 +66,7 @@ class delsol_vehicle(models.Model):
                 return
                 
     @api.onchange('patente')
+    @api.one
     def onchange_patente(self):
         if self.patente:
             self.patente = str(self.patente).upper()

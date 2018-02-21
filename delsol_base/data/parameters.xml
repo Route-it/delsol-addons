@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="check_nro_chasis" model="delsol.config">
+            <field name="name">Validar numero de chasis</field>
+            <field name="code">check_nro_chasis</field>
+            <field name="app">base</field>
+            <field name="description">Dato: (Booleano)
+            			Verifica que el nro de chasis sea valido segun info de wikipedia</field>
+            <field name="value">True</field>
+        </record>
+
+
+    </data>
+</openerp>

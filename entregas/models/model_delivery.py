@@ -14,7 +14,6 @@ import pytz
 import logging
 import requests
 import datetime
-from test.test_index import NewSeq
 
 _logger = logging.getLogger(__name__)
 

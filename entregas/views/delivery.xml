@@ -89,9 +89,9 @@
 						<field name="button_delivery_visible" invisible="1"/>
 
 						<div  attrs="{'invisible':[('id','==',False)]}" style="display: inline">
-						<div attrs="{'invisible':[('vehicle_pass_predelivery_proccess','=',True)]}" class="oe_inline" style="display: inline">
 							<button name="%(reprogramming_wizard_action)d" string="Reprogramar" type="action" attrs="{'invisible':[('state','=','delivered')]}"
 								groups="entregas.group_name_reprogram"/>
+						<div attrs="{'invisible':[('vehicle_pass_predelivery_proccess','=',True)]}" class="oe_inline" style="display: inline">
 							<button name="stamp_client_arrival" string="Cliente en concesionaria" type="object" attrs="{'invisible':['|',('client_arrival','!=',False),('state','not in',('new','reprogrammed'))]}"
 								groups="entregas.group_name_client_in_dealer"/>
 						</div>

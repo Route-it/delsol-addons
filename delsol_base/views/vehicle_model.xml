@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<record id="vehicle_model_filter" model="ir.ui.view">
+			<field name="name">delsol.vehicle.model.select</field>
+			<field name="model">delsol.vehicle_model</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name"/>
+					<field name="description" />
+				</search>
+			</field>
+		</record>
+
+		<record id="vehicle_model_tree" model="ir.ui.view">
+			<field name="name">delsol.vehicle.model.tree</field>
+			<field name="model">delsol.vehicle_model</field>
+			<field name="arch" type="xml">
+				<tree string="Modelos" default_order="create_date desc">
+					<field name="name" />
+					<field name="description" />
+					<field name="turn_duration" />
+					<field name="vehicle_type" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="vehicle_model_form" model="ir.ui.view">
+			<field name="name">delsol.vehicle.model.form</field>
+			<field name="model">delsol.vehicle_model</field>
+			<field name="arch" type="xml">
+				<form string="Modelo">
+					<sheet string="Modelo">
+						<group>
+							<group>
+								<field name="name" />
+								<field name="description"/>
+								<field name="vehicle_type" />
+								<field name="turn_duration" />
+								<field name="short_name" class="oe_read_only"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="open_view_vehicle_model_all" model="ir.actions.act_window">
+			<field name="name">Modelos</field>
+			<field name="res_model">delsol.vehicle_model</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+	</data>
+</openerp>

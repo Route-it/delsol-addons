@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="delsol_accesories_tree" model="ir.ui.view">
+			<field name="name">delsol.accesories.tree</field>
+			<field name="model">delsol.accesories</field>
+			<field name="arch" type="xml">
+				<tree string="Accesorios">
+								<field name="name" string="Nombre" />
+								<field name="price" />
+<!-- 								<field name="currency_id" options="{'no_create_edit': True}" /> -->
+<!-- 								<field name="vehicle_model_id" options="{'no_create_edit': True}" /> -->
+				</tree>
+			</field>
+		</record>
+		<record id="delsol_accesories_form" model="ir.ui.view">
+			<field name="name">delsol.accesories.form</field>
+			<field name="model">delsol.accesories</field>
+			<field name="arch" type="xml">
+				<form string="Accesorios">
+					<sheet string="Accesorios">
+						<group>
+							<group>
+								<field name="name" string="Nombre" />
+								<field name="price" />
+<!-- 								<field name="currency_id" options="{'no_create_edit': True}" /> -->
+<!-- 								<field name="vehicle_model_id" options="{'no_create_edit': True}" /> -->
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="open_view_accesories_all" model="ir.actions.act_window">
+			<field name="name">Accesorios</field>
+			<field name="res_model">delsol.accesories</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+	</data>
+</openerp>

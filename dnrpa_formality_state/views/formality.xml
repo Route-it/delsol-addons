@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		<record id="dnrpa_formality_state" model="ir.actions.act_window">
+			<field name="name">Obtener estado de tramite</field>
+			<field name="res_model">dnrpa_formality_state.wizard_formality_state</field>
+			<field name="src_model">delsol.formality</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="dnrpa_delsol_formality_form">
+			<field name="name">dnrpa.delsol.formality.form</field>
+			<field name="model">delsol.formality</field>
+			<field name="inherit_id" ref="gestoria.formality_form" />
+
+			<field name="arch" type="xml">
+				<field name="comments" position="after">
+					<field name="id" invisible="1" />
+					<button name="%(dnrpa_formality_state)d" string="Estado del tramite" cols="2"
+						type="action" attrs="{'invisible':[('id','==',False)]}" class="oe_read_only" />
+				</field>
+
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="dnrpa_formality_state_wizard">
+			<field name="name">dnrpa.formality.state.wizard.form</field>
+			<field name="model">dnrpa_formality_state.wizard_formality_state</field>
+			<field name="arch" type="xml">
+				<form string="Obtener Estado">
+					<group>
+						<field name="captcha_dnrpa" widget="image" />
+						<field name="captcha_text" placeholder="Texto de la imagen" />
+					</group>
+					<a href="http://www.anses.gob.ar/constancia-de-cuil/" target="_blank">Sitio
+						de Anses: http://www.anses.gob.ar/constancia-de-cuil/</a>
+					<footer>
+						<button name="get_formality_state_from_dnrpa" type="object"
+							string="Obtener estado" class="oe_highlight" />
+						<button special="cancel" string="Cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+
+	</data>
+</openerp>

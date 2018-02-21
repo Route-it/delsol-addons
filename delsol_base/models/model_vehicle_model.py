@@ -17,7 +17,7 @@ class delsol_vehicle_model(models.Model):
     
     _name = "delsol.vehicle_model"
 
-    name = fields.Char(string="Código de catálogo",required=True)
+    name = fields.Char(string="Código de catálogo",required=True,help='Numero identificatorio de 4 caracteres alfanumericos')
     
     description = fields.Char(string="Descripción")
 
@@ -31,6 +31,27 @@ class delsol_vehicle_model(models.Model):
             ('vehicle_model_name_unique', 'unique(name)', 'El código debe ser único'),
     ]
     
+    
+    @api.onchange('description')
+    def determine_vehicle_type(self):
+        if bool(self.description):
+            if 'cargo' in self.description.lower(): self.vehicle_type = 'camion'
+            else: 
+                if '4000' in self.description.lower(): self.vehicle_type = 'camion'
+                else: 
+                    if 'transit' in self.description.lower(): self.vehicle_type = 'camion'
+                    else:
+                         self.vehicle_type = 'auto'
+    
+    
+    @api.constrains('name')
+    def check_code(self):
+        if len(self.name)!=4:
+            raise ValidationError("El codigo de catalogo debe tener los ultimos 4 caracteres.")
+            return false
+            
+        
+        
     @api.one
     def _compute_short_name(self):
         if bool(self.description):
