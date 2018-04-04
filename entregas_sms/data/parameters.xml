@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="send_remember_to_client" model="delsol.config">
+            <field name="name">Enviar recordatorio x sms al cliente de la entrega de su vehiculo</field>
+            <field name="code">send_remember_to_client</field>
+            <field name="app">entregas_sms</field>
+            <field name="description">Dato: (Boolean)
+            			Indica si hay que enviar o no el recordatorio por sms al cliente 1 dia antes.
+            			</field>
+            <field name="value">True</field>
+        </record>
+
+    </data>
+</openerp>
