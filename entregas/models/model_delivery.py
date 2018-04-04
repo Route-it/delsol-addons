@@ -289,6 +289,16 @@ class delsol_delivery(models.Model):
         if  delivery_date < now_date :
             raise ValidationError("La fecha de programacion no puede ser en el pasado")
 
+    @api.onchange('delivery_date')
+    def onchange_delivery_date(self):
+        if bool(self.delivery_date): 
+            delivery_client_date = self.env['delsol.config'].search([('code','=','delivery_client_date')]).value
+            delivery_client_date_int = eval(delivery_client_date) 
+            
+            client_before_delivery = datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')  - datetime.timedelta(minutes=delivery_client_date_int)
+            self.client_date = client_before_delivery.strftime('%Y-%m-%d %H:%M:%S')
+
+
     @api.constrains('delivery_date')
     def set_reprogrammed(self):
         if (self.delivery_date != self.olddate) and (self.olddate is not False):
@@ -396,66 +406,13 @@ class delsol_delivery(models.Model):
 
         self.env.user.notify_info('Se ha reprogramado la entrega.')
 
+
         return {'type': 'ir.actions.act_window_close'}
     
     @api.one
     def stamp_client_arrival(self):
         self.client_arrival = fields.Datetime.now()
 
-        try:
-            smsuser = "DELSOLAUTOMOTOR"
-            smsclave = "Timberline838"
-            smsnro = "2974139563" #  Sergio Bellido
-            modelo = (self.vehicle_id.modelo.description[:15] + '..') if len(self.vehicle_id.modelo.description) > 15 else self.vehicle_id.modelo.description
-
-            user_tz = self.env.user.tz or pytz.utc
-            local = pytz.timezone(user_tz)
-            
-            hora = pytz.utc.localize(datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')).astimezone(local).strftime('%H:%M')
-            
-            smstexto = "El cliente "+self.client_id.name +" ha arribado. Hora entrega: "+ hora +". "+modelo +" " + self.vehicle_color +" " + self.vehicle_id.patente
-            
-            #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)
-            print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnro + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
-
-            self.env.user.notify_info('Se ha notificado por sms al responsable de entregas.')
-            
-            print r.status_code
-            print r.headers
-            print r.content
-                
-        except:
-            print "Unexpected error!"
-
-        try:
-            smsuser = "DELSOLAUTOMOTOR"
-            smsclave = "Timberline838"
-            smsnro = self.client_id.mobile if self.client_id.mobile else self.client_id.phone
-            
-            if (smsnro[:1] == '0'):
-                smsnro = smsnro[1:]
-            
-            if (smsnro[:2] == '15'):
-                smsnro = smsnro[2:]
-                smsnro = '297'+smsnro
-
-            if not ((smsnro[:1] != '2') or (smsnro[:1] != '3') or (smsnro[:1] != '1')):
-                smsnro = '297'+smsnro
-            
-            smsnro = smsnro.replace(' ','').replace('-','').replace('/','')
-            
-            
-            smstexto = "Del sol le da la bienvenida y le desea muchas felicidades. La clave de la wifi DEL SOL CLIENTES es delsolautomotor"
-            #"llego el cliente " + cliente_id.nombre
-            
-            #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnro + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)    
-            print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnro + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
-
-            print r.status_code
-            print r.headers
-            print r.content
-        except:
-            print "Unexpected error!"
 
         # ENVIAR MAIL DIRECTO A TRAVES DE X SERVIDOR
         """

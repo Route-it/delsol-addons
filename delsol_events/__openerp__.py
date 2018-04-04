@@ -28,6 +28,7 @@
         'views/view.xml',
         'views/menu.xml',
         'data/parameters.xml',
+        'data/data.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

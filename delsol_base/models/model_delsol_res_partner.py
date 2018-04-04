@@ -111,12 +111,6 @@ class res_partner(models.Model):
     """
 
 
-    @api.constrains('phone','mobile')
-    def validate_if_can_contact(self):
-        if not(bool(self.phone) | bool(self.mobile)):
-            raise ValidationError("Uno de los campos telefono o movil es requerido.")
-            return
-
     @api.onchange('name')
     def onchange_name(self):
         if self.name:
@@ -151,3 +145,101 @@ class res_partner(models.Model):
 
             return name  
 
+
+
+
+
+    def validate_null_tel(self,mobile):
+        if (mobile is None) or (not bool(mobile)) or (len(mobile.strip())<6):
+            return False 
+        return True
+    
+    
+    def clean_tel(self,mobile):
+        mobile = mobile.replace(" ","").replace(".","").replace("-","").replace(")","").replace("(","").replace("#","").replace("|","")
+        if "/" in mobile:
+            print "posible 2 tels"
+            if len(mobile)>10:
+                tels = mobile.split("/") # me quedo con el primero. El segundo puede ser asi 154924655/56/57 o 492465/485765 Si es 11/456789 -> invalido
+                for te in tels:
+                    if len(te)>6:
+                        mobile = te
+                        break;
+                if len(tels[0])<5:
+                    print "ojo, el telefono resultante puede ser invalido."
+        
+        if mobile.startswith("0"):
+            print "el nro inicia con 0, se quita"
+            mobile = mobile[1:] # se quita el 0       
+    
+        if not mobile.isdigit():
+            result = re.search('[a-zA-Z]+',mobile)
+            if not (result is None):
+                mobile = mobile[:result.regs[0][0]]
+                print "no es decimal, quitando parte alpha:" + mobile
+            
+        return mobile
+    
+    
+    def normalize_tel_sin_15(self,mobile):
+        if "15" in mobile:
+            print "el nro posee 15"
+            tef = mobile.split("15",1) # separo telefono de caracteristica, solo una ocurrencia
+            if len(tef)>1:    
+                 caracteristica = tef[0]
+                 numero = tef[1]
+            else:
+                 numero = tef[0]
+                 
+            if (len(numero)>=6) & (len(caracteristica)>=2) & (len(caracteristica)<=5) & \
+                (caracteristica.startswith("1") or caracteristica.startswith("2") or caracteristica.startswith("3")):
+                print "numero >= 6 y caracteristica valido"
+                numero = caracteristica + numero
+            else:
+                if mobile.startswith("15"):
+                    print "numero arranca con 15. Normalizando"
+                    numero = "297"+numero
+                else:
+                    print "numero invalido, habia 15, pero era algo como 297 461589"
+                    numero = mobile
+        else:
+            numero = mobile    
+        return numero
+    
+    
+    def get_client_mobile(self,mobile=None):
+            
+            if mobile is None:
+                if bool(self.mobile):
+                    mobile = self.mobile
+                else:
+                    self.env.user.notify_warning("El nro de movil no esta establecido. Edite el cliente.")
+            caracteristica = ""
+            numero = ""
+            
+            self.validate_null_tel(mobile)        
+    
+            mobile = self.clean_tel(mobile)
+    
+            mobile = self.normalize_tel_sin_15(mobile)
+                
+            if mobile.startswith("1") or mobile.startswith("2") or mobile.startswith("3"):
+                print "posee caracteristica"
+            else: 
+                print "agregamos la de comodoro por defecto"
+                mobile = "297" + mobile
+    
+            print "el numero resultante es:"+ mobile
+            if len(mobile)!= 10:
+                raise ValidationError("El movil no contiene 10 digitos sin contar 0 y 15")
+            return mobile
+
+
+    @api.constrains('phone','mobile')
+    def validate_if_can_contact(self):
+        
+        if not(self.validate_null_tel(self.phone) | self.validate_null_tel(self.mobile)):
+            raise ValidationError("Uno de los campos telefono o movil es requerido.")
+        if (self.validate_null_tel(self.mobile)):
+            self.get_client_mobile(self.mobile)
+            

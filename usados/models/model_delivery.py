@@ -32,26 +32,24 @@ class delsol_delivery(models.Model):
         if bool(self.client_deliver_used_vehicle):
 
             try:
-                smsuser = "DELSOLAUTOMOTOR"
-                smsclave = "Timberline838"
-                smsnrololo = "2974038240" #  Lolo Fernandez
+                if self.vehicle_id.modelo.vehicle_type == 'auto':
+
+                    smsnrololo = "2974038240" #  Lolo Fernandez
+        
+                    user_tz = self.env.user.tz or pytz.utc
+                    local = pytz.timezone(user_tz)
+                    
+                    hora = pytz.utc.localize(datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')).astimezone(local).strftime('%H:%M')
+                    
+                    message = "El cliente "+self.client_id.name +" ha arribado. Tiene un vehiculo usado para entregar"
+        
+                    delsol_sms_server = self.env['delsol.sms_server'].search([('name','=','ventas')])[0]
+                    delsol_sms_server.send_sms(message,smsnrololo)
     
-                user_tz = self.env.user.tz or pytz.utc
-                local = pytz.timezone(user_tz)
+                    mensaje_dpto_usados = 'Se ha notificado por sms al responsable de usados para recibir dicho vehiculo.'
+                    super(delsol_delivery,self).message_post(body=mensaje_dpto_usados)
+                    self.env.user.notify_info(mensaje_dpto_usados)
                 
-                hora = pytz.utc.localize(datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')).astimezone(local).strftime('%H:%M')
-                
-                smstexto = "El cliente "+self.client_id.name +" ha arribado. Tiene un vehiculo usado para entregar"
-    
-                #r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS=" +smsnrololo + "&TEXTO=" + smstexto + "&USUARIO=" + smsuser + "&CLAVE=" + smsclave)
-                print 'r = requests.get("http://servicio.smsmasivos.com.ar/enviar_sms.asp?API=1&TOS="' +smsnrololo + '&TEXTO=' + smstexto + '&USUARIO=' + smsuser + '&CLAVE=' + smsclave +")"
-    
-                self.env.user.notify_info('Se ha notificado por sms al responsable de usados para recibir dicho vehiculo.')
-                
-                print r.status_code
-                print r.headers
-                print r.content
-    
             except:
                 print "Unexpected error!"
 

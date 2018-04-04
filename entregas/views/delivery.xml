@@ -145,7 +145,7 @@
 							</group>
 						</group>
 						<notebook>
-							<page string="Reprogramaciones" attrs="{'invisible':[('reprogramming_ids','=',[])]}">
+							<page string="Reprogramaciones" attrs="{'invisible':[('reprogramming_ids','=',False)]}">
 								<field name="reprogramming_ids" string="Reprogramaciones" context="{'delivery_id':id}"
 									attrs="{'readonly':'True'}" />
 							</page>
@@ -191,8 +191,8 @@
             <field name="arch" type="xml">
                 <form string="Reprogramar entrega">
                     <group>
-                        <field name="new_date"/>
                         <field name="new_delivery_date"/>
+                        <field name="new_date"/>
                         <field name="responsible"/>
                         <field name="reason"/>
                     </group>
