@@ -45,7 +45,7 @@ class delsol_client_remember_delivery(models.Model):
             
         for d in deliverys:
             message = u"Mañana es la entrega de su " + d.vehicle_id.marca + d.get_delivery_datetime(d.client_date)[5:] +"."
-            if not (("batea" in self.client_id.name.lower()) or ("del sol" in self.client_id.name.lower())):
+            if not (("batea" in d.client_id.name.lower()) or ("del sol" in d.client_id.name.lower())):
                 if d.vehicle_id.modelo.vehicle_type == 'auto':
                     d.send_sms(message)
                     d.message_post(body="Se ha notificado por sms al cliente: "+message)
