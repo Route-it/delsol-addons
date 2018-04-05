@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sms_server_for_group_name_solo_lectura,sms_server_for_solo_lectura,model_delsol_sms_server,group_name_solo_lectura,1,0,0,0
+access_mail_server_for_group_name_solo_lectura,mail_server_for_solo_lectura,model_delsol_mail_server,group_name_solo_lectura,1,0,0,0
