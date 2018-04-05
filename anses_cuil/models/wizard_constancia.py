@@ -21,6 +21,7 @@ from openerp import _
 from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from openerp.exceptions import Warning
+import time
 
 
 _logger = logging.getLogger(__name__)
@@ -55,8 +56,8 @@ class wizard_constancia(models.Model):
                 nombre = rec.nombre 
                 apellido = rec.apellido
                 dni = rec.dni 
-                payload = {'tipodoc':'0029','numdoc':dni,'nombre':nombre,'apellidocasada':'',
-                           'apellido':apellido,'fechnacimiento':'24/10/1984','sexo':'M','captcha':rec.captcha_text}
+                payload = {'tipodoc':'0029','numdoc':str(dni),'nombre':str(nombre),'apellidocasada':'',
+                           'apellido':str(apellido),'fechnacimiento':'24/10/1984','sexo':'M','captcha':str(rec.captcha_text)}
                 
                 with open(str(args['active_id'])) as f:
                     s = pickle.load(f)
@@ -91,7 +92,9 @@ class wizard_constancia(models.Model):
 
         if 'captcha_anses' in fields:
                 s = Session()
-                r = s.get("http://www.anses.gob.ar/autoconsultas/captcha.php?2498187733519")
+                r = s.get("https://www.anses.gob.ar/constancia-de-cuil/")
+                r = s.get("http://www.anses.gob.ar/autoconsultas/captcha.php?" + str(int(round((time.time() * 1000) ))))
+
                 res.update({'captcha_anses': base64.encodestring(r.content)})
 
                 with open(str(self._context['active_id']), 'w') as f:
