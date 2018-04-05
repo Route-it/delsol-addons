@@ -90,7 +90,7 @@ class delsol_delivery(models.Model):
             
                 smsnro_cliente = self.client_id.get_client_mobile()
     
-                message_cliente = "Del sol le da la bienvenida y le desea muchas felicidades. La clave de la wifi DEL SOL CLIENTES es delsolautomotor"
+                message_cliente = "Del sol le da la bienvenida y le desea muchas felicidades. La clave de la wifi DEL SOL CLIENTES es delsol2045"
                 
                 delsol_sms_server.send_sms(message_cliente,smsnro_cliente)
     
