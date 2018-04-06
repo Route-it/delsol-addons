@@ -36,7 +36,7 @@ class delsol_delivery(models.Model):
 
         if not (message is None):
             if not (("batea" in self.client_id.name.lower()) or ("del sol" in self.client_id.name.lower())):
-                message = "Del Sol Automotor le recuerda: " + message
+                message = message + " Del Sol Automotor"
                 delsol_sms_server.send_sms(message,smsnro)
 
 
@@ -110,12 +110,19 @@ class delsol_delivery(models.Model):
             local = pytz.timezone(user_tz)
             fecha_hora = self.get_delivery_datetime(vals['client_date'])
 
+            nombre = ""
+            sector = vals['sector']
+            if sector == 'ovalo':
+                nombre = "Pablo Moncalieri."
+            else:
+                nombre = "Stefania Lencioni."
+
+
             vehicle = self.env['delsol.vehicle'].search([('id','=',vals['vehicle_id'])])[0]
             cliente = vehicle.client_id
             
             message = "Estimado/a "+cliente.name+", Lo esperamos en H. Yrigoyen 2045 el " + fecha_hora + " para la entrega de su " + id.vehicle_id.marca +". "
-            message += "Stefania (venta directa). Pablo (ovalo)"
-            #TODO: ver responsable de entrega y direccion dependiendo del sector.
+            message += nombre
             
             if vehicle.modelo.vehicle_type == 'auto':
                 id.send_sms(message)
