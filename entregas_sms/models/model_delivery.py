@@ -154,7 +154,7 @@ class delsol_delivery(models.Model):
 
         except Exception as e:
             
-            self.env.user.notify_info(e)
+            #self.env.user.notify_info(e)
 
             _logger.error("No se pudo enviar el sms de aviso")
             _logger.error(e.message)
