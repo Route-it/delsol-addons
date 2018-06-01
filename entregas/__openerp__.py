@@ -32,6 +32,7 @@
         'views/delivery.xml',
         'views/vehicle.xml',
         'views/res_partner_view.xml',
+        'report/report.xml',
         'views/menu.xml',
         'data/events.xml',
         'data/ir_cron.xml',

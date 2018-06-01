@@ -138,11 +138,11 @@ class delsol_delivery(models.Model):
             report_obj = self.env['report']
             mail_obj = self.env['ir.mail_server']
     
-            report = report_obj._get_report_from_name('rqr.report_turn')
+            report = report_obj._get_report_from_name('entregas.report_turn')
             filename = "%s.%s" % (report.name, "pdf")
     
     
-            filecontents = report_obj.get_pdf(self, 'rqr.report_turn')
+            filecontents = report_obj.get_pdf(self, 'entregas.report_turn')
     
     
             body = "Estimado/a "+self.client_id.name +":\n \t Le informamos que la entrega de su "
@@ -162,14 +162,13 @@ class delsol_delivery(models.Model):
                 )
             
     
-            """msg_id = IrMailServer.send_email(message=msg,
+            msg_id = IrMailServer.send_email(message=msg,
                               smtp_server="smtp.office365.com",
                               smtp_encryption="starttls",
                               smtp_port="587",
                               smtp_user="entregade0km@delsolautomotor.com.ar",
                               smtp_password="Kapu2113"
                               )
-            """
             self.env.user.notify_info('El comprobante se envio con exito!.')
         else:
             self.env.user.notify_info('El cliente no posee el email cargado.')
@@ -193,7 +192,7 @@ class delsol_delivery(models.Model):
             #Devuelve HTML            
             #report_obj.render('rqr.report_turn', docargs)
             
-            action  = report_obj.get_action(self, 'rqr.report_turn')
+            action  = report_obj.get_action(self, 'entregas.report_turn')
             
             return action 
             """

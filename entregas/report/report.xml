@@ -2,16 +2,16 @@
 
 <openerp>
 	<data>
-<!-- 		<report  -->
-<!-- 	            id="turn" -->
-<!-- 	            model="delsol.delivery" -->
-<!-- 	            string="Comprobante del turno" -->
-<!-- 	            report_type="qweb-pdf" -->
-<!-- 	            name="rqr.report_turn" -->
-<!-- 	            file="report_turn" -->
-<!-- 	            attachment_use="True" -->
-<!-- 	            attachment="'TURNO-'+(object.client_id.name or '').replace('/','')+(object.vehicle_id.modelo.description)+'.pdf'" -->
-<!-- 	    />		 -->
+		<report 
+	            id="turn"
+	            model="delsol.delivery"
+	            string="Comprobante del turno"
+	            report_type="qweb-pdf"
+	            name="entregas.report_turn"
+	            file="report_turn"
+	            attachment_use="True"
+	            attachment="'TURNO-'+(object.client_id.name or '').replace('/','')+(object.vehicle_id.modelo.description)+'.pdf'"
+	    />		
 
 
 	<template id="report_turn">
@@ -89,7 +89,12 @@
 						Nombre del Adm. de entrega:
 	                </div>
 					<div class="col-xs-9">
-						<strong t-field="delivery.vendor_id" />
+						<t t-if="delivery.sector == 'ovalo'">
+							<strong>Pablo Moncalieri</strong>
+						</t>
+						<t t-if="delivery.sector != 'ovalo'">
+							<strong>Stefania Lencioni</strong>
+						</t>
 					</div>
 <!-- 	                <div class="col-xs-3"> -->
 <!-- 						Gastos de retiro a abonar -->

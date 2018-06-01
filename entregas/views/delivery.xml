@@ -108,12 +108,14 @@
 							statusbar_colors='{"new":"blue"}'/>
 					</header>
 					<sheet>
-	                    <div class="oe_button_box" name="button_box" invisible="1">
+	                    <div class="oe_button_box" name="button_box" >
+	                    <!-- 
 	                        <button name="toggle_active" type="object" groups="base.group_no_one"
 	                                class="oe_stat_button" icon="fa-archive" attrs="{'invisible':[('state','not in',('dispatched','delivered'))]}">
 	                            <field name="active" widget="boolean_button"
 	                                options='{"terminology": "archive"}'/>
 	                        </button>
+	                     -->
 	                        
 
    	                        <button name="download_report_turn" string="Comprobante de entrega" type="object" icon="gtk-print" attrs="{'invisible':[('id','==',False)]}">
