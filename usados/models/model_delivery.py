@@ -34,7 +34,7 @@ class delsol_delivery(models.Model):
             try:
                 if self.vehicle_id.modelo.vehicle_type == 'auto':
 
-                    smsnrololo = "2974038240" #  Lolo Fernandez
+                    smsnrololo = "2974139162" #  JM Lucero
         
                     user_tz = self.env.user.tz or pytz.utc
                     local = pytz.timezone(user_tz)
