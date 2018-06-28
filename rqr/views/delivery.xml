@@ -10,23 +10,27 @@
 			<field name="arch" type="xml">
 				<field name="vehicle_chasis" position="after" >
 					<separator />
-					<filter string="Contactado" name="filter_contacted" domain="[('contacted','=',True)]" />
-					<filter string="No contactado" name="filter_not_contacted" domain="[('contacted','!=',True)]"/>
+					<filter string="Contactado" name="filter_contacted" domain="[('contacted','=',True)]" groups="rqr.group_name_call"/>
+					<filter string="No contactado" name="filter_not_contacted" domain="[('contacted','!=',True)]" groups="rqr.group_name_call"/>
 					<separator />
-					<filter string="Contesto encuesta Ford" name="filter_answered_poll" domain="[('answered_poll','=',True)]" />
+					<filter string="Contesto encuesta Ford" name="filter_answered_poll" domain="[('answered_poll','=',True)]" groups="rqr.group_name_call"/>
+					
+					<filter string="5 dias posterior a entrega" name="5 Dias posterior a entrega"  groups="rqr.group_name_admin_call"
+					domain="[('contacted_in_x_days','=',True)]"/>
+					
 					<separator />
 					<group expand="0" string="Agrupar por">
 						<filter string="Sector" name="sector" context="{'group_by':'sector'}" />
 						<separator />
-						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" />
+						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" groups="rqr.group_name_call"/>
 						<separator />
-						<filter string="Contesto encuesta" name="answered_pool" context="{'group_by':'answered_poll'}" />
+						<filter string="Contesto encuesta" name="answered_pool" context="{'group_by':'answered_poll'}" groups="rqr.group_name_call"/>
 						<filter string="Dia" domain="[ ]" context="{'group_by': 'delivery_date:day'}" />
 					</group>
 				</field>
 				<xpath expr="//filter[@name='autos']" position="after">
 					<separator />
-					<filter string="Call Center(c/tae,entr)" name="call_center" domain="[('tae_stamp','!=',False),('state','=','delivered')]"  />
+					<filter string="Call Center(c/tae,entr)" name="call_center" domain="[('tae_stamp','!=',False),('state','=','delivered')]"  groups="rqr.group_name_call"/>
 				</xpath>
 			</field>
 		</record>

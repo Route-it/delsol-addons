@@ -37,7 +37,7 @@ class delsol_delivery(models.Model):
         if not (message is None):
             if not (("batea" in self.client_id.name.lower()) or ("del sol" in self.client_id.name.lower())):
                 message = message + " Del Sol Automotor"
-                delsol_sms_server.send_sms(message,smsnro)
+                return delsol_sms_server.send_sms(message,smsnro)
 
 
 
@@ -125,10 +125,15 @@ class delsol_delivery(models.Model):
             message += nombre
             
             if vehicle.modelo.vehicle_type == 'auto':
-                id.send_sms(message)
-                mensaje_cliente_entrega = 'Se ha notificado al cliente por sms la entrega de la unidad'
-                super(delsol_delivery,self).message_post(body=mensaje_cliente_entrega)
+                resp = id.send_sms(message)
+                if  resp[0] == 200:
+                    mensaje_cliente_entrega = 'Se ha notificado al cliente por sms la entrega de la unidad'
+                else:
+                    mensaje_cliente_entrega = resp[1]
+                    
+                super(delsol_delivery,id).message_post(body=mensaje_cliente_entrega)
                 self.env.user.notify_info(mensaje_cliente_entrega)
+                    
             
         except Exception as e:
             

@@ -36,9 +36,21 @@ class delsol_sms_server(models.Model):
             message_array = [message[i:i+max_chars] for i in range(0, len(message), max_chars)]                
             for m in message_array: 
                 body = "&TOS=%s&TEXTO=%s"% (smsnro,m)
+                #r = requests.get(self.url % ("DELSOLCAMIONESSERVICIO","DELSOLCAMIONESSERVICIO388") + body)
                 r = requests.get(self.url % (self.usuario_sms,self.clave_sms) + body)
-            print r.content
-            return r.status_code,r.content
+            
+            if (len(r.content)>0) & ("agotado" in r.content):
+                
+                body = "Mensaje de ODOO: Se agotaron los sms del usuario: " + self.usuario_sms +" en la plataforma SMS MASIVOS <br><br>"
+                body += "<a href='http://servicio.smsmasivos.com.ar/ver_reporte_generico.asp?relogin=1&usuario=DELSOLAUTOMOTOR&clave=TIMBERLINE838' target='_blank'>Ir a modificar saldos.</a>"
+                
+                delsol_mail_server = self.env['delsol.mail_server']
+                delsol_mail_server.send_mail("Se agotaron los sms del usuario %s" %  self.usuario_sms,body,[("diego@routeit.com.ar")])
+                #delsol_mail_server.send_mail("Se agotaron los sms del usuario %s" %  self.usuario_sms,body,[("lvelasques@delsolautomotor.com.ar")])
+                
+                return -1,r.content #2974924655: se han agotado los SMS contratados.
+            else:
+                return r.status_code,r.content
         except Exception as e:
             print "Unexpected error!"
 
