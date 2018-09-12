@@ -18,6 +18,7 @@ import logging
 import base64
 import pickle
 import json
+import re
 
 
 _logger = logging.getLogger(__name__)

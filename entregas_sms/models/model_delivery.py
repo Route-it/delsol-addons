@@ -36,7 +36,7 @@ class delsol_delivery(models.Model):
 
         if not (message is None):
             if not (("batea" in self.client_id.name.lower()) or ("del sol" in self.client_id.name.lower())):
-                message = message + " Del Sol Automotor"
+                message = message + " Del Sol Automotor. Mensaje automatico, no Responder"
                 return delsol_sms_server.send_sms(message,smsnro)
 
 
@@ -92,11 +92,11 @@ class delsol_delivery(models.Model):
     
                 message_cliente = "Del sol le da la bienvenida y le desea muchas felicidades. La clave de la wifi DEL SOL CLIENTES es delsol2045"
                 
-                delsol_sms_server.send_sms(message_cliente,smsnro_cliente)
+                #delsol_sms_server.send_sms(message_cliente,smsnro_cliente)
     
                 mensaje_cliente_bienvenida = 'Se ha enviado un sms al cliente dandole la bienvenida y la clave de wifi.'
-                super(delsol_delivery,self).message_post(body=mensaje_cliente_bienvenida)
-                self.env.user.notify_info(mensaje_cliente_bienvenida)
+                #super(delsol_delivery,self).message_post(body=mensaje_cliente_bienvenida)
+                #self.env.user.notify_info(mensaje_cliente_bienvenida)
 
             
         except Exception as e:

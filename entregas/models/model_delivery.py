@@ -149,7 +149,8 @@ class delsol_delivery(models.Model):
              
             body += self.vehicle_id.marca +" " +self.vehicle_id.modelo.description+" ha sido programada. "
             body += "Adjuntamos el comprobante con todos los datos necesarios."
-            body += "\n\n Le deseamos que tenga una buena jornada,\n Del Sol Automotor."
+            body += "\n\n Le deseamos que tenga una buena jornada.\n"
+            body += "\n\n Este mail es automatico. Por favor no lo responda.\n Del Sol Automotor."
     
             IrMailServer = self.env['ir.mail_server']
             msg = IrMailServer.build_email(
