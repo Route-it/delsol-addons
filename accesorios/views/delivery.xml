@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 
 				<group position="inside">
-					<group>
+					<group string="Accesorios">
 						<field name="accesories_contact"></field>						
 						<field name="accesories_installed" attrs="{'invisible':[('accesories_contact','=',True)]}"></field>						
 					</group>
