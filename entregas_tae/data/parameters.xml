@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="delivery_tae_check" model="delsol.config">
+            <field name="name">Chequear el estado de la TAE en aplicacion FIS</field>
+            <field name="code">delivery_tae_check</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Boolean)
+            			Indica si hay que chequear o no el estado de la tae en FIS.
+            			</field>
+            <field name="value">True</field>
+        </record>
+        
+        
+        <record id="user_autos_fis" model="delsol.config">
+            <field name="name">Usuario de autos FIS</field>
+            <field name="code">user_autos_fis</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Texto)
+            			Indica el usuario de ingreso al FIS
+            			</field>
+            <field name="value">s-lencio</field>
+        </record>
+        <record id="password_autos_fis" model="delsol.config">
+            <field name="name">Password del usuario de autos FIS</field>
+            <field name="code">password_autos_fis</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Texto)
+            			Indica la password de ingreso al FIS
+            			</field>
+            <field name="value">stefi11</field>
+        </record>
+
+        <record id="user_planes_fis" model="delsol.config">
+            <field name="name">Usuario de planes FIS</field>
+            <field name="code">user_planes_fis</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Texto)
+            			Indica el usuario de ingreso al FIS
+            			</field>
+            <field name="value">p-moncal</field>
+        </record>
+        <record id="password_planes_fis" model="delsol.config">
+            <field name="name">Password del usuario de planes FIS</field>
+            <field name="code">password_planes_fis</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Texto)
+            			Indica la password de ingreso al FIS
+            			</field>
+            <field name="value">46pablo</field>
+        </record>
+        
+        <record id="user_camiones_fis" model="delsol.config">
+            <field name="name">Usuario de camiones FIS</field>
+            <field name="code">user_camiones_fis</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Texto)
+            			Indica el usuario de ingreso al FIS
+            			</field>
+            <field name="value">s-lencio</field>
+        </record>
+        <record id="password_camiones_fis" model="delsol.config">
+            <field name="name">Password del usuario de camiones FIS</field>
+            <field name="code">password_camiones_fis</field>
+            <field name="app">entregas_tae</field>
+            <field name="description">Dato: (Texto)
+            			Indica la password de ingreso al FIS
+            			</field>
+            <field name="value">stefi11</field>
+        </record>
+
+
+
+    </data>
+</openerp>

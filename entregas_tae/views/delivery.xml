@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+
+		<record model='ir.ui.view' id='delsol_delivery_form'>
+			<field name="name">delsol.delivery.form</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="entregas.delsol_delivery_form"></field>
+			<field name="arch" type="xml">
+					<field name="tae_stamp" position="after">
+						<field name="tae_update_date"/>
+						<field name="tae_fis_status"/>
+					</field>
+			</field>
+		</record>
+		
+	</data>
+</openerp>
