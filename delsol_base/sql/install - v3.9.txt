@@ -1,0 +1,46 @@
+************ v3.9 ****************
+
+pip install pymssql (done)
+
+Activar el modo desarrollador
+Actualizar lista de modulos
+Reiniciar el servidor
+
+
+Instalacion en servidor: 
+    instalar selenium
+    sudo pip install selenium
+    Instalar chrome 
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+    sudo dpkg -i google-chrome*.deb 
+    sudo apt-get install -f 
+    sudo dpkg -i google-chrome*.deb 
+
+    Instalar driver de chrome
+    wget https://chromedriver.storage.googleapis.com/2.42/chromedriver_linux64.zip
+    unzip chromedriver_linux64.zip
+    cp chromedriver /usr/bin/
+
+
+Instalar en odoo:
+
+bianchi_connector
+delsol_base
+entregas (revisar el reporte)
+entregas_tae
+
+
+Configurar:
+   conector a sql server (nombre Bianchi)
+   crones de importacion
+   cron de TAES
+
+Correr cron manualmente para que importe unidades facturadas desde bianchi, con cliente.
+
+correr sql para actualizar TAES como aceptadas:
+
+update delsol_delivery set (tae_update_date,tae_fis_status) = (tae_stamp,'TAE Aceptada')
+where state in ('delivered')
+
+
+
