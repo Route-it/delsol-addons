@@ -5,15 +5,17 @@ Created on 4 de ene. de 2016
 @author: seba
 '''
 
-from openerp import models, fields, api,_
-from openerp.exceptions import ValidationError, Warning
-from email.message import Message
 from datetime import date, datetime
-
-import logging
-import requests
 import datetime
+from email.message import Message
 from exceptions import Exception
+import logging
+
+import requests
+
+from openerp import models, fields, api, _
+from openerp.exceptions import ValidationError, Warning
+
 
 _logger = logging.getLogger(__name__)
 
@@ -87,11 +89,27 @@ class delsol_import_vehicles(models.Model):
             celular = row.get('Celular') if not (row.get('Celular') is None) else ''
             telefono = row.get('Telefono') if not (row.get('Telefono') is None) else ''
 
+            
+            try:
+                celular = client_obj.get_client_mobile(celular)
+                telefono = client_obj.get_client_mobile(telefono)
+            except Exception as e:
+                print e
+                
+                
             if ((len(celular)== 0 | len(telefono)==0)& (len(email)==0)):
                 print 'El cliente no tiene forma de contactarlo!.'
                 #permitir cargar igual el cliente.
                 #return
 
+            #verificar 0 (codigo de area 1,2,3) y 15 + nro
+            #si es celular -> 
+                #ponerlo en celular
+                #quitar 0 y 15
+            #si es fijo -> 
+                # 
+                
+            #normalizar telefono
             if not (len(celular)==0):
                 c_data['mobile'] = celular
             if not (len(telefono)==0):
@@ -103,17 +121,7 @@ class delsol_import_vehicles(models.Model):
             if not (len(localidad)==0):
                 c_data['city'] = localidad.lower().title()
 
-
-            #verificar 0 (codigo de area 1,2,3) y 15 + nro
-            #si es celular -> 
-                #ponerlo en celular
-                #quitar 0 y 15
-            #si es fijo -> 
-                # 
-                
-            #normalizar telefono
-            
-                direccion = row.get('Direccion') if not (row.get('Direccion') is None) else ''
+            direccion = row.get('Direccion') if not (row.get('Direccion') is None) else ''
 
             if not (len(direccion)==0):
                 c_data['street'] = direccion.lower().title()
@@ -215,10 +223,15 @@ class delsol_import_vehicles(models.Model):
             
             patente = row.get('Patente') if len(row.get('Patente'))>0 else False
             
+            anio_produccion = str(row.get('AnioProduccion')) if len(str(row.get('AnioProduccion')))>0 else False
+            
+            anio_produccion = anio_produccion[0:4]
+            
             v_data = {'client_id':client.id,
                       'modelo':model.id, #id del model
                       'color':color.id,
                       'state':'new',
+                      'anio':anio_produccion,
                       'nro_chasis':row.get('Carroceria').upper(),
                       'fecha_facturacion':row.get('FechaContable'),
                       'arrival_to_dealer_date':arrival_to_dealer_date,
@@ -255,6 +268,8 @@ class delsol_import_vehicles(models.Model):
             ################ END VEHICLE UPDATE ###############
             ################ BEGIN GESTORIA UPDATE ###############            
         
+        
+        """
         try:
             
             #creo el registro en gestoria, si no existe
@@ -279,17 +294,23 @@ class delsol_import_vehicles(models.Model):
         except Exception as e:
             print e
             #collect info to send by email
+        """
         self.env.cr.commit()
 
 
-    @api.multi
+    #@api.multi #call from button
+    @api.model #call from cron
     def import_vehicle(self):
         try:
             conn = self.env['connector.sqlserver'].search([('name','=','Bianchi')])[0]
             conexion = conn.connect()
             cursor = conexion.cursor() #conn.getNewCursor(conexion)
     
-            fecha_hoy = str(datetime.datetime.now().year) + '-' + str(datetime.datetime.now().month) + '-' + str(datetime.datetime.now().day-15) 
+            hoy_00 = datetime.datetime.today()
+            hace_X_dias_00 = hoy_00 - datetime.timedelta(days=15)
+
+    
+            fecha_hoy = str(hace_X_dias_00.year) + '-' + str(hace_X_dias_00.month) + '-' + str(hace_X_dias_00.day) 
 
             query = 'select * '  
             query += ' from Unidades as u, Colores as c, Preventas as p, Comprobantes as cc, Clientes as cli, Modelos as mo'

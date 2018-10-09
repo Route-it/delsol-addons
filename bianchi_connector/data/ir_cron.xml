@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="ir_cron_delsol_bianchi_connector_planes" model="ir.cron">
+            <field name='name'>Bianchi Connector - Importar planes (DelSol)</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="model">delsol.invoiced_planahorro</field>
+            <field name="function">import_vehicle</field>
+        </record>
+        <record id="ir_cron_delsol_bianchi_connector_tradicional" model="ir.cron">
+            <field name='name'>Bianchi Connector - Importar tradicional (DelSol)</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="model">delsol.invoiced_vehicle_imp</field>
+            <field name="function">import_vehicle</field>
+        </record>
+
+    </data>
+</openerp>

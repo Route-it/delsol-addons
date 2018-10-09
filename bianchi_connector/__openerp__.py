@@ -7,7 +7,9 @@
     "category": "Del Sol",
     "depends": ["base","delsol_base"
     ],
-    "data": ["views/setup.xml"
+    "data": ["views/connector.xml",
+             "data/ir_cron.xml",
+             "data/parameters.xml"
     ],
     "installable": True,
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+<!--         <record id="delivery_date_max" model="delsol.config"> -->
+<!--             <field name="name">Fechas de entregas futuras en X dias</field> -->
+<!--             <field name="code">delivery_date_future_max</field> -->
+<!--             <field name="app">entregas</field> -->
+<!--             <field name="description">Dato: (entero numerico) -->
+<!--             			Restringe que la fecha de entrega -->
+<!--             			no pueda ser mayor que N  dias posteriores a la fecha</field> -->
+<!--             <field name="value">30</field> -->
+<!--         </record> -->
+
+	<!-- Registro de bianchi a produccion -->
+        <record id="bianchi_prod" model="connector.sqlserver">
+            <field name="name">Bianchi</field>
+            <field name="db_name">SAI</field>
+            <field name="db_ip">192.168.68.74</field>
+            <field name="db_user">AutoDealer</field>
+            <field name="password">fbs</field>
+            <field name="db_port">1433</field>
+		</record>
+		
+    </data>
+</openerp>

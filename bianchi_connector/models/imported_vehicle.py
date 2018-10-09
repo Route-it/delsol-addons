@@ -16,7 +16,7 @@ import datetime
 
 _logger = logging.getLogger(__name__)
 
-class delsol_import_vehicles(models.Model):
+class delsol_imported_vehicles(models.Model):
     
     _name = "delsol.vehicle_imp"
 

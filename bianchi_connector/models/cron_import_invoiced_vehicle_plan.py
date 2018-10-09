@@ -92,6 +92,12 @@ class delsol_import_vehicles(models.Model):
                 #permitir cargar igual el cliente.
                 #return
 
+            try:
+                celular = client_obj.get_client_mobile(celular)
+                telefono = client_obj.get_client_mobile(telefono)
+            except Exception as e:
+                print e
+            
             if not (len(celular)==0):
                 c_data['mobile'] = celular
             if not (len(telefono)==0):
@@ -156,7 +162,6 @@ class delsol_import_vehicles(models.Model):
 
             model = model_obj.search([('name','ilike',bianchi_modelo.upper()[-4:])])
             
-            #TODO: run uppercase to delsol.vehicle_model.name
 
             if len(model)>0:
                 model = model[0]
@@ -218,10 +223,15 @@ class delsol_import_vehicles(models.Model):
             
             patente = row.get('Patente') if len(row.get('Patente'))>0 else False
             
+            anio_produccion = str(row.get('AnioProduccion')) if len(str(row.get('AnioProduccion')))>0 else False
+            
+            anio_produccion = anio_produccion[0:4]            
+            
             v_data = {'client_id':client.id,
                       'modelo':model.id, #id del model
                       'color':color.id,
                       'state':'new',
+                      'anio':anio_produccion,
                       'nro_chasis':row.get('Carroceria').upper(),
                       'fecha_facturacion':row.get('FechaContable'),
                       'arrival_to_dealer_date':arrival_to_dealer_date,
@@ -257,6 +267,7 @@ class delsol_import_vehicles(models.Model):
             ################ END VEHICLE UPDATE ###############
             ################ BEGIN GESTORIA UPDATE ###############            
         
+        """
         try:
             
             #creo el registro en gestoria, si no existe
@@ -267,7 +278,6 @@ class delsol_import_vehicles(models.Model):
                 formality = formality_obj.create({'vehicle_id':vehicle.id,
                                                   #'formality_type':'01',
                                                   'state':state})
-                
                 # relevar en gestoria, los registros
                 # relevar los tramites que se realizan: si esta patentado, si no esta patentado.
                 
@@ -275,17 +285,23 @@ class delsol_import_vehicles(models.Model):
         except Exception as e:
             print e
             #collect info to send by email
+        """    
         self.env.cr.commit()
 
 
-    @api.multi
+    #@api.multi #call from button
+    @api.model #call from cron
     def import_vehicle(self):
         try:
             conn = self.env['connector.sqlserver'].search([('name','=','Bianchi')])[0]
             conexion = conn.connect()
             cursor = conexion.cursor() #conn.getNewCursor(conexion)
     
-            fecha_hoy = str(datetime.datetime.now().year) + '-' + str(datetime.datetime.now().month) + '-' + str(datetime.datetime.now().day-15) 
+            hoy_00 = datetime.datetime.today()
+            hace_X_dias_00 = hoy_00 - datetime.timedelta(days=15)
+
+    
+            fecha_hoy = str(hace_X_dias_00.year) + '-' + str(hace_X_dias_00.month) + '-' + str(hace_X_dias_00.day) 
 
             query = 'select pa.Nombre as panombre, pa.Apellido as paapellido,'
             query += ' pa.EstadoCivil as paestadocivil, Comprobantes.Nombre as razonsocial, '
