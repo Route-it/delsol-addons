@@ -427,7 +427,7 @@ class delsol_vehicle(models.Model):
                              ('2020', '2020'),
                              ('2021', '2021'),
                              ('2022', '2022')],
-                             'Modelo Año', required=True, copy=False, default=date.year)
+                             'Modelo Año', required=True, copy=False, default='2018')
     
     _defaults = {
         'marca': 'Ford'
