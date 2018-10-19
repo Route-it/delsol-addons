@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+
+		<record model='ir.ui.view' id='delsol_delivery_form'>
+			<field name="name">delsol.delivery.form</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="entregas.delsol_delivery_form"></field>
+			<field name="arch" type="xml">
+				<field name="state" invisible="1"/>
+				<notebook position="inside">
+					<page string="Fotos de entrega" groups="entregas.group_name_operador_entregas" attrs="{'invisible':['|',('id','==',False),'|',('client_email','==',False),('state','!=','delivered')]}">
+						<field name="delivery_images_sended" invisible="1"/>
+
+						<field name="delivery_photos_ids" invisible="1" />
+
+						<div attrs="{'invisible':['|',('delivery_images_sended','==',True),('delivery_photos_ids','=',[])]}" class="oe_read_only">
+						<button name="send_delivery_images_to_client" string="Enviar imagenes al cliente" type="object" 
+   	                        		icon="terp-mail-forward" />
+						</div>
+						
+					
+<!-- 						<field name="delivery_photos_ids" widget="many2many_binary"/> -->
+						<field name="id" invisible="1"/>
+						<field name="name" invisible="1"/>
+
+						<field name="delivery_photos_ids" widget="many2many_kanban" 
+							context="{'default_res_model':'delsol.delivery','default_res_id':id,'default_res_name':name,'form_view_ref':'entregas_photos.view_attachment_delivery_form','tree_view_ref':'entregas_photos.view_attachment_delivery_tree'}" 
+							domain="[('res_model','=','delsol.delivery'),('res_id','=',id)]" attrs="{'readonly': [('delivery_images_sended', '=', True)]}">
+							
+							<kanban quick_create="true" create="true" delete="true">
+								<field name="name" />
+								<templates>
+									<t t-name="kanban-box">
+										<div class="oe_kanban_global_click o_kanban_attachment_image"
+											style="position: relative">
+											<a t-if="! read_only_mode" type="delete"
+												style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+											<div class="oe_module_vignette ">
+												<img
+													t-att-src="kanban_image('ir.attachment', 'datas', record.id.value)"
+													class="oe_avatar" style="width:70%" />
+<!-- 												<t t-if="'video' in record['mimetype'].value"> -->
+<!-- 													<img class="oe_avatar" style="width:70%" src="/entregas_photos/static/src/img/video.png"/> -->
+<!-- 												</t> -->
+												<div class="oe_module_desc">
+													<field name="name" />
+												</div>
+											</div>
+										</div>
+									</t>
+								</templates>
+							</kanban>
+
+						</field>
+
+					</page>
+				</notebook>
+
+			</field>
+		</record>
+		
+	<record id="view_attachment_delivery_form" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="arch" type="xml">
+                <form string="Adjuntos">
+                   <sheet>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="type" invisible="1"/>
+                            <field name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}"/>
+                            <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>
+                            <field name="url" widget="url" attrs="{'invisible':[('type','=','binary')]}"/>
+                            <field name="mimetype" groups="base.group_no_one" invisible="1"/>
+                        </group>
+                        <group string="Attached To" groups="base.group_no_one" invisible="1">
+                            <field name="res_model"/>
+                            <field name="res_field"/>
+                            <field name="res_id"/>
+                            <field name="res_name"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="public"/>
+                        </group>
+                        <group string="History" groups="base.group_no_one" invisible="1">
+                            <label for="create_uid" string="Creation"/>
+                            <div name="creation_div">
+                                <field name="create_uid" readonly="1" class="oe_inline"/> on
+                                <field name="create_date" readonly="1" class="oe_inline"/>
+                            </div>
+                        </group>
+                        <group name="description_group" string="Description" groups="base.group_no_one"  colspan="4"  invisible="1">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                        <group groups="base.group_no_one" string="Indexed Content" colspan="4" invisible="1">
+                            <field name="index_content" nolabel="1"/>
+                        </group>
+                    </group>
+                  </sheet>
+                </form>
+            </field>
+        </record>		
+        <record id="view_attachment_delivery_tree" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="arch" type="xml">
+                <tree string="Adjuntos" delete="true" >
+                    <field name="name"/>
+                    <field name="datas_fname"/>
+                    <field name="create_uid"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+	</data>
+</openerp>

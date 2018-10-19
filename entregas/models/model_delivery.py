@@ -135,16 +135,12 @@ class delsol_delivery(models.Model):
 
         if (self.client_email):
             #generar el comprobante y enviarlo por mail como attachment
-            report_obj = self.env['report']
+    
+            #this save content in database
+            filename, filecontents, report = self.re_generate_turn_report()
+
             mail_obj = self.env['ir.mail_server']
-    
-            report = report_obj._get_report_from_name('entregas.report_turn')
-            filename = "%s.%s" % (report.name, "pdf")
-    
-    
-            filecontents = report_obj.get_pdf(self, 'entregas.report_turn')
-    
-    
+
             body = "Estimado/a "+self.client_id.name +":\n \t Le informamos que la entrega de su "
              
             body += self.vehicle_id.marca +" " +self.vehicle_id.modelo.description+" ha sido programada. "
@@ -154,12 +150,12 @@ class delsol_delivery(models.Model):
     
             IrMailServer = self.env['ir.mail_server']
             msg = IrMailServer.build_email(
-                email_from="entregade0km@delsolautomotor.com.ar",
+                email_from="sistemas@delsolautomotor.com.ar",
                 email_to=[("diego.richi@gmail.com")],
                 subject="Del Sol Automotor informa",
                 body= body,
                 attachments = [(filename, filecontents)],
-                reply_to="entregade0km@delsolautomotor.com.ar",
+                reply_to="sistemas@delsolautomotor.com.ar",
                 )
             
     
@@ -167,56 +163,47 @@ class delsol_delivery(models.Model):
                               smtp_server="smtp.office365.com",
                               smtp_encryption="starttls",
                               smtp_port="587",
-                              smtp_user="entregade0km@delsolautomotor.com.ar",
-                              smtp_password="Kapu2113"
+                              smtp_user="sistemas@delsolautomotor.com.ar",
+                              smtp_password="Pabo6058"
                               )
             self.env.user.notify_info('El comprobante se envio con exito!.')
         else:
             self.env.user.notify_info('El cliente no posee el email cargado.')
 
                 
+
+    def re_generate_turn_report(self):
+        report_obj = self.env['report']
+        report = report_obj._get_report_from_name('entregas.report_turn')
+        filename = report.name
+
+        result_search = self.env['ir.attachment'].search([('res_id', '=', self.id), ('res_model', '=', self._name), ('name', 'ilike', 'TURNO')])
+        for item in result_search:
+            if ("TURNO-" in item.name) & (".pdf" in item.name):
+                filename = item.name
+                item.unlink()
+        
+        #generar el comprobante y guardarlo como attachment
+        filecontents = report_obj.get_pdf(self, 'entregas.report_turn')
+        return filename,filecontents, report
+
     @api.multi
     def download_report_turn(self):
         self.ensure_one()
-        result_search = self.env['ir.attachment'].search([('res_id','=',self.id),('res_model','=',self._name)])
         
-        #si no hay nada, hay que generarlo
-        
-        if len(result_search)==0:
-            #generar el comprobante y guardarlo como attachment
-            report_obj = self.env['report']
+        filename,filecontents, report = self.re_generate_turn_report()
 
+        result_search = self.env['ir.attachment'].search([('res_id','=',self.id),('res_model','=',self._name),('name','ilike','TURNO')])
             
-            #FUNCIONA!
-            #pdf = report_obj.get_pdf(self, 'rqr.report_turn')
-            
-            #Devuelve HTML            
-            #report_obj.render('rqr.report_turn', docargs)
-            
-            action  = report_obj.get_action(self, 'entregas.report_turn')
-            
-            return action 
-            """
-                {
-            
-                'type' : 'ir.actions.act_url',
-                
-                'url': '/report/download',
-                
-                'target': 'self',
-            
-            }
-            """
-        
-        return {
-
-            'type' : 'ir.actions.act_url',
-            
-            'url': '/web/content/' + str(result_search.id) +'?download=true',
-            
-            'target': 'self',
-        
-        }
+        for item in result_search:
+            if ("TURNO-" in item.name) & (".pdf" in item.name):
+                return {
+                    'type' : 'ir.actions.act_url',
+                    
+                    'url': '/web/content/' + str(item.id) +'?download=true',
+                    
+                    'target': 'self',
+                }
 
     @api.model
     def default_get(self, fields):
@@ -287,7 +274,20 @@ class delsol_delivery(models.Model):
         now_date = pytz.utc.localize(datetime.datetime.now()).astimezone(local).strftime('%Y-%m-%d')
         
         if  delivery_date < now_date :
-            raise ValidationError("La fecha de programacion no puede ser en el pasado")
+            delivery_permit_pass_date = self.env['delsol.config'].search([('code','=','delivery_permit_old_date')]).value
+
+            if not eval(delivery_permit_pass_date):            
+                raise ValidationError("La fecha de programacion no puede ser en el pasado")
+            else:
+                super(delsol_delivery,self).message_post(body="Se esta programando la unidad en fecha pasada:%s" % self.delivery_date)
+        else:
+            delivery_date_future_max = self.env['delsol.config'].search([('code','=','delivery_date_future_max')]).value
+            delivery_date_future_max_int = eval(delivery_date_future_max) 
+            delivery_date_future_minus_max = datetime.datetime.strptime(self.delivery_date, '%Y-%m-%d %H:%M:%S')  - datetime.timedelta(days=delivery_date_future_max_int)
+            
+            if delivery_date_future_minus_max > datetime.datetime.now():
+                raise ValidationError("La fecha de programacion no puede exceder en %s dias a la fecha de hoy" % delivery_date_future_max)
+
 
     @api.onchange('delivery_date')
     def onchange_delivery_date(self):
