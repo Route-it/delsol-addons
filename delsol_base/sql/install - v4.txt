@@ -1,29 +1,13 @@
-************ v4 ****************
-A Arreglar:
-	pip install wkhtmltopdf
-	
-	#pip install tesseract
-	#pip install tesseract-ocr
-	#pip install libtesseract 
-	#pip install leptonica (solo para windows? http://www.leptonica.org/download.html)
 
-pip install pymssql
+Copiar el todos los modulos.
+Cambiar el owner como daemon:daemon
+
 
 Activar el modo desarrollador
 Actualizar lista de modulos
-Reiniciar el servidor
 
 
 Instalar en el siguiente orden:
-delsol_base
-Upgrade delsol_base
 entregas
-pre_entrega
-rqr
-events
-accesorios
-gestoria
-ventas
-bianchi_connector
+entregas_photos
 
-Correr cron manualmente para que importe unidades facturadas desde bianchi, con cliente.
