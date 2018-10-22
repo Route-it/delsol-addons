@@ -96,6 +96,8 @@ class delsol_delivery(models.Model):
 
     reprogramming_ids = fields.One2many("delsol.reprogramming","delivery_id",readonly=True)
 
+    comments_for_turn_report = fields.Text("Anotaciones adjuntas para el recordatorio/turno")
+
     comments = fields.Text("Anotaciones")
 
     @api.one

@@ -148,6 +148,9 @@
 								<field name="tae_stamp" />
 							</group>
 						</group>
+						<group>
+							<field name="comments_for_turn_report" attrs="{'invisible':[('id','==',False)],'readonly': [('state', '=', 'delivered')]}"/>
+						</group>
 						<notebook>
 							<page string="Reprogramaciones" attrs="{'invisible':[('reprogramming_ids','=',False)]}">
 								<field name="reprogramming_ids" string="Reprogramaciones" context="{'delivery_id':id}"

@@ -11,3 +11,7 @@ Instalar en el siguiente orden:
 entregas
 entregas_photos
 
+
+
+Descomentar el envio de sms en la entrega para Sergio.
+
