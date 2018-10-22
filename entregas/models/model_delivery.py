@@ -98,7 +98,7 @@ class delsol_delivery(models.Model):
 
     comments = fields.Text("Anotaciones")
 
-
+    @api.one
     def _button_delivery_visible(self):
         if (self.vehicle_pass_predelivery_proccess) & (self.state == 'delivered'):
                 self.button_delivery_visible=False
@@ -345,7 +345,7 @@ class delsol_delivery(models.Model):
             res.append((record.id, self.name_get_str(record)))
         return res
     
-    
+    @api.one
     def _client_vehicle_readonly(self):
         
         if ((self.state == 'delivered') |
