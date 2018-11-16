@@ -130,7 +130,7 @@ class delsol_import_vehicles(models.Model):
             
             
             c_data['customer'] = True
-            c_data['customer'] = True if (row.get('EstadoCivil') == 'Empresa') else False
+            #c_data['customer'] = True if (row.get('EstadoCivil') == 'Empresa') else False
             c_data['company_type'] = 'company' if (row.get('EstadoCivil') == 'Empresa') else 'person'
             c_data['notify_email'] = 'none'
             
