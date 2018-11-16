@@ -78,5 +78,6 @@ class delsol_delivery(models.Model):
 
             self.delivery_images_sended = True
             self.env.user.notify_info('Las fotos se enviaron con éxito!.')
+            self.message_post(body='Las fotos de la entrega, se enviaron con éxito!.', subject="Envio de fotos")
         else:
             self.env.user.notify_info('El cliente no posee el email cargado.')
