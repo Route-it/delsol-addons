@@ -92,8 +92,13 @@ class delsol_import_vehicles(models.Model):
             
             try:
                 celular = client_obj.get_client_mobile(celular)
+            except Exception as e:
+                celular = ''
+                print e
+            try:
                 telefono = client_obj.get_client_mobile(telefono)
             except Exception as e:
+                telefono = ''
                 print e
                 
                 
@@ -114,6 +119,9 @@ class delsol_import_vehicles(models.Model):
                 c_data['mobile'] = celular
             if not (len(telefono)==0):
                 c_data['phone'] = telefono
+                if (len(celular)==0):
+                    c_data['mobile'] = telefono
+                
             cod_post = row.get('CodigoPostal')  if not (row.get('CodigoPostal') is None) else ''
             if not (len(cod_post)==0):
                 c_data['zip'] = cod_post
@@ -237,7 +245,7 @@ class delsol_import_vehicles(models.Model):
                       'arrival_to_dealer_date':arrival_to_dealer_date,
                       'patente':patente
                       }
-            
+            #row.get('PromesaEntregaFecha')
             if len(vehicle)==0:
                 print 'crear vehiculo'
                 vehicle = vehicle_obj.create(v_data)
@@ -316,7 +324,7 @@ class delsol_import_vehicles(models.Model):
             query += ' from Unidades as u, Colores as c, Preventas as p, Comprobantes as cc, Clientes as cli, Modelos as mo'
             query += '    where  '
             query += '    cc.unidadID = u.UnidadID '
-            query += '    and cc.CuitCuilDNI = cli.Codigo '
+            query += '    and ( cc.CuitCuilDNI = cli.Codigo OR cc.CuitCuilDNI = cli.CUIT_CUIL)'
             query += '    and p.UnidadID = u.UnidadID '
             query += '    and c.ColorID = u.color '
             query += '    and u.Modelo = mo.Modelo '

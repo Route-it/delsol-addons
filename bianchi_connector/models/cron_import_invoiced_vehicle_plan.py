@@ -94,14 +94,24 @@ class delsol_import_vehicles(models.Model):
 
             try:
                 celular = client_obj.get_client_mobile(celular)
+            except Exception as e:
+                celular = ''
+                print e
+            try:
                 telefono = client_obj.get_client_mobile(telefono)
             except Exception as e:
+                telefono = ''
                 print e
-            
+                
+                
+                            
             if not (len(celular)==0):
                 c_data['mobile'] = celular
             if not (len(telefono)==0):
                 c_data['phone'] = telefono
+                if (len(celular)==0):
+                    c_data['mobile'] = telefono
+                
             cod_post = row.get('codigopostal') if not (row.get('codigopostal') is None) else row.get('CodPost')
             if not (len(cod_post)==0):
                 c_data['zip'] = cod_post
