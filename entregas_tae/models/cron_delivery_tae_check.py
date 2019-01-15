@@ -59,10 +59,16 @@ class delsol_delivery_tae_check(models.Model):
         Se puede obtener la fecha de expiracion y cambiarla con el boton "cambiar password"
           
         """
+        #FSNBody > td > table:nth-child(3) > tbody > tr > td:nth-child(1) > center > form > input[type="button"]
+        
         
         # continuar
-        driver.find_element_by_xpath("//*[@id='FSNauthSuccess']/td/div[4]/center/table/tbody/tr/td[1]/center/form/input").click()
-        
+        try:
+            driver.find_element_by_xpath("//*[@id='FSNauthSuccess']/td/div[4]/center/table/tbody/tr/td[1]/center/form/input").click()
+        except Exception as e:
+            driver.find_element_by_xpath("//*[@id='FSNBody']/td/table[2]/tbody/tr/td[1]/center/form/input").click()
+
+
         # aceptar alerta
         driver.find_element_by_xpath("/html/body/div[1]/table/tbody/tr[2]/td/form/div/div/table/tbody/tr[4]/td/input").click()
         
@@ -130,13 +136,25 @@ class delsol_delivery_tae_check(models.Model):
         return driver
 
     @api.model
-    def process(self):
+    def process(self,option=None,mode=None):
         logging.info("iniciando cron delivery_tae_check")
         driver = self.get_driver()
         try:
-            
+            if (option != None):
+                if (option in ("autos","camiones")):
+                    if (mode != None):
+                        if (mode in ("tradicional","planes")):
+                            print "a"
+                            driver.get(self.base_url + "/fisdealer/fpw.jsp")
+                
+                            user_autos_fis = self.env['delsol.config'].search([('code', '=', 'user_'+option+'_'+mode+'_fis')]).value 
+                            password_autos_fis = self.env['delsol.config'].search([('code', '=', 'password_'+option+'_'+mode+'_fis')]).value
+                            logging.info("cron delivery_tae_check: buscando Taes de "+option)
+                            self.process_key(driver, user_autos_fis, password_autos_fis, option,mode)
+                    
+                            driver.quit()
             # separar las 3 llamadas en 3 crones con parametros diferentes
-            
+            """
             driver.get(self.base_url + "/fisdealer/fpw.jsp")
 
             user_autos_fis = self.env['delsol.config'].search([('code', '=', 'user_autos_fis')]).value 
@@ -145,15 +163,8 @@ class delsol_delivery_tae_check(models.Model):
             self.process_key(driver, user_autos_fis, password_autos_fis, "autos","tradicional")
     
             driver.quit()
-            driver = self.get_driver()
-            driver.get(self.base_url + "/fisdealer/fpw.jsp")
-            
-            user_planes_fis = self.env['delsol.config'].search([('code', '=', 'user_planes_fis')]).value
-            password_planes_fis = self.env['delsol.config'].search([('code', '=', 'password_planes_fis')]).value
-            logging.info("cron delivery_tae_check: buscando Taes de planes")
-            self.process_key(driver, user_planes_fis, password_planes_fis, "autos","planes")
-
-            driver.quit()
+            """                
+            """
             driver = self.get_driver()
             driver.get(self.base_url + "/fisdealer/fpw.jsp")
 
@@ -161,6 +172,16 @@ class delsol_delivery_tae_check(models.Model):
             password_camiones_fis = self.env['delsol.config'].search([('code', '=', 'password_camiones_fis')]).value
             logging.info("cron delivery_tae_check: buscando Taes de camiones")
             self.process_key(driver, user_camiones_fis, password_camiones_fis, "camiones","tradicional")
+
+            driver.quit()
+            driver = self.get_driver()
+            driver.get(self.base_url + "/fisdealer/fpw.jsp")
+            
+            user_planes_fis = self.env['delsol.config'].search([('code', '=', 'user_planes_fis')]).value
+            password_planes_fis = self.env['delsol.config'].search([('code', '=', 'password_planes_fis')]).value
+            logging.info("cron delivery_tae_check: buscando Taes de planes")
+            self.process_key(driver, user_planes_fis, password_planes_fis, "autos","planes")
+            """
 
         except Exception as e:
             logging.info("Finalizo el cron de actualizacion de taes con errores")
