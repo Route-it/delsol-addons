@@ -101,7 +101,7 @@ class delsol_delivery_tae_check(models.Model):
                     delivery = delivery_s[0]
                     
                     if (delivery.tae_stamp == False):
-                        delivery.message_post(body="El vehiculo está entregado en FIS, pero no en ODOO!")
+                        #delivery.message_post(body="El vehiculo está entregado en FIS, pero no en ODOO!")
                         delivery.tae_stamp = tae_create_date
                     # else:
                     #    tae_stamp_date = datetime.datetime.strptime(delivery.tae_stamp, '%Y-%m-%d %H:%M:%S') > tae_create_date 

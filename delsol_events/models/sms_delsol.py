@@ -46,7 +46,7 @@ class delsol_sms_server(models.Model):
                 
                 delsol_mail_server = self.env['delsol.mail_server']
                 delsol_mail_server.send_mail("Se agotaron los sms del usuario %s" %  self.usuario_sms,body,[("diego@routeit.com.ar")])
-                #delsol_mail_server.send_mail("Se agotaron los sms del usuario %s" %  self.usuario_sms,body,[("lvelasques@delsolautomotor.com.ar")])
+                #delsol_mail_server.send_mail("Se agotaron los sms del usuario %s" %  self.usuario_sms,body,[("tguerrero@delsolautomotor.com.ar")])
                 
                 return -1,r.content #2974924655: se han agotado los SMS contratados.
             else:

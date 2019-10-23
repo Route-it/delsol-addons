@@ -69,16 +69,16 @@ class delsol_delivery(models.Model):
             
             if self.vehicle_id.modelo.vehicle_type == 'auto':
                       
-                smsnro_sergio = "2974139563" #  Sergio Bellido
-                delsol_sms_server.send_sms(message,smsnro_sergio)
+                #smsnro_sergio = "2974139563" #  Sergio Bellido
+                #delsol_sms_server.send_sms(message,smsnro_sergio)
 
             #if self.vehicle_id.modelo.vehicle_type == 'camion':
                 smsnro_roberto = "2975092890" #  Roberto Arguello
                 delsol_sms_server.send_sms(message,smsnro_roberto)
             
-            mensaje_notif_resp_entre = 'Se ha notificado por sms al responsable de entregas.'
-            super(delsol_delivery,self).message_post(body=mensaje_notif_resp_entre)
-            self.env.user.notify_info(mensaje_notif_resp_entre)
+                mensaje_notif_resp_entre = 'Se ha notificado por sms al responsable de entregas.'
+                super(delsol_delivery,self).message_post(body=mensaje_notif_resp_entre)
+                self.env.user.notify_info(mensaje_notif_resp_entre)
 
 
 
