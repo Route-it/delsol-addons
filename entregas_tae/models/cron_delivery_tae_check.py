@@ -33,14 +33,17 @@ class delsol_delivery_tae_check(models.Model):
 
     def process_key(self, driver, user_fis, password_fis, clave, modo):
     
-        # login
-        driver.find_element_by_id("FSNloginUserIdInput").send_keys(user_fis) 
-        driver.find_element_by_id("FSNloginPasswordInput").send_keys(password_fis)
-        driver.find_element_by_xpath("//*[@id='DEALER-WSLXloginBody']/center/form/p/input").click()
         
+        
+        driver.find_element_by_xpath("//*[@id='bySelection']/div[2]").click()
+    
+        # login
+        driver.find_element_by_id("DEALER-WSLXloginUserIdInput").send_keys(user_fis) 
+        driver.find_element_by_id("DEALER-WSLXloginPasswordInput").send_keys(password_fis)
+        driver.find_element_by_xpath("//*[@id='DEALER-WSLXloginWSLSubmitButton']/input").click()
         
         try:
-            if "Login" in driver.find_element_by_xpath("//*[@id='FSNauthAuthFailure1']").text:
+            if "Fallido" in driver.find_element_by_xpath("//*[@id='DEALER-WSLXauthInvalidUser1']").text:
                 try:
                     delsol_mail_server = self.env['delsol.mail_server']
                     body = "La password del usuario %s en FIS, es incorrecta. Por favor modifiquela en el menu 'Configuracion Del Sol' de ODOO" %  user_fis
@@ -62,11 +65,11 @@ class delsol_delivery_tae_check(models.Model):
         #FSNBody > td > table:nth-child(3) > tbody > tr > td:nth-child(1) > center > form > input[type="button"]
         
         
-        # continuar
-        try:
-            driver.find_element_by_xpath("//*[@id='FSNauthSuccess']/td/div[4]/center/table/tbody/tr/td[1]/center/form/input").click()
-        except Exception as e:
-            driver.find_element_by_xpath("//*[@id='FSNBody']/td/table[2]/tbody/tr/td[1]/center/form/input").click()
+        # continuar by timeout
+        #try:
+            #driver.find_element_by_xpath("//*[@id='FSNauthSuccess']/td/div[4]/center/table/tbody/tr/td[1]/center/form/input").click()
+        #except Exception as e:
+            #driver.find_element_by_xpath("//*[@id='FSNBody']/td/table[2]/tbody/tr/td[1]/center/form/input").click()
 
 
         # aceptar alerta
@@ -153,35 +156,7 @@ class delsol_delivery_tae_check(models.Model):
                             self.process_key(driver, user_autos_fis, password_autos_fis, option,mode)
                     
                             driver.quit()
-            # separar las 3 llamadas en 3 crones con parametros diferentes
-            """
-            driver.get(self.base_url + "/fisdealer/fpw.jsp")
-
-            user_autos_fis = self.env['delsol.config'].search([('code', '=', 'user_autos_fis')]).value 
-            password_autos_fis = self.env['delsol.config'].search([('code', '=', 'password_autos_fis')]).value
-            logging.info("cron delivery_tae_check: buscando Taes de autos")
-            self.process_key(driver, user_autos_fis, password_autos_fis, "autos","tradicional")
-    
-            driver.quit()
-            """                
-            """
-            driver = self.get_driver()
-            driver.get(self.base_url + "/fisdealer/fpw.jsp")
-
-            user_camiones_fis = self.env['delsol.config'].search([('code', '=', 'user_camiones_fis')]).value
-            password_camiones_fis = self.env['delsol.config'].search([('code', '=', 'password_camiones_fis')]).value
-            logging.info("cron delivery_tae_check: buscando Taes de camiones")
-            self.process_key(driver, user_camiones_fis, password_camiones_fis, "camiones","tradicional")
-
-            driver.quit()
-            driver = self.get_driver()
-            driver.get(self.base_url + "/fisdealer/fpw.jsp")
-            
-            user_planes_fis = self.env['delsol.config'].search([('code', '=', 'user_planes_fis')]).value
-            password_planes_fis = self.env['delsol.config'].search([('code', '=', 'password_planes_fis')]).value
-            logging.info("cron delivery_tae_check: buscando Taes de planes")
-            self.process_key(driver, user_planes_fis, password_planes_fis, "autos","planes")
-            """
+           
 
         except Exception as e:
             logging.info("Finalizo el cron de actualizacion de taes con errores")
