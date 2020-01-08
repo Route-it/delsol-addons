@@ -48,47 +48,47 @@
                     </div>
                 </div>
                 <div class="row">
-	                <div class="col-xs-3">
+	                <div class="col-xs-3 pull-right">
 	                    Nombre y Apellido cliente: 
 	                </div>
-					<div class="col-xs-9"><strong t-field="delivery.client_id.name"/>
+					<div class="col-xs-8"><strong t-field="delivery.client_id.name"/>
 					</div>
 	                <div class="col-xs-3">
 						N° de Cliente en Sistema:
 	                </div>
-					<div class="col-xs-9">
+					<div class="col-xs-8">
 						<strong t-field="delivery.client_id.vat"/>
 					</div>
 	                <div class="col-xs-3">
 						Teléfono de contacto cliente:
 	                </div>
-					<div class="col-xs-9"><strong t-field="delivery.client_id.phone"/> / <strong t-field="delivery.client_id.mobile"/></div>
+					<div class="col-xs-8"><strong t-field="delivery.client_id.phone"/> / <strong t-field="delivery.client_id.mobile"/></div>
 	                <div class="col-xs-3">
 						Unidad a entregar:
 	                </div>
-					<div class="col-xs-9"><strong t-field="delivery.vehicle_id.modelo.description"/></div>
+					<div class="col-xs-8"><strong t-field="delivery.vehicle_id.modelo.description"/></div>
 	                <div class="col-xs-3">
 						Color:
 	                </div>
-					<div class="col-xs-9"><strong t-field="delivery.vehicle_id.color"/></div>
+					<div class="col-xs-8"><strong t-field="delivery.vehicle_id.color"/></div>
 	                <div class="col-xs-3">
 						Lugar de entrega:
 	                </div>
-					<div class="col-xs-9"><strong>Del Sol Automotor</strong></div>
+					<div class="col-xs-8"><strong>Del Sol Automotor</strong></div>
 	                <div class="col-xs-3">
 						Fecha de entrega: 
 	                </div>
-					<div class="col-xs-9">
+					<div class="col-xs-8">
 					<strong t-field="delivery.client_date"  t-field-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}" /></div>
 	                <div class="col-xs-3">
 						Hora de presentación:
 	                </div>
-					<div class="col-xs-9">
+					<div class="col-xs-8">
 					<strong t-field="delivery.client_date"  t-field-options="{&quot;format&quot;: &quot;HH:mm&quot;}" /></div>
 	                <div class="col-xs-3">
 						Nombre del Adm. de entrega:
 	                </div>
-					<div class="col-xs-9">
+					<div class="col-xs-8">
 						<t t-if="delivery.sector == 'ovalo'">
 							<strong>Pablo Moncalieri</strong>
 						</t>
@@ -96,22 +96,34 @@
 							<strong>Stefania Lencioni</strong>
 						</t>
 					</div>
-<!-- 	                <div class="col-xs-3"> -->
-<!-- 						Gastos de retiro a abonar -->
-<!-- 	                </div> -->
-<!-- 					<div class="col-xs-9"> -->
-<!-- 						TOTAL: -->
-<!-- 					</div> -->
-<!-- 	                <div class="col-xs-3"> -->
-<!-- 						Gastos de accesorios a abonar -->
-<!-- 	                </div> -->
-<!-- 					<div class="col-xs-9"> -->
-<!-- 						TOTAL: -->
-<!-- 					</div> -->
+	                <div class="col-xs-3">
+						Gastos de retiro a abonar:
+	                </div>
+					<div class="col-xs-8">
+					<strong t-field="delivery.expense_to_be_pay_for_deliver" t-field-options='{"widget": "monetary", "currency_field": "delivery.currency_id"}'/></div>
+					<t t-if="delivery.expense_accesories_to_be_pay_for_deliver != False">
+	                <div class="col-xs-3">
+						Gastos de accesorios a abonar:
+	                </div>
+					<div class="col-xs-8">
+					<strong t-field="delivery.expense_accesories_to_be_pay_for_deliver"/></div>
+	                </t>
+	                
+					<t t-if="delivery.comments_for_turn_report != False">
+	                <div class="col-xs-3">
+						Comentarios Adicionales:
+	                </div>
+					<div class="col-xs-8">
+					<strong t-field="delivery.comments_for_turn_report"/></div>
+					</t>
+					
+					
+					
+					
 <!-- 	                <div class="col-xs-3"> -->
 <!-- 						Documentación Vehiculo Usado a traer: -->
 <!-- 	                </div> -->
-<!-- 					<div class="col-xs-9"> -->
+<!-- 					<div class="col-xs-8"> -->
 <!-- 						* -->
 <!-- 					</div> -->
 				</div>

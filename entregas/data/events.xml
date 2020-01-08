@@ -15,6 +15,12 @@
             <field name="emails"></field>
             <field name="acive">False</field>
         </record>
+        <record id="delivery_approaching" model="delsol.event">
+            <field name="name">Entregas con X dias para vencerse</field>
+            <field name="code">delivery_approaching</field>
+            <field name="emails"></field>
+            <field name="acive">False</field>
+        </record>
 
 
     </data>

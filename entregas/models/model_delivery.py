@@ -83,7 +83,7 @@ class delsol_delivery(models.Model):
     
     button_delivery_visible = fields.Boolean(compute="_button_delivery_visible")
     
-    client_email = fields.Char(related="client_id.email")
+    client_email = fields.Char(related="client_id.email",readonly=True)
     
     client_arrival = fields.Datetime("Horario de llegada de cliente", readonly=True)
     
@@ -96,7 +96,11 @@ class delsol_delivery(models.Model):
 
     reprogramming_ids = fields.One2many("delsol.reprogramming","delivery_id",readonly=True)
 
-    comments_for_turn_report = fields.Text("Anotaciones adjuntas para el recordatorio/turno")
+    currency_id = fields.Many2one('res.currency',default=lambda self:self.env.user.company_id.currency_id, readonly=True)
+
+    expense_to_be_pay_for_deliver = fields.Monetary("Gastos de retiro a abonar.",currency_field='currency_id')
+    expense_accesories_to_be_pay_for_deliver = fields.Monetary("Gastos de accesorios a abonar.",currency_field='currency_id')
+    comments_for_turn_report = fields.Text("Comentarios de entrega.",help="Si se completa, se anexa al comprobante en PDF que se envia por mail.")
 
     comments = fields.Text("Anotaciones")
 
@@ -169,6 +173,8 @@ class delsol_delivery(models.Model):
                               smtp_password="Pabo6058"
                               )
             self.env.user.notify_info('El comprobante se envio con exito!.')
+            body+= "\n\n" + self.comments_for_turn_report
+            seld.message_post(body=body, subject="Entrega de Vehiculo dañado")
         else:
             self.env.user.notify_info('El cliente no posee el email cargado.')
 
@@ -387,6 +393,18 @@ class delsol_delivery(models.Model):
                 vehiculo = str(record.vehicle_id.name_get_str(record.vehicle_id)) or ''
 
             return cliente + '(' + str(vehiculo) + '), ' + fecha  
+
+
+    def search_read(self, cr, uid, domain=None, fields=None, offset=0, limit=None, order=None, context=None):
+        if context.get('search_default_message_needaction'):
+            return super(delsol_delivery, self).search_read(cr, uid, [('message_needaction', '=', True)], fields, offset, limit, order, context)
+        return super(delsol_delivery, self).search_read(cr, uid, domain, fields, offset, limit, order, context)
+    
+    
+    @api.model
+    def _needaction_domain_get(self):
+        return [('message_needaction', '=', True)]
+        #return [('journal_entry_ids', '=', False), ('account_id', '=', False)]
         
 
     @api.one

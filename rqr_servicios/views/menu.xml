@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+		<!-- Top menu item -->
+		<!-- -->
+			<menuitem name="Call Center" id="menu_call_center" parent="base.delsol_main_menu" groups="group_name_menu_callcenter"/>
+
+				<menuitem name="Ventas" id="menu_ventas" parent="menu_call_center" action="open_view_delivery_call_center_all" groups="group_name_menu_ventas"/>
+
+				<menuitem name="RQRs" id="menu_rqr" parent="menu_call_center" action="open_view_rqr_all" groups="group_name_menu_rqr"/>
+
+				<menuitem name="Llamados" id="menu_call" parent="menu_call_center" action="open_view_call_all" groups="group_name_menu_call"/>
+					
+
+	</data>
+</openerp>

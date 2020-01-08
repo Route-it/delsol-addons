@@ -20,6 +20,15 @@
             <field name="model">delsol.delivery_of_day</field>
             <field name="function">process</field>
         </record>
+        <record id="ir_cron_delsol_process_devilvery_approaching" model="ir.cron">
+            <field name='name'>Entregas - Promesas de entregas proximas a cumplirse [Aviso] (DelSol)</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="model">delsol.delivery_approaching</field>
+            <field name="function">process</field>
+        </record>
 
     </data>
 </openerp>

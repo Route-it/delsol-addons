@@ -75,6 +75,7 @@ class delsol_vehicle(models.Model):
 
     pass_predelivery_proccess = fields.Boolean("Saltear proceso de preentrega", track_visibility='onchange', default=False)
     
+    delivery_date_promess = fields.Datetime("Promesa de fecha de entrega", readonly=True)
     
     """logistica    
     factory_payment_date = fields.Datetime("Fecha de pago a fabrica")
@@ -460,3 +461,16 @@ class delsol_vehicle(models.Model):
             #    patente = record.patente or ''
         
             return str(marca) + '/' + str(modelo) + ' (' + str(year) + ') ' + str(chasis)  
+    
+    
+    def search_read(self, cr, uid, domain=None, fields=None, offset=0, limit=None, order=None, context=None):
+        if context.get('search_default_message_needaction'):
+            return super(delsol_vehicle, self).search_read(cr, uid, [('message_needaction', '=', True)], fields, offset, limit, order, context)
+        return super(delsol_vehicle, self).search_read(cr, uid, domain, fields, offset, limit, order, context)
+    
+    
+    @api.model
+    def _needaction_domain_get(self):
+        return [('message_needaction', '=', True)]
+        #return [('journal_entry_ids', '=', False), ('account_id', '=', False)]
+        

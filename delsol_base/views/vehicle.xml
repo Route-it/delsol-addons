@@ -74,6 +74,7 @@
 								<field name="pass_predelivery_proccess" invisible="1" attrs="{'readonly':[('state','!=', 'new')]}"/>
 								<field name="create_date" />
 								<field name="fecha_facturacion" />
+								<field name="delivery_date_promess" />
 
 							</group>
 						</group>

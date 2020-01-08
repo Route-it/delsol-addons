@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+    	
+    	<record id="group_name_admin_rqr" model="res.groups">
+        	<field name="name">RQR - Administrador de RQR</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_profiles_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_rqr" model="res.groups">
+        	<field name="name">RQR - Operador de RQR</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_profiles_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_admin_call" model="res.groups">
+        	<field name="name">RQR - Administrador de Call Center</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_profiles_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_call" model="res.groups">
+        	<field name="name">RQR - Operador de Call Center</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_profiles_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+		
+	</data>
+</openerp>

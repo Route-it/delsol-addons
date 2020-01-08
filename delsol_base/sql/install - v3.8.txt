@@ -5,7 +5,7 @@ copiar: (done)
 delsol_events:
 	1. /models/sms_delsol.py
 	2. comentar la linea smsnro
-	3. comentar [("diego@routeit.com.ar")] y descomentar [("lvelasques@....")]
+	3. comentar [("diego@routeit.com.ar")] y descomentar [("tguerrero@....")]
 	
 entregas (reinstalar) (done)
 	/models/model_delivery.py Cambiar linea 157 por self.client_email

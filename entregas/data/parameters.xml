@@ -38,6 +38,15 @@
             				automaticamente. La misma quedará en modo solo lectura de ser activada.</field>
             <field name="value">True</field>
         </record>
+        <record id="delivery_approaching_days" model="delsol.config">
+            <field name="name">Cantidad de dias que faltan para cumplir la fecha prometida de entrega, para dar aviso.</field>
+            <field name="code">delivery_approaching_days</field>
+            <field name="app">entregas</field>
+            <field name="description">Dato: Numerico.
+            				Configura el numero de dias que faltan para cumplirse la fecha en de entrega
+            				para dar aviso a las areas correspondientes.</field>
+            <field name="value">4</field>
+        </record>
 
 
     </data>

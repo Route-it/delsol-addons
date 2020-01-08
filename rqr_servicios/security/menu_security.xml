@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+    	
+    	<record id="group_name_menu_ventas" model="res.groups">
+        	<field name="name">Call - Ventas</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_menu_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_menu_rqr" model="res.groups">
+        	<field name="name">Call - RQR</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_menu_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_menu_call" model="res.groups">
+        	<field name="name">Call - Llamados</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_menu_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+    	<record id="group_name_menu_callcenter" model="res.groups">
+        	<field name="name">Call - Call Center</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        	<field name="category_id" ref="delsol_base.module_delsol_menu_category"/>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+    	</record>
+		
+	</data>
+</openerp>

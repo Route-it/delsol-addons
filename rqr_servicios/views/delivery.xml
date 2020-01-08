@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record id="delsol_delivery_filter" model="ir.ui.view">
+			<field name="name">delsol.delivery.select</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="entregas.delsol_delivery_filter"></field>
+			<field name="arch" type="xml">
+				<field name="vehicle_chasis" position="after" >
+					<separator />
+					<filter string="Contactado" name="filter_contacted" domain="[('contacted','=',True)]" groups="rqr.group_name_call"/>
+					<filter string="No contactado" name="filter_not_contacted" domain="[('contacted','!=',True)]" groups="rqr.group_name_call"/>
+					<separator />
+					<filter string="Contesto encuesta Ford" name="filter_answered_poll" domain="[('answered_poll','=',True)]" groups="rqr.group_name_call"/>
+					
+					<filter string="5 dias posterior a entrega" name="5 Dias posterior a entrega"  groups="rqr.group_name_admin_call"
+					domain="[('contacted_in_x_days','=',True)]"/>
+					
+					<separator />
+					<group expand="0" string="Agrupar por">
+						<filter string="Sector" name="sector" context="{'group_by':'sector'}" />
+						<separator />
+						<filter string="Contactado" name="contacted" context="{'group_by':'contacted'}" groups="rqr.group_name_call"/>
+						<separator />
+						<filter string="Contesto encuesta" name="answered_pool" context="{'group_by':'answered_poll'}" groups="rqr.group_name_call"/>
+						<filter string="Dia" domain="[ ]" context="{'group_by': 'delivery_date:day'}" />
+					</group>
+				</field>
+				<xpath expr="//filter[@name='autos']" position="after">
+					<separator />
+					<filter string="Call Center(c/tae,entr)" name="call_center" domain="[('tae_stamp','!=',False),('state','=','delivered')]"  groups="rqr.group_name_call"/>
+				</xpath>
+			</field>
+		</record>
+		
+
+		<record model='ir.ui.view' id='delsol_delivery_form'>
+			<field name="name">delsol.delivery.form</field>
+			<field name="model">delsol.delivery</field>
+			<field name="inherit_id" ref="entregas.delsol_delivery_form"></field>
+			<field name="arch" type="xml">
+					<field name="sector" position="after">
+						<field name="applay_rqr"/>
+					</field>
+						<notebook position="inside"> 
+							<page string="Contactos al cliente"  groups="rqr.group_name_admin_rqr,rqr.group_name_rqr,rqr.group_name_admin_call,rqr.group_name_call">
+								<field name="call_ids" string="Contactos" context="{'delivery_id':id}" />
+							</page>
+							<page string="RQRs" attrs="{'invisible':[('state','=','new')]}"  groups="rqr.group_name_admin_rqr,rqr.group_name_rqr,rqr.group_name_admin_call,rqr.group_name_call">
+								<field name="rqr_ids" string="RQRs" context="{'delivery_id':id}"
+									attrs="{'readonly':[('state','=','new')]}" />
+							</page>
+						</notebook>
+						<notebook position="after" >
+							<group string="Encuesta Ford" attrs="{'invisible':[('tae_stamp','=',False)]}" groups="rqr.group_name_admin_rqr,rqr.group_name_rqr,rqr.group_name_admin_call,rqr.group_name_call">
+								<group>
+	
+									<field name="answered_poll" string="Contesto encuesta Ford?"
+										attrs="{'invisible':[('state','=', 'new')]}" />
+									<field name="sales_asistance" attrs="{'invisible': [('answered_poll','=', False)]}" />
+									<field name="payment_experience" attrs="{'invisible': [('answered_poll','=', False)]}" />
+									<field name="compliance" attrs="{'invisible': [('answered_poll','=', False)]}" />
+									<field name="delivery_process" attrs="{'invisible': [('answered_poll','=', False)]}" />
+									<field name="comment_poll" attrs="{'invisible': [('answered_poll','=', False)]}" />
+									<field name="poll_rqr_id" string="RQR de encuesta"/>
+									<button name="make_poll_rqr" string="Generar RQR" type="object"
+										class="oe_highlight" groups="rqr.group_name_make_rqr"
+										attrs="{'invisible':['|',('poll_rqr_id','!=',False),('answered_poll','=',False)]}" />	
+								</group>
+							</group>
+						</notebook>
+			</field>
+		</record>
+		
+		
+		
+		<record id="open_view_delivery_call_center_all" model="ir.actions.act_window">
+			<field name="name">Entregas de Autos</field>
+			<field name="res_model">delsol.delivery</field>
+			<field name="view_type">form</field>
+			<field name="context">{
+  					'search_default_call_center': 1,
+  					'search_default_contacted': 1,
+  					'search_default_sector': 1,
+					}
+			</field>		
+			<field name="domain">[]</field>
+			<field name="view_mode">tree,form,graph,pivot</field>
+		</record>
+
+		
+	</data>
+</openerp>

@@ -19,18 +19,12 @@ from openerp.exceptions import ValidationError, Warning
 
 _logger = logging.getLogger(__name__)
 
-class delsol_import_vehicles(models.Model):
+class delsol_import_vehicles_used(models.Model):
     
-    _name = "delsol.invoiced_vehicle_imp"
+    _name = "delsol.invoiced_vehicle_used_imp"
 
     _auto = False
 
-    """tablas a trabajar
-    Colores delsol.vehicle_colorE
-    Modelos delsol.vehicle_model
-    Vehiculos delsol.vehicle
-    Gestoria delsol.formality
-    """
     
     vehicle_id = fields.Integer("id de la base de datos")
 
@@ -92,13 +86,8 @@ class delsol_import_vehicles(models.Model):
             
             try:
                 celular = client_obj.get_client_mobile(celular)
-            except Exception as e:
-                celular = ''
-                print e
-            try:
                 telefono = client_obj.get_client_mobile(telefono)
             except Exception as e:
-                telefono = ''
                 print e
                 
                 
@@ -119,9 +108,6 @@ class delsol_import_vehicles(models.Model):
                 c_data['mobile'] = celular
             if not (len(telefono)==0):
                 c_data['phone'] = telefono
-                if (len(celular)==0):
-                    c_data['mobile'] = telefono
-                
             cod_post = row.get('CodigoPostal')  if not (row.get('CodigoPostal') is None) else ''
             if not (len(cod_post)==0):
                 c_data['zip'] = cod_post
@@ -138,7 +124,7 @@ class delsol_import_vehicles(models.Model):
             
             
             c_data['customer'] = True
-            #c_data['customer'] = True if (row.get('EstadoCivil') == 'Empresa') else False
+            c_data['customer'] = True if (row.get('EstadoCivil') == 'Empresa') else False
             c_data['company_type'] = 'company' if (row.get('EstadoCivil') == 'Empresa') else 'person'
             c_data['notify_email'] = 'none'
             
@@ -173,11 +159,11 @@ class delsol_import_vehicles(models.Model):
             
             #TODO: run uppercase to delsol.vehicle_model.name
 
-            model_description = row.get('DescripcionOperativa')
             if len(model)>0:
                 model = model[0]
             else:
                 vehicle_type = 'auto'
+                model_description = row.get('DescripcionOperativa')
                 if 'cargo' in model_description.lower(): vehicle_type = 'camion'
                 else: 
                     if '4000' in model_description.lower(): vehicle_type = 'camion'
@@ -192,8 +178,6 @@ class delsol_import_vehicles(models.Model):
                       'vehicle_type':vehicle_type,
                       }
                 model = model_obj.create(m_data)    
-            if not(model.description) or len(model.description)==0:
-                model.write({'description':model_description})
 
                 
             ################ END MODEL UPDATE ###############
@@ -245,9 +229,9 @@ class delsol_import_vehicles(models.Model):
                       'nro_chasis':row.get('Carroceria').upper(),
                       'fecha_facturacion':row.get('FechaContable'),
                       'arrival_to_dealer_date':arrival_to_dealer_date,
-                      'patente':patente,
-                      'delivery_date_promess':row.get('PromesaEntregaFecha')}
-            #
+                      'patente':patente
+                      }
+            
             if len(vehicle)==0:
                 print 'crear vehiculo'
                 vehicle = vehicle_obj.create(v_data)
@@ -255,17 +239,11 @@ class delsol_import_vehicles(models.Model):
                 #vehicle.not_chequed()
                 #si es camion, no se manda a chequer.
             else:
-                vehicle = vehicle[0]
                 if bool(patente):
-                        vehicle.write({'patente':patente})
-                vehicle.write({'client_id':client.id,
-                                  'modelo':model.id, #id del model
-                                  'color':color.id,
-                                  'anio':anio_produccion,
-                                  'nro_chasis':row.get('Carroceria').upper(),
-                                  'fecha_facturacion':row.get('FechaContable'),
-                                  'arrival_to_dealer_date':arrival_to_dealer_date,
-                                  'delivery_date_promess':row.get('PromesaEntregaFecha')})
+                    for v in vehicle:
+                        v.write({'patente':patente,
+                                 'nro_chasis':row.get('Carroceria').upper()})
+                vehicle = vehicle[0]
                 
             if len(vehicle_imp)==0:
                 print 'crear vehiculo_imp'
@@ -332,7 +310,7 @@ class delsol_import_vehicles(models.Model):
             query += ' from Unidades as u, Colores as c, Preventas as p, Comprobantes as cc, Clientes as cli, Modelos as mo'
             query += '    where  '
             query += '    cc.unidadID = u.UnidadID '
-            query += '    and ( cc.CuitCuilDNI = cli.Codigo OR cc.CuitCuilDNI = cli.CUIT_CUIL)'
+            query += '    and cc.CuitCuilDNI = cli.Codigo '
             query += '    and p.UnidadID = u.UnidadID '
             query += '    and c.ColorID = u.color '
             query += '    and u.Modelo = mo.Modelo '

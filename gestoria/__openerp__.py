@@ -27,7 +27,7 @@
         'security/menu_security.xml',
         'security/profiles_security.xml',
         'views/formality.xml',
-        'views/gestoria.xml',
+        'views/formality_type.xml',
         'views/vehicle.xml',
         'views/menu.xml',
         'data/links.xml',

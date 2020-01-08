@@ -7,3 +7,4 @@ from . import model_vehicle
 from . import wizard_change_delivery_state
 from . import cron_delivery_expired
 from . import cron_delivery_of_day
+from . import cron_delivery_approaching

@@ -144,12 +144,15 @@
 								<field name="vendor_id" string="Vendedor" options="{'no_create_edit': True}" />
 								<field name="client_arrival" attrs="{'invisible':[('client_arrival','=',False)]}"/>
 							</group>
+							<group  string="Informacion para la entrega" attrs="{'invisible':[('id','==',False)],'readonly': [('state', '=', 'delivered')]}">
+								<field name="currency_id" invisible='1'/>
+								<field name="expense_to_be_pay_for_deliver" widget="monetary" attrs="{'display_currency': 'currency_id'}"/>
+								<field name="expense_accesories_to_be_pay_for_deliver" widget="monetary" attrs="{'display_currency': 'currency_id'}"/>
+								<field name="comments_for_turn_report"/>
+							</group>
 							<group string="Datos de la tae" attrs="{'invisible':['|',('id','==',False),('state','not in',('delivered'))]}">
 								<field name="tae_stamp" />
 							</group>
-						</group>
-						<group>
-							<field name="comments_for_turn_report" attrs="{'invisible':[('id','==',False)],'readonly': [('state', '=', 'delivered')]}"/>
 						</group>
 						<notebook>
 							<page string="Reprogramaciones" attrs="{'invisible':[('reprogramming_ids','=',False)]}">

@@ -173,11 +173,11 @@ class delsol_import_vehicles(models.Model):
             model = model_obj.search([('name','ilike',bianchi_modelo.upper()[-4:])])
             
 
+            model_description = row.get('DescripcionOperativa')
             if len(model)>0:
                 model = model[0]
             else:
                 vehicle_type = 'auto'
-                model_description = row.get('DescripcionOperativa')
                 if 'cargo' in model_description.lower(): vehicle_type = 'camion'
                 else: 
                     if '4000' in model_description.lower(): vehicle_type = 'camion'
@@ -192,6 +192,8 @@ class delsol_import_vehicles(models.Model):
                       'vehicle_type':vehicle_type,
                       }
                 model = model_obj.create(m_data)    
+            if not(model.description) or len(model.description)==0:
+                model.write({'description':model_description})
                 #ojo con los camiones. No se cumple la regla de 4.
             #Si no viene el modelo, return no se importa el vehiculo.
 
@@ -245,8 +247,8 @@ class delsol_import_vehicles(models.Model):
                       'nro_chasis':row.get('Carroceria').upper(),
                       'fecha_facturacion':row.get('FechaContable'),
                       'arrival_to_dealer_date':arrival_to_dealer_date,
-                      'patente':patente
-                      }
+                      'patente':patente,
+                      'delivery_date_promess':row.get('PromesaEntregaFecha')}
             
             if len(vehicle)==0:
                 print 'crear vehiculo'
@@ -255,11 +257,17 @@ class delsol_import_vehicles(models.Model):
                 #vehicle.not_chequed()
                 #si es camion, no se manda a chequer.
             else:
-                if bool(patente):
-                    for v in vehicle:
-                        v.write({'patente':patente,
-                                 'nro_chasis':row.get('Carroceria').upper()})
                 vehicle = vehicle[0]
+                if bool(patente):
+                        vehicle.write({'patente':patente})
+                vehicle.write({'client_id':client.id,
+                                  'modelo':model.id, #id del model
+                                  'color':color.id,
+                                  'anio':anio_produccion,
+                                  'nro_chasis':row.get('Carroceria').upper(),
+                                  'fecha_facturacion':row.get('FechaContable'),
+                                  'arrival_to_dealer_date':arrival_to_dealer_date,
+                                  'delivery_date_promess':row.get('PromesaEntregaFecha')})
                 
             if len(vehicle_imp)==0:
                 print 'crear vehiculo_imp'
