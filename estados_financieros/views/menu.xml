@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+	
+
+		<menuitem action="open_view_delsol_financial_state_config" id="menu_delsol_config_financial_states_settings"
+			name="Items de estados fiancieros" parent="delsol_base.menu_delsol_config" />
+
+		<menuitem action="open_view_delsol_financial_state" id="menu_delsol_financial_states"
+			name="Estados Fiancieros" parent="base.delsol_main_menu" />
+
+	</data>
+</openerp>
