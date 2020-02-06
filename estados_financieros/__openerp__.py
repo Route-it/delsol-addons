@@ -30,6 +30,7 @@
         'views/financial_state.xml',
         'views/financial_state_row.xml',
         'views/menu.xml',
+        'data/parameters.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -2,7 +2,6 @@
 
 from openerp import models, fields, api
 import cStringIO
-import tempfile
 import xlrd 
 import base64
 import os
@@ -15,8 +14,10 @@ class financial_state(models.Model):
     #   Precio
 
     name = fields.Char("Nombre de cuadro")
-    
-    dealer_code = fields.Char("Código del concesionario")
+    state = fields.Selection([('draft','Borrador'),('proccesed','Procesado'),('builded','Generado'),('presented','Presentado')], 
+                             default="draft", string="Estado", required=True, readonly=True)
+
+    dealer_code = fields.Selection([('061','Autos (061)'),('2071','Camiones (2071)')],string="Código del concesionario")
     
     date_month = fields.Date("Fecha a presentar")
     presented = fields.Date("Fecha descarga o upload a FIS",readonly=True)
@@ -31,19 +32,18 @@ class financial_state(models.Model):
     financial_state_fis_fname = fields.Char(string="File Name")
 
 
-
     def calcular_valor(self, r, key_values,code):
         try:
             if code != False:
-                calculation_formula = self.env['delsol.financial_state_row'].search([('code','=',code),('calculation_formula','!=',False),('register_type','=','config')])
-                if (calculation_formula == False)|(len(calculation_formula)==0):
+                calculation_formula_for_code = self.env['delsol.financial_state_row'].search([('code','=',code),('calculation_formula','!=',False),('register_type','=','config')])
+                if (calculation_formula_for_code == False)|(len(calculation_formula_for_code)==0):
                     try:
                         formula_value = eval(code,key_values)
                     except:
                         print code + " no esta configurado. Retornando False"
                         formula_value = False
                 else:
-                    formula_value = eval(calculation_formula,key_values)
+                    formula_value = eval(calculation_formula_for_code.calculation_formula,key_values)
             else:
                 formula_value = eval(r.calculation_formula,key_values)
         except Exception as e:
@@ -138,8 +138,7 @@ class financial_state(models.Model):
                 address.upper().replace(key, dictionary[key])
                 """
         sys.setrecursionlimit(recursion_limit)
-
-        print key_values
+        self.state = 'proccesed'
                 
                 #self.fill_dict(key_values,formula_splited)
 
@@ -149,7 +148,6 @@ class financial_state(models.Model):
     def make_dat(self):
 
         output = cStringIO.StringIO()
-
 
         output.write("{:0<92}".format("H"))
         output.write("\n")
@@ -175,11 +173,11 @@ class financial_state(models.Model):
                     value = i.value_computed
                 if isinstance(value, (float)):
                     output.write(
-                        "{:<120.2f}".format(value)
+                        "{:0.2f}".format(value)
                     )
                 else:
                     output.write(
-                        "{:<120}".format(i.value_computed[:120])
+                        i.value_computed[:120]
                     )
             output.write("\n")
 
@@ -197,7 +195,18 @@ class financial_state(models.Model):
         
         output.close()
         
+        self.state = 'builded'
+    
+    
+    
+    
+    @api.multi
+    def upload_dat(self):
         
+        up_fsf = self.env['delsol.upload_financial_state_fis']
+        up_fsf.process(self,'autos')
+        
+        return
         
         
     """    

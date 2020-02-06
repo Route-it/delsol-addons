@@ -6,7 +6,7 @@
 			<field name="name">delsol.financial_state_row_config.tree</field>
 			<field name="model">delsol.financial_state_row</field>
 			<field name="arch" type="xml">
-				<tree string="Estados Financieros">
+				<tree string="Estados Financieros" editable="bottom">
 						<field name="name" />
 						<field name="description" />
 						<field name="code" />
@@ -51,7 +51,7 @@
 			<field name="name">Configuracion de fila</field>
 			<field name="res_model">delsol.financial_state_row</field>
 			<field name="view_type">form</field>
-			<field name="domain">[]</field>
+			<field name="domain">[('register_type','=','config')]</field>
 			<field name="view_mode">tree,form</field>
 		</record>
 

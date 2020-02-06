@@ -19,11 +19,18 @@
 			<field name="model">delsol.financial_state</field>
 			<field name="arch" type="xml">
 				<form string="Estado Financiero">
+					<header>
+						<field name="id" invisible="1" />
+						<field name="state" widget="statusbar" nolabel="1"
+							clickable="True" />
+						
+					</header>
 					<sheet string="Estado Financiero">
                 	    <div class="oe_button_box" name="button_box">
 	                        <button name="process_excel" type="object" string="Procesar Excel" icon="gtk-yes" class="oe_stat_button"/>
 	                        <button name="make_dat" type="object" string="(Re)Generar DAT" icon="gtk-apply" class="oe_stat_button"/>
-	                        <button name="process_excel" type="object" string="Presentar DAT" icon="gtk-connect" class="oe_stat_button"/>
+	                        <button name="upload_dat" type="object" string="Presentar DAT" icon="gtk-connect" class="oe_stat_button"/>
+							<field name="name" />
 	                    </div>
 						<group>
 							<group>
@@ -43,6 +50,8 @@
 										<field name="description" />
 										<field name="code" />
 										<field name="value_computed" />
+										<field name="value_str" />
+										<field name="value_money" />
 										<field name="excel_sheet" />
 										<field name="excel_row" />
 										<field name="excel_col" />

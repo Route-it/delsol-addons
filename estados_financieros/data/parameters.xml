@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data noupdate="1">
+
+        <record id="user_financial_state_fis" model="delsol.config">
+            <field name="name">Usuario estados financieros de FIS</field>
+            <field name="code">user_financial_state_fis</field>
+            <field name="app">estados_financieros</field>
+            <field name="description">Dato: (Texto)
+            			Indica el Usuario estados financieros de FIS
+            			</field>
+            <field name="value">i-rodri2</field>
+        </record>
+        <record id="password_financial_state_fis" model="delsol.config">
+            <field name="name">Password del usuario estados financieros de FIS</field>
+            <field name="code">password_financial_state_fis</field>
+            <field name="app">estados_financieros</field>
+            <field name="description">Dato: (Texto)
+            			Indica la password el Usuario estados financieros de FIS
+            			</field>
+            <field name="value">lola2015</field>
+        </record>
+
+    </data>
+</openerp>
