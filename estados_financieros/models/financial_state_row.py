@@ -25,6 +25,8 @@ class financial_state_row(models.Model):
          
     calculation_formula = fields.Char("Formula de calculo")
 
+    default_value = fields.Char("Valor por defecto",deafult=0)
+
     register_type = fields.Selection([("config","Configuracion"),("dato","Dato")],string="Tipo",required="True",default='dato')
     
     @api.one

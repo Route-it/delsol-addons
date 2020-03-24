@@ -6,11 +6,11 @@
 			<field name="name">delsol.financial_state.tree</field>
 			<field name="model">delsol.financial_state</field>
 			<field name="arch" type="xml">
-				<tree string="Estados Financieros">
-						<field name="name" />
+				<tree string="Estados Financieros" colors="green:state in ('presented'),gray:state in ('draft')">
 						<field name="dealer_code" />
 						<field name="date_month" />
 						<field name="rows" />
+						<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -21,23 +21,32 @@
 				<form string="Estado Financiero">
 					<header>
 						<field name="id" invisible="1" />
-						<field name="state" widget="statusbar" nolabel="1"
-							clickable="True" />
-						
+						<field name="financial_state_excel_visible" invisible="1"  />
+						<field name="state" widget="statusbar" nolabel="1" clickable="False" />
+						<div class="oe_read_only">
+	                        <button name="clean_all" type="object" string="Limpiar" icon="gtk-clear"  
+	                        	attrs="{'invisible':[('id','=',False)]}"/>
+	                        <button name="process_excel" type="object" string="Procesar Excel" icon="gtk-execute" 
+	                       	 	attrs="{'invisible':['|','|',('id','=',False),('state','!=','draft'),('financial_state_excel_visible','==',False)]}"/>
+	                        <button name="make_dat" type="object" string="(Re)Generar DAT" icon="gtk-convert"
+	                         	attrs="{'invisible':['|',('id','=',False),('state','!=','proccesed')]}"/>
+	                        <button name="upload_dat" type="object" string="Presentar DAT" icon="gtk-disconnect" 
+	                         	attrs="{'invisible':['|',('id','=',False),('state','!=','builded')]}"/>
+						</div>
+
 					</header>
 					<sheet string="Estado Financiero">
-                	    <div class="oe_button_box" name="button_box">
-	                        <button name="process_excel" type="object" string="Procesar Excel" icon="gtk-yes" class="oe_stat_button"/>
-	                        <button name="make_dat" type="object" string="(Re)Generar DAT" icon="gtk-apply" class="oe_stat_button"/>
-	                        <button name="upload_dat" type="object" string="Presentar DAT" icon="gtk-connect" class="oe_stat_button"/>
-							<field name="name" />
-	                    </div>
+						<h1>
 						<group>
 							<group>
-								<field name="name" />
-								
 								<field name="dealer_code" />
-								<field name="date_month" />
+								<field name="date_month"/>
+							</group>
+						</group>
+						</h1>
+						<group>
+							<group>
+								
 								<field name="financial_state_excel_fname" invisible="1"/>
 								<field name="financial_state_excel" filename="financial_state_excel_fname" />
 								<field name="financial_state_fis_fname" invisible="1"/>

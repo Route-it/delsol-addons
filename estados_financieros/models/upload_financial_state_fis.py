@@ -33,7 +33,7 @@ class delsol_upload_financial_state_fis(models.Model):
 
     _name = "delsol.upload_financial_state_fis"
      
-    base_url = "https://www.concesionarios.ford.com"
+    base_url = "https://wwwqa.concesionarios.ford.com"
 
     def process_key(self, driver, user_fis, password_fis, clave, f_state):
         
@@ -88,7 +88,6 @@ class delsol_upload_financial_state_fis(models.Model):
         # opcion de menu consulta de tae
         driver.get(self.base_url + "/fisdealer/EnvioArchivosActionPage.do")
         
-        # click en boton buscar
         
         #driver.find_element_by_name("filterArchivo").selectByIndex(0)
                 

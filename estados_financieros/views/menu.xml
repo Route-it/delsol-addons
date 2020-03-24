@@ -4,11 +4,17 @@
 	<data>
 	
 
-		<menuitem action="open_view_delsol_financial_state_config" id="menu_delsol_config_financial_states_settings"
-			name="Items de estados fiancieros" parent="delsol_base.menu_delsol_config" />
+		<menuitem id="menu_delsol_financial_states"
+			name="Estados Fiancieros" parent="base.delsol_main_menu" groups="group_name_estados_financieros"/>
 
-		<menuitem action="open_view_delsol_financial_state" id="menu_delsol_financial_states"
-			name="Estados Fiancieros" parent="base.delsol_main_menu" />
+		<menuitem action="open_view_delsol_financial_state" id="menu_delsol_financial_states_list" sequence="1"
+			name="Lista" parent="menu_delsol_financial_states" groups="group_name_estados_financieros"/>
+
+		<menuitem action="open_view_delsol_financial_state_config" id="menu_delsol_config_financial_states_settings" sequence="10"
+			name="Configuracion" parent="menu_delsol_financial_states" groups="group_name_estados_financieros"/>
+
+		<menuitem action="open_view_delsol_parameters_est_fin" id="menu_delsol_config_financial_states_parameters" sequence="20"
+			name="Parametros" parent="menu_delsol_financial_states" groups="group_name_estados_financieros"/>
 
 	</data>
 </openerp>

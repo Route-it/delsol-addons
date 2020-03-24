@@ -6,6 +6,7 @@ import xlrd
 import base64
 import os
 import sys
+import re
 
 class financial_state(models.Model):
     _name = 'delsol.financial_state'
@@ -13,8 +14,19 @@ class financial_state(models.Model):
     #   Nombre Accesorio
     #   Precio
 
-    name = fields.Char("Nombre de cuadro")
-    state = fields.Selection([('draft','Borrador'),('proccesed','Procesado'),('builded','Generado'),('presented','Presentado')], 
+    def _get_states(self):
+        return [('draft','Borrador'),('proccesed','Procesado'),('builded','Generado'),('presented','Presentado')]
+
+    name = fields.Char(compute="compute_name", store=True, readonly=True)
+                       
+    @api.depends('dealer_code', 'date_month','state')
+    @api.multi
+    def compute_name(self):
+        for i in self:
+            i.name = i.dealer_code +" - "+i.date_month[:7].replace("-","/")+" : "+[item for item in i._get_states() if item[0] == i.state][0][1]
+    
+    
+    state = fields.Selection(_get_states, 
                              default="draft", string="Estado", required=True, readonly=True)
 
     dealer_code = fields.Selection([('061','Autos (061)'),('2071','Camiones (2071)')],string="Código del concesionario")
@@ -32,6 +44,23 @@ class financial_state(models.Model):
     financial_state_fis_fname = fields.Char(string="File Name")
 
 
+    financial_state_excel_visible = fields.Boolean(compute="view_process_excel",store=False)
+
+    def view_process_excel(self):
+        self.financial_state_excel_visible = self.financial_state_excel_fname
+    
+    
+    def evaluar_formula(self, r, key_values):
+        variables = filter(lambda x:(x != "") & (not x.isdigit()), re.split('[-/+*() ]', r.calculation_formula))
+        for i in variables:
+            if i not in key_values:
+                key_values[i] = self.calcular_valor(r, key_values, i)
+                self.create_row(r,key_values[i])
+        
+        formula_value = eval(r.calculation_formula, key_values)
+        return formula_value
+
+
     def calcular_valor(self, r, key_values,code):
         try:
             if code != False:
@@ -40,17 +69,19 @@ class financial_state(models.Model):
                     try:
                         formula_value = eval(code,key_values)
                     except:
-                        print code + " no esta configurado. Retornando False"
-                        formula_value = False
+                        #print code + " no esta configurado. Retornando Valor por Defecto"
+                        formula_value = self.eval_value(r.default_value)
                 else:
-                    formula_value = eval(calculation_formula_for_code.calculation_formula,key_values)
+                    formula_value = self.evaluar_formula(calculation_formula_for_code, key_values, )
             else:
-                formula_value = eval(r.calculation_formula,key_values)
+                formula_value = self.evaluar_formula(r, key_values)
         except Exception as e:
+            #si falla porque los valores de la formula no existen en key_values, lo hago recursivo.
             try:
                 formula_value = self.calcular_valor(r,key_values,e.message.split("'")[1].split("'")[0])
-            except:
-                formula_value = 0
+            except Exception as e2:
+                formula_value = self.eval_value(r.default_value)
+                #print (code or r.code) + "/" + str(r.excel_row) + "/"+ str(r.calculation_formula) + "/"+ str(r.excel_col)
         return formula_value
 
     
@@ -68,6 +99,7 @@ class financial_state(models.Model):
                 'excel_sheet':r.excel_sheet,
                 'excel_col':r.excel_col,
                 'excel_row':r.excel_row,
+                'default_value':r.default_value,
                 'calculation_formula':r.calculation_formula,
                 'financial_state_id':self.id,
                 }
@@ -77,42 +109,49 @@ class financial_state(models.Model):
         else:
             return self.env['delsol.financial_state_row'].create(datas)
             
-        
+    def eval_value(self,default_value):
+        if bool(default_value):
+            if default_value.replace('.','').isdigit():
+                return float(default_value)
+            else:
+                return default_value
+        else:
+            return ""
     
     
     @api.multi
     def process_excel(self):
         self.ensure_one()
         recursion_limit = sys.getrecursionlimit()
-        sys.setrecursionlimit(5000)
+        sys.setrecursionlimit(10000)
         
-        rows_excel = self.env['delsol.financial_state_row'].search([('excel_col','!=',False),('excel_row','!=',False),('calculation_formula','=',False),('register_type','=','config')])
+        rows_excel = self.env['delsol.financial_state_row'].search([('excel_col','!=',False),('excel_row','!=',False),('calculation_formula','=',False),('register_type','=','config')])#
         excel_binary = self.financial_state_excel.decode('base64')
+        key_values = {}
 
         for r in rows_excel:
             
             workbook2 = xlrd.open_workbook(file_contents=excel_binary)
-            #workbook2 = xlrd.open_workbook("C:\Users\Sistemas\Documents\ITSur\Clientes\DelSol\Estados Financieros\Salida\EFAS 061 11-2019.xlsx")
             sheet = workbook2.sheet_by_name(r.excel_sheet)
             
             excel_value = sheet.cell_value(r.get_excel_row(), r.get_excel_col())
-            
             self.create_row(r,excel_value)
             
-        rows_formula = self.env['delsol.financial_state_row'].search([('code','ilike','B'),('calculation_formula','!=',False),('register_type','=','config')])
+        rows_formula = self.env['delsol.financial_state_row'].search([('excel_col','=',False),('excel_row','=',False),('register_type','=','config')])
+        
+
+        for k in self.rows:
+            if bool(k.value_money):
+                key_values[k.code] = k.value_money
+            elif bool(k.value_str):
+                key_values[k.code] = self.eval_value(k.value_str)
+            elif bool(k.default_value):
+                key_values[k.code] = self.eval_value(k.default_value)
+            else:
+                key_values[k.code] = 0
+                                
         for r in rows_formula:
            
-                #import re
-                #+-() /*
-                #formula_splited = re.split('[\#\+\-\(\)\ \/\*]',r.calculation_formula)
-                key_values = {}
-                for k in self.rows:
-                    if bool(k.value_money):
-                        key_values[k.code] = k.value_money
-                    else:
-                        key_values[k.code] = k.value_str
-                    #key_values = dict((k.code,k.value_computed) )
-                
                 """
                 convertir lista en diccionario
                 a = ['bi','double','duo','two']
@@ -126,10 +165,11 @@ class financial_state(models.Model):
                     self.create_row(r,formula_value)
                     key_values[r.code] = formula_value
                 except Exception as e:
+                    print "exception on "+r.code+":"+str(formula_value)
                     pass
                 
                 ##fill only for debug
-                
+                #print "as"
                 
                 """
                 reemplazar string (formula) con disccionario (valores)
@@ -150,7 +190,7 @@ class financial_state(models.Model):
         output = cStringIO.StringIO()
 
         output.write("{:0<92}".format("H"))
-        output.write("\n")
+        output.write("\r\n")
 
         for i in self.rows:
             output.write(
@@ -173,19 +213,23 @@ class financial_state(models.Model):
                     value = i.value_computed
                 if isinstance(value, (float)):
                     output.write(
-                        "{:0.2f}".format(value)
+                        "{:.2f}".format(value)
                     )
                 else:
                     output.write(
                         i.value_computed[:120]
                     )
-            output.write("\n")
+            else:
+                output.write(
+                        i.default_value
+                )
+            output.write("\r\n")
 
         # T0098300000000000000000000000000000000000000000000000000000000000000000000000000000000000000
         output.write("T00")
         output.write("{:0>3}".format(len(self.rows)))
         output.write("{:0<86}".format(""))
-        output.write("\n")
+        output.write("\r\n")
         
         self.financial_state_fis = base64.encodestring(output.getvalue())
         
@@ -199,6 +243,14 @@ class financial_state(models.Model):
     
     
     
+    
+    @api.multi
+    def clean_all(self):
+        self.rows.unlink()
+        self.financial_state_fis = False
+        self.financial_state_fis_fname = False
+        self.state = 'draft'
+
     
     @api.multi
     def upload_dat(self):

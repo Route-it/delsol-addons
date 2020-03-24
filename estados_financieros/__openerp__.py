@@ -24,11 +24,11 @@
 
     # always loaded
     'data': [
-        #'security/menu_security.xml',
-        #'security/profiles_security.xml',
-        #'security/ir.model.access.csv',
+        'security/profiles_security.xml',
+        'security/ir.model.access.csv',
         'views/financial_state.xml',
         'views/financial_state_row.xml',
+        'views/configuration.xml',
         'views/menu.xml',
         'data/parameters.xml',
     ],
