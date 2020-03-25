@@ -33,7 +33,7 @@ class delsol_upload_financial_state_fis(models.Model):
 
     _name = "delsol.upload_financial_state_fis"
      
-    base_url = "https://wwwqa.concesionarios.ford.com"
+    base_url = "https://www.concesionarios.ford.com"
 
     def process_key(self, driver, user_fis, password_fis, clave, f_state):
         
@@ -148,7 +148,7 @@ class delsol_upload_financial_state_fis(models.Model):
     def get_driver(self):
         chrome_options = webdriver.ChromeOptions() 
         # para produccion
-        # chrome_options.add_argument("headless")
+        chrome_options.add_argument("headless")
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.implicitly_wait(30)
         return driver
