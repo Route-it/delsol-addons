@@ -50,10 +50,10 @@
 								<field name="financial_state_excel_fname" invisible="1"/>
 								<field name="financial_state_excel" filename="financial_state_excel_fname" />
 								<field name="financial_state_fis_fname" invisible="1"/>
-								<field name="financial_state_fis" filename="financial_state_fis_fname" />
+								<field name="financial_state_fis" filename="financial_state_fis_fname" attrs="{'invisible':[('id','=',False)]}"/>
 							</group>
 						</group>
-						<field name="rows" >
+						<field name="rows" attrs="{'invisible':[('id','=',False)]}">
 								<tree string="Estados Financieros" editable="bottom" create="0" delete="0">
 										<field name="name" />
 										<field name="description" />
