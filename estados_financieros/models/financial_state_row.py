@@ -8,7 +8,9 @@ class financial_state_row(models.Model):
 
     name = fields.Char("Nombre del Estado")
     description = fields.Char("Descripcion del campo")
-    code = fields.Char("Codigo")
+    code = fields.Char("Codigo", required=True)
+
+    phase = fields.Integer("Orden de Repeticion",default=1,domain=[range(1,10)])
 
     financial_state_id = fields.Many2one("delsol.financial_state", "Estado financiero")
     
@@ -55,3 +57,15 @@ class financial_state_row(models.Model):
             col = ord(self.excel_col[len(self.excel_col)-1].upper()) - 65
         
         return n + col 
+    
+    @api.model
+    def create(self,vals):
+        
+        code = vals.get('code',False)
+        register_type = vals.get('register_type',False)
+        if bool(code) & bool(register_type):
+            if (register_type=='config'):
+                regs = self.env['delsol.financial_state_row'].search([('code','=',code),('register_type','=','config')])
+                vals['phase'] = len(regs)+1
+
+        return super(financial_state_row, self).create(vals)

@@ -78,7 +78,10 @@ class financial_state(models.Model):
         except Exception as e:
             #si falla porque los valores de la formula no existen en key_values, lo hago recursivo.
             try:
-                formula_value = self.calcular_valor(r,key_values,e.message.split("'")[1].split("'")[0])
+                if "unsupport" not in e.message:
+                    formula_value = self.calcular_valor(r,key_values,e.message.split("'")[1].split("'")[0])
+                else:
+                    formula_value = self.eval_value(r.default_value)
             except Exception as e2:
                 formula_value = self.eval_value(r.default_value)
                 #print (code or r.code) + "/" + str(r.excel_row) + "/"+ str(r.calculation_formula) + "/"+ str(r.excel_col)
@@ -93,6 +96,7 @@ class financial_state(models.Model):
                 'name':r.name,
                 'description':r.description,
                 'code':r.code,
+                'phase':1,
                 'value_money':excel_value if isinstance(excel_value, (float,int))  else False,
                 'value_str':excel_value if isinstance(excel_value, (str,unicode)) else False,
                 'register_type':'dato',
@@ -103,7 +107,7 @@ class financial_state(models.Model):
                 'calculation_formula':r.calculation_formula,
                 'financial_state_id':self.id,
                 }
-        if len(rows_excel)>0:
+        if (len(rows_excel)>0)&(r.phase==1):
             rows_excel[0].update(datas)
             return rows_excel[0].id            
         else:
@@ -137,7 +141,7 @@ class financial_state(models.Model):
             excel_value = sheet.cell_value(r.get_excel_row(), r.get_excel_col())
             self.create_row(r,excel_value)
             
-        rows_formula = self.env['delsol.financial_state_row'].search([('excel_col','=',False),('excel_row','=',False),('register_type','=','config')])
+        rows_formula = self.env['delsol.financial_state_row'].search([('excel_col','=',False),('excel_row','=',False),('register_type','=','config'),('phase','=',1)])
         
 
         for k in self.rows:
@@ -177,6 +181,14 @@ class financial_state(models.Model):
                 for key in dictionary.iterkeys():
                 address.upper().replace(key, dictionary[key])
                 """
+
+        rows_phases = self.env['delsol.financial_state_row'].search([('excel_col','=',False),('excel_row','=',False),('register_type','=','config'),('phase','>',1)])
+
+        for r in rows_phases:
+            formula_value = self.evaluar_formula(r, key_values)
+            self.create_row(r,formula_value)
+
+                
         sys.setrecursionlimit(recursion_limit)
         self.state = 'proccesed'
                 
@@ -197,10 +209,10 @@ class financial_state(models.Model):
                 "{:0>5}".format(self.dealer_code[:5])
             )
             output.write(
-                "{:0>2}".format(self.date_month[5:7])
+                "{:0>2}".format(self.date_month[2:4])
             )
             output.write(
-                "{:0>2}".format(self.date_month[8:10])
+                "{:0>2}".format(self.date_month[5:7])
             )
             output.write(
                 "{:<4}".format(i.code[:4])

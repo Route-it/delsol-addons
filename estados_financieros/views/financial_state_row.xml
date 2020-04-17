@@ -10,6 +10,7 @@
 						<field name="name" />
 						<field name="description" />
 						<field name="code" />
+						<field name="phase"/>
 						<field name="excel_sheet" />
 						<field name="excel_col" />
 						<field name="excel_row" />
