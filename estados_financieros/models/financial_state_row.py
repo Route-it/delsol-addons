@@ -6,6 +6,7 @@ class financial_state_row(models.Model):
     _name = 'delsol.financial_state_row'
 
 
+    active = fields.Boolean("Activo",default=True)
     name = fields.Char("Nombre del Estado")
     description = fields.Char("Descripcion del campo")
     code = fields.Char("Codigo", required=True)

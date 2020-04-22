@@ -55,6 +55,7 @@
 						</group>
 						<field name="rows" attrs="{'invisible':[('id','=',False)]}">
 								<tree string="Estados Financieros" editable="bottom" create="0" delete="0">
+										<field name="active" widget="checkbox" />
 										<field name="name" />
 										<field name="description" />
 										<field name="code" />

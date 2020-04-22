@@ -64,15 +64,15 @@ class financial_state(models.Model):
     def calcular_valor(self, r, key_values,code):
         try:
             if code != False:
-                calculation_formula_for_code = self.env['delsol.financial_state_row'].search([('code','=',code),('calculation_formula','!=',False),('register_type','=','config')])
+                calculation_formula_for_code = self.env['delsol.financial_state_row'].search([('code','=',code),('calculation_formula','!=',False),('register_type','=','config'),('phase','=',1)])
                 if (calculation_formula_for_code == False)|(len(calculation_formula_for_code)==0):
                     try:
                         formula_value = eval(code,key_values)
                     except:
                         #print code + " no esta configurado. Retornando Valor por Defecto"
                         formula_value = self.eval_value(r.default_value)
-                else:
-                    formula_value = self.evaluar_formula(calculation_formula_for_code, key_values, )
+                elif (len(calculation_formula_for_code)>0):
+                    formula_value = self.evaluar_formula(calculation_formula_for_code[0], key_values, )
             else:
                 formula_value = self.evaluar_formula(r, key_values)
         except Exception as e:
@@ -93,6 +93,7 @@ class financial_state(models.Model):
         rows_excel = self.env['delsol.financial_state_row'].search([('code','=',r.code),('financial_state_id','=',self.id),('register_type','=','dato')])
 
         datas = {
+                'active':r.active,
                 'name':r.name,
                 'description':r.description,
                 'code':r.code,
@@ -204,7 +205,7 @@ class financial_state(models.Model):
         output.write("{:0<92}".format("H"))
         output.write("\r\n")
 
-        for i in self.rows:
+        for i in filter(lambda r:r.active == True,self.rows):
             output.write(
                 "{:0>5}".format(self.dealer_code[:5])
             )
